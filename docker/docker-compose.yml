@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # Development environment
+  dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: development
+    volumes:
+      - ..:/app
+      - /app/node_modules
+      - pnpm-store:/root/.local/share/pnpm/store
+    ports:
+      - "3000:3000"   # React playground
+      - "4321:4321"   # Astro docs
+      - "5173:5173"   # Vite dev server (React)
+      - "5174:5174"   # Vite dev server (Vue)
+      - "5175:5175"   # Vite dev server (Svelte)
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
+    tty: true
+    command: pnpm dev
+
+  # Run tests
+  test:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: development
+    volumes:
+      - ..:/app
+      - /app/node_modules
+      - pnpm-store:/root/.local/share/pnpm/store
+    environment:
+      - NODE_ENV=test
+    command: pnpm test
+
+  # Build all packages
+  build:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: builder
+    volumes:
+      - ../packages/core/dist:/app/packages/core/dist
+      - ../packages/react/dist:/app/packages/react/dist
+      - ../packages/vue/dist:/app/packages/vue/dist
+      - ../packages/svelte/dist:/app/packages/svelte/dist
+      - ../packages/cli/dist:/app/packages/cli/dist
+    command: pnpm build
+
+  # Documentation site (production)
+  docs:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: production
+    ports:
+      - "4321:4321"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+volumes:
+  pnpm-store:

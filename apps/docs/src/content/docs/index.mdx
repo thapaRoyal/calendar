@@ -1,0 +1,74 @@
+---
+title: '@thaparoyal/calendar'
+description: Multi-calendar UI library for AD and BS (Bikram Sambat) calendars
+template: splash
+hero:
+  tagline: A comprehensive, multi-calendar UI library supporting AD (Gregorian) and BS (Bikram Sambat/Nepali) calendars.
+  image:
+    file: ../../assets/calendar-hero.svg
+  actions:
+    - text: Get Started
+      link: /getting-started/introduction/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/thaparoyal/calendar
+      icon: external
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Features
+
+<CardGrid stagger>
+  <Card title="Multi-Calendar Support" icon="document">
+    Support for AD (Gregorian) and BS (Bikram Sambat) calendars with accurate conversion.
+  </Card>
+  <Card title="Framework Support" icon="rocket">
+    React, Vue, and Svelte components with consistent APIs.
+  </Card>
+  <Card title="shadcn/ui Style" icon="pencil">
+    Copy-paste components with full ownership and customization.
+  </Card>
+  <Card title="TypeScript First" icon="approve-check">
+    Complete type safety with comprehensive type definitions.
+  </Card>
+</CardGrid>
+
+## Quick Start
+
+```bash
+# Initialize in your project
+npx @thaparoyal/calendar-cli init
+
+# Add the calendar component
+npx @thaparoyal/calendar-cli add calendar
+```
+
+## Example
+
+```tsx
+import { Calendar } from '@thaparoyal/calendar-react';
+
+function App() {
+  const [date, setDate] = useState(null);
+
+  return (
+    <Calendar.Root
+      config={{ calendarType: 'BS', locale: 'en' }}
+      value={date}
+      onValueChange={setDate}
+    >
+      <Calendar.Header>
+        <Calendar.PrevButton />
+        <Calendar.Title />
+        <Calendar.NextButton />
+      </Calendar.Header>
+      <Calendar.Grid>
+        <Calendar.GridHead />
+        <Calendar.GridBody />
+      </Calendar.Grid>
+    </Calendar.Root>
+  );
+}
+```

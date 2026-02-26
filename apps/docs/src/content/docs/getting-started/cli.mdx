@@ -1,0 +1,125 @@
+---
+title: CLI
+description: Using the @thaparoyal/calendar CLI
+---
+
+# CLI
+
+The `@thaparoyal/calendar-cli` provides a shadcn/ui-style experience for adding calendar components to your project.
+
+## Installation
+
+The CLI can be used without installation via `npx`:
+
+```bash
+npx @thaparoyal/calendar-cli <command>
+```
+
+Or install globally:
+
+```bash
+npm install -g @thaparoyal/calendar-cli
+trc <command>
+```
+
+## Commands
+
+### init
+
+Initialize calendar configuration in your project:
+
+```bash
+npx @thaparoyal/calendar-cli init
+```
+
+This will:
+1. Detect your project configuration (framework, TypeScript, Tailwind)
+2. Prompt for configuration options
+3. Create `calendar.config.json`
+4. Optionally install dependencies
+
+### add
+
+Add components to your project:
+
+```bash
+# Add a single component
+npx @thaparoyal/calendar-cli add calendar
+
+# Add multiple components
+npx @thaparoyal/calendar-cli add calendar date-picker
+
+# Skip confirmation prompts
+npx @thaparoyal/calendar-cli add calendar -y
+```
+
+### list
+
+List all available components:
+
+```bash
+npx @thaparoyal/calendar-cli list
+```
+
+## Configuration
+
+The CLI creates a `calendar.config.json` in your project root:
+
+```json
+{
+  "$schema": "https://thaparoyal-calendar.dev/schema.json",
+  "framework": "react",
+  "typescript": true,
+  "tailwind": true,
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils"
+  },
+  "defaultCalendar": "BS",
+  "locale": "en"
+}
+```
+
+### Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `framework` | `"react" \| "vue" \| "svelte"` | Target framework |
+| `typescript` | `boolean` | Generate TypeScript files |
+| `tailwind` | `boolean` | Use Tailwind CSS styling |
+| `aliases.components` | `string` | Import alias for components |
+| `aliases.utils` | `string` | Import alias for utilities |
+| `defaultCalendar` | `"AD" \| "BS"` | Default calendar type |
+| `locale` | `"en" \| "ne"` | Default locale |
+
+## Available Components
+
+| Component | Description |
+|-----------|-------------|
+| `calendar` | Full calendar component |
+| `date-picker` | Date picker with input and dropdown |
+| `utils` | Utility functions (cn, etc.) |
+
+## Example Workflow
+
+```bash
+# 1. Create a new React project
+npx create-next-app@latest my-app
+cd my-app
+
+# 2. Initialize calendar
+npx @thaparoyal/calendar-cli init
+
+# 3. Add components
+npx @thaparoyal/calendar-cli add calendar date-picker
+
+# 4. Use in your app
+```
+
+```tsx
+import { Calendar } from "@/components/ui/calendar";
+
+export default function Home() {
+  return <Calendar config={{ calendarType: "BS" }} />;
+}
+```

@@ -1,0 +1,203 @@
+---
+title: Calendar
+description: A full-featured calendar component supporting AD and BS calendars
+---
+
+# Calendar
+
+The Calendar component provides a full-featured calendar UI for selecting dates in both AD (Gregorian) and BS (Bikram Sambat) formats.
+
+## Installation
+
+```bash
+npx @thaparoyal/calendar-cli add calendar
+```
+
+## Usage
+
+### React
+
+```tsx
+import { useState } from 'react';
+import { Calendar, type CalendarDate } from '@thaparoyal/calendar-react';
+import '@thaparoyal/calendar-react/styles.css';
+
+function MyCalendar() {
+  const [date, setDate] = useState<CalendarDate | null>(null);
+
+  return (
+    <Calendar.Root
+      config={{ calendarType: 'BS', locale: 'en' }}
+      value={date}
+      onValueChange={setDate}
+    >
+      <Calendar.Header>
+        <Calendar.PrevButton />
+        <Calendar.Title />
+        <Calendar.NextButton />
+      </Calendar.Header>
+      <Calendar.Grid>
+        <Calendar.GridHead />
+        <Calendar.GridBody />
+      </Calendar.Grid>
+    </Calendar.Root>
+  );
+}
+```
+
+### Vue
+
+```vue
+<script setup>
+import { ref } from 'vue';
+import { useCalendar } from '@thaparoyal/calendar-vue';
+
+const { state, actions, weeks, title, weekdayNames } = useCalendar({
+  config: { calendarType: 'BS' }
+});
+</script>
+
+<template>
+  <div class="calendar">
+    <header>
+      <button @click="actions.prevMonth">Previous</button>
+      <span>{{ title }}</span>
+      <button @click="actions.nextMonth">Next</button>
+    </header>
+    <!-- Render weeks -->
+  </div>
+</template>
+```
+
+### Svelte
+
+```svelte
+<script>
+import { createCalendar } from '@thaparoyal/calendar-svelte';
+
+const calendar = createCalendar({ config: { calendarType: 'BS' } });
+const { title, weeks, weekdayNames, selectDate, prevMonth, nextMonth } = calendar;
+</script>
+
+<div class="calendar">
+  <header>
+    <button on:click={prevMonth}>Previous</button>
+    <span>{$title}</span>
+    <button on:click={nextMonth}>Next</button>
+  </header>
+  <!-- Render weeks -->
+</div>
+```
+
+## Props
+
+### Calendar.Root
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `config` | `CalendarConfig` | `{ calendarType: 'BS' }` | Calendar configuration |
+| `value` | `CalendarDate \| null` | - | Selected date (controlled) |
+| `defaultValue` | `CalendarDate` | - | Initial selected date (uncontrolled) |
+| `onValueChange` | `(date: CalendarDate) => void` | - | Callback when date is selected |
+| `disabledDates` | `CalendarDate[]` | `[]` | Dates that cannot be selected |
+| `className` | `string` | - | Additional CSS class |
+
+### CalendarConfig
+
+```typescript
+interface CalendarConfig {
+  calendarType: 'AD' | 'BS';
+  locale: 'en' | 'ne';
+  weekStartsOn: 0 | 1;  // 0 = Sunday, 1 = Monday
+  minDate?: CalendarDate;
+  maxDate?: CalendarDate;
+}
+```
+
+## Sub-components
+
+| Component | Description |
+|-----------|-------------|
+| `Calendar.Root` | Root wrapper providing context |
+| `Calendar.Header` | Container for navigation |
+| `Calendar.Title` | Displays month and year |
+| `Calendar.PrevButton` | Navigate to previous month |
+| `Calendar.NextButton` | Navigate to next month |
+| `Calendar.Grid` | Table container |
+| `Calendar.GridHead` | Weekday header row |
+| `Calendar.GridBody` | Day cells grid |
+
+## Keyboard Navigation
+
+| Key | Action |
+|-----|--------|
+| `ArrowLeft` | Focus previous day |
+| `ArrowRight` | Focus next day |
+| `ArrowUp` | Focus same day in previous week |
+| `ArrowDown` | Focus same day in next week |
+| `Enter` / `Space` | Select focused day |
+| `Home` | Focus first day of month |
+| `End` | Focus last day of month |
+
+## Styling
+
+The calendar uses CSS classes prefixed with `trc-`. Key classes:
+
+```css
+.trc-calendar { /* Root container */ }
+.trc-calendar-header { /* Header container */ }
+.trc-calendar-title { /* Month/year title */ }
+.trc-calendar-nav-button { /* Navigation buttons */ }
+.trc-calendar-grid { /* Table */ }
+.trc-calendar-weekday { /* Weekday header cell */ }
+.trc-calendar-cell { /* Day cell */ }
+.trc-calendar-cell-today { /* Today's cell */ }
+.trc-calendar-cell-selected { /* Selected cell */ }
+.trc-calendar-cell-disabled { /* Disabled cell */ }
+.trc-calendar-cell-outside { /* Outside current month */ }
+.trc-calendar-day { /* Day button */ }
+```
+
+## Examples
+
+### BS Calendar with Nepali Locale
+
+```tsx
+<Calendar.Root
+  config={{ calendarType: 'BS', locale: 'ne' }}
+  value={date}
+  onValueChange={setDate}
+>
+  {/* ... */}
+</Calendar.Root>
+```
+
+### With Date Range Constraints
+
+```tsx
+<Calendar.Root
+  config={{
+    calendarType: 'BS',
+    minDate: { year: 2080, month: 1, day: 1, calendarType: 'BS' },
+    maxDate: { year: 2080, month: 12, day: 30, calendarType: 'BS' },
+  }}
+  value={date}
+  onValueChange={setDate}
+>
+  {/* ... */}
+</Calendar.Root>
+```
+
+### Custom Day Rendering
+
+```tsx
+<Calendar.GridBody
+  renderDay={(day) => (
+    <Calendar.DayCell day={day}>
+      <span className={day.isToday ? 'font-bold' : ''}>
+        {day.date.day}
+      </span>
+    </Calendar.DayCell>
+  )}
+/>
+```

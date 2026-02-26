@@ -1,0 +1,78 @@
+---
+title: Introduction
+description: Get started with @thaparoyal/calendar - a multi-calendar UI library
+---
+
+# Introduction
+
+**@thaparoyal/calendar** is a comprehensive, multi-calendar UI library supporting AD (Gregorian) and BS (Bikram Sambat/Nepali) calendars. Built with a shadcn/ui-style approach for maximum customization.
+
+## Features
+
+- **Multi-Calendar Support**: AD (Gregorian) and BS (Bikram Sambat) calendars
+- **Framework Support**: React, Vue, and Svelte components
+- **shadcn/ui Style**: Copy-paste components with full ownership
+- **TypeScript First**: Complete type safety
+- **Tailwind CSS**: Customizable styling with CSS variables
+- **Accessible**: ARIA-compliant components
+- **Locale Support**: English and Nepali (Devanagari)
+- **Date Conversion**: Accurate AD ↔ BS conversion
+
+## What is Bikram Sambat?
+
+Bikram Sambat (BS) is the official calendar of Nepal. It is a lunisolar calendar that is approximately 56-57 years ahead of the Gregorian calendar.
+
+For example:
+- January 1, 2024 AD = Poush 16, 2080 BS
+- The BS new year (Baisakh 1) falls around April 13-14
+
+## Why This Library?
+
+1. **Accurate Conversion**: Uses lookup tables for precise BS date conversion (required due to the variable nature of BS month lengths)
+2. **Framework Agnostic Core**: The conversion logic is separate from UI, making it easy to use in any framework
+3. **Customizable**: shadcn/ui-style components that you own and can modify
+4. **Modern**: Built with TypeScript, ESM, and modern React patterns
+
+## Quick Example
+
+```tsx
+import { Calendar } from '@thaparoyal/calendar-react';
+
+function App() {
+  const [date, setDate] = useState(null);
+
+  return (
+    <Calendar.Root
+      config={{ calendarType: 'BS', locale: 'en' }}
+      value={date}
+      onValueChange={setDate}
+    >
+      <Calendar.Header>
+        <Calendar.PrevButton />
+        <Calendar.Title />
+        <Calendar.NextButton />
+      </Calendar.Header>
+      <Calendar.Grid>
+        <Calendar.GridHead />
+        <Calendar.GridBody />
+      </Calendar.Grid>
+    </Calendar.Root>
+  );
+}
+```
+
+## Packages
+
+| Package | Description |
+|---------|-------------|
+| `@thaparoyal/calendar-core` | Core date conversion and utilities |
+| `@thaparoyal/calendar-react` | React components and hooks |
+| `@thaparoyal/calendar-vue` | Vue components and composables |
+| `@thaparoyal/calendar-svelte` | Svelte components and stores |
+| `@thaparoyal/calendar-cli` | CLI for component installation |
+
+## Next Steps
+
+- [Installation](/getting-started/installation/) - Install the library
+- [CLI](/getting-started/cli/) - Use the CLI for easy setup
+- [Calendar Component](/components/calendar/) - Learn about the Calendar component

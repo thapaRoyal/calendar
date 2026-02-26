@@ -1,0 +1,58 @@
+{
+  "name": "@thaparoyal/calendar-cli",
+  "version": "0.1.0",
+  "description": "CLI for installing @thaparoyal/calendar components - shadcn/ui style",
+  "author": "Royal Thapa",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "trc": "./dist/index.js",
+    "thaparoyal-calendar": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "cosmiconfig": "^9.0.0",
+    "execa": "^8.0.1",
+    "fs-extra": "^11.2.0",
+    "ora": "^8.0.1",
+    "prompts": "^2.4.2",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.11.0",
+    "@types/prompts": "^2.4.9",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
+  },
+  "keywords": [
+    "cli",
+    "calendar",
+    "nepali",
+    "bikram-sambat",
+    "shadcn"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thaparoyal/calendar.git",
+    "directory": "packages/cli"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
