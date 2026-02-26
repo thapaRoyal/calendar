@@ -11,16 +11,19 @@ WORKDIR /app
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
 COPY packages/core/package.json ./packages/core/
 COPY packages/react/package.json ./packages/react/
-COPY packages/vue/package.json ./packages/vue/ 2>/dev/null || true
-COPY packages/svelte/package.json ./packages/svelte/ 2>/dev/null || true
-COPY packages/cli/package.json ./packages/cli/ 2>/dev/null || true
-COPY apps/site/package.json ./apps/site/ 2>/dev/null || true
+COPY packages/vue/package.json ./packages/vue/
+COPY packages/svelte/package.json ./packages/svelte/
+COPY packages/cli/package.json ./packages/cli/
+COPY apps/site/package.json ./apps/site/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile || pnpm install
 
 # Copy source code
 COPY . .
+
+# Reinstall after full source copy to avoid broken pnpm symlinks/.bin in Docker cache layers
+RUN rm -rf node_modules && pnpm install --frozen-lockfile --force || pnpm install --force
 
 # Build all packages
 RUN pnpm build
@@ -38,7 +41,7 @@ WORKDIR /app
 COPY . .
 
 # Install dependencies
-RUN pnpm install
+RUN rm -rf node_modules && pnpm install --force
 
 EXPOSE 3000 4321 5173 5174
 
