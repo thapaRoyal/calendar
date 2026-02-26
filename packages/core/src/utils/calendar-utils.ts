@@ -17,7 +17,17 @@ import {
   getDaysInAdMonth,
   bsToJsDate,
 } from '../converters/bs-converter';
-import type { CalendarDate, Week, WeekDay, CalendarType, CalendarConfig } from '../types';
+import type {
+  CalendarDate,
+  Week,
+  WeekDay,
+  CalendarType,
+  CalendarConfig,
+  Locale,
+  MonthPickerItem,
+  YearPickerItem,
+  DecadeRange,
+} from '../types';
 
 /**
  * Get days in a month for any calendar type
@@ -311,4 +321,107 @@ export function getToday(calendarType: CalendarType): CalendarDate {
   // For BS, we need to convert from AD
   const { adToBs } = require('../converters/bs-converter');
   return adToBs(today);
+}
+
+/**
+ * Get month grid for month picker
+ */
+export function getMonthGrid(
+  year: number,
+  calendarType: CalendarType,
+  locale: Locale = 'en',
+  currentMonth?: number,
+  minDate?: CalendarDate,
+  maxDate?: CalendarDate
+): MonthPickerItem[] {
+  const { getMonthShortName, getMonthName } = require('./format');
+  const items: MonthPickerItem[] = [];
+
+  for (let month = 1; month <= 12; month++) {
+    // Check if month is disabled based on min/max dates
+    let disabled = false;
+    if (calendarType === 'BS' && !isBsYearSupported(year)) {
+      disabled = true;
+    }
+    if (minDate && (year < minDate.year || (year === minDate.year && month < minDate.month))) {
+      disabled = true;
+    }
+    if (maxDate && (year > maxDate.year || (year === maxDate.year && month > maxDate.month))) {
+      disabled = true;
+    }
+
+    items.push({
+      month,
+      name: getMonthName(month, calendarType, locale),
+      shortName: getMonthShortName(month, calendarType, locale),
+      disabled,
+      isCurrentMonth: currentMonth === month,
+    });
+  }
+
+  return items;
+}
+
+/**
+ * Get year grid for year picker
+ */
+export function getYearGrid(
+  currentYear: number,
+  calendarType: CalendarType,
+  rangeSize: number = 12,
+  minDate?: CalendarDate,
+  maxDate?: CalendarDate
+): YearPickerItem[] {
+  const items: YearPickerItem[] = [];
+  const startYear = Math.floor(currentYear / rangeSize) * rangeSize;
+
+  for (let i = 0; i < rangeSize; i++) {
+    const year = startYear + i;
+    let disabled = false;
+
+    if (calendarType === 'BS' && !isBsYearSupported(year)) {
+      disabled = true;
+    }
+    if (minDate && year < minDate.year) {
+      disabled = true;
+    }
+    if (maxDate && year > maxDate.year) {
+      disabled = true;
+    }
+
+    items.push({
+      year,
+      disabled,
+      isCurrentYear: year === currentYear,
+    });
+  }
+
+  return items;
+}
+
+/**
+ * Get decade range for year picker navigation
+ */
+export function getDecadeRange(year: number, rangeSize: number = 12): DecadeRange {
+  const startYear = Math.floor(year / rangeSize) * rangeSize;
+  return {
+    start: startYear,
+    end: startYear + rangeSize - 1,
+  };
+}
+
+/**
+ * Navigate to next decade for year picker
+ */
+export function getNextDecade(year: number, rangeSize: number = 12): number {
+  const startYear = Math.floor(year / rangeSize) * rangeSize;
+  return startYear + rangeSize;
+}
+
+/**
+ * Navigate to previous decade for year picker
+ */
+export function getPrevDecade(year: number, rangeSize: number = 12): number {
+  const startYear = Math.floor(year / rangeSize) * rangeSize;
+  return startYear - rangeSize;
 }

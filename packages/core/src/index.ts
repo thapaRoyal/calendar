@@ -23,6 +23,11 @@ export type {
   DatePickerEvent,
   DateRangeState,
   DateRangeEvent,
+  SelectionMode,
+  MultiCalendarConfig,
+  MonthPickerItem,
+  YearPickerItem,
+  DecadeRange,
 } from './types';
 
 // Converters
@@ -114,7 +119,24 @@ export {
   getNextYear,
   getPrevYear,
   getToday,
+  getMonthGrid,
+  getYearGrid,
+  getDecadeRange,
+  getNextDecade,
+  getPrevDecade,
 } from './utils/calendar-utils';
+
+// Multi-calendar utilities
+export {
+  offsetMonth,
+  getMultiMonthWeeks,
+  enhanceWeekDayWithSelection,
+  getMultiMonthTitles,
+  canNavigatePrev,
+  canNavigateNext,
+  navigateMultiCalendar,
+  getVisibleDateRange,
+} from './utils/multi-calendar-utils';
 
 // State machines
 export {
@@ -140,3 +162,21 @@ export {
   isRangeEnd,
   type DateRangeActions,
 } from './machines';
+
+// Selection machine (unified)
+export {
+  selectionReducer,
+  createInitialSelectionState,
+  createSelectionActions,
+  isDateMultiSelected,
+  isDateInSelectionRange,
+  isSelectionRangeStart,
+  isSelectionRangeEnd,
+  isSelectionRangeMiddle,
+  getSelectionValue,
+  type SelectionState,
+  type SelectionEvent,
+  type SelectionConfig,
+  type SelectionActions,
+  type DateRangeValue,
+} from './machines/selection.machine';

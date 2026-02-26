@@ -21,6 +21,20 @@ import {
   type CalendarRowProps,
   type CalendarDayCellProps,
 } from './calendar-grid';
+import {
+  CalendarMonthPicker,
+  type CalendarMonthPickerProps,
+} from './calendar-month-picker';
+import {
+  CalendarYearPicker,
+  type CalendarYearPickerProps,
+} from './calendar-year-picker';
+import {
+  CalendarMonthDropdown,
+  CalendarYearDropdown,
+  type CalendarMonthDropdownProps,
+  type CalendarYearDropdownProps,
+} from './calendar-dropdown';
 
 /**
  * Calendar compound component
@@ -65,6 +79,12 @@ export const Calendar = {
   GridBody: CalendarGridBody,
   Row: CalendarRow,
   DayCell: CalendarDayCell,
+  // Month/Year Picker Grid
+  MonthPicker: CalendarMonthPicker,
+  YearPicker: CalendarYearPicker,
+  // Month/Year Dropdowns
+  MonthDropdown: CalendarMonthDropdown,
+  YearDropdown: CalendarYearDropdown,
 };
 
 // Export types
@@ -79,6 +99,10 @@ export type {
   CalendarGridBodyProps,
   CalendarRowProps,
   CalendarDayCellProps,
+  CalendarMonthPickerProps,
+  CalendarYearPickerProps,
+  CalendarMonthDropdownProps,
+  CalendarYearDropdownProps,
 };
 
 // Export individual components for tree-shaking
@@ -93,4 +117,8 @@ export {
   CalendarGridBody,
   CalendarRow,
   CalendarDayCell,
+  CalendarMonthPicker,
+  CalendarYearPicker,
+  CalendarMonthDropdown,
+  CalendarYearDropdown,
 };

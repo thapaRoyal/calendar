@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useCalendarContext } from '../context/calendar-context';
+import { useCalendarCustomization } from '../context/customization-context';
 import { useCalendarInternal } from './calendar-root';
 import { cn } from '../utils/cn';
 
@@ -18,8 +19,9 @@ export interface CalendarHeaderProps {
  */
 export const CalendarHeader = React.forwardRef<HTMLDivElement, CalendarHeaderProps>(
   ({ className, children }, ref) => {
+    const { classNames } = useCalendarCustomization();
     return (
-      <div ref={ref} className={cn('trc-calendar-header', className)}>
+      <div ref={ref} className={cn('trc-calendar-header', classNames.header, className)}>
         {children}
       </div>
     );
@@ -45,6 +47,7 @@ export const CalendarTitle = React.forwardRef<HTMLHeadingElement, CalendarTitleP
   ({ className, children }, ref) => {
     const { title } = useCalendarInternal();
     const { actions, viewMode } = useCalendarContext();
+    const { classNames } = useCalendarCustomization();
 
     const handleClick = () => {
       if (viewMode === 'day') {
@@ -64,7 +67,7 @@ export const CalendarTitle = React.forwardRef<HTMLHeadingElement, CalendarTitleP
       <button
         ref={ref as any}
         type="button"
-        className={cn('trc-calendar-title', className)}
+        className={cn('trc-calendar-title', classNames.title, className)}
         onClick={handleClick}
         aria-live="polite"
       >
@@ -92,6 +95,7 @@ export const CalendarPrevButton = React.forwardRef<HTMLButtonElement, CalendarPr
   ({ className, children, disabled, ...props }, ref) => {
     const { actions, viewMode } = useCalendarContext();
     const { isPrevMonthDisabled } = useCalendarInternal();
+    const { classNames, components } = useCalendarCustomization();
 
     const handleClick = () => {
       if (viewMode === 'day') {
@@ -101,17 +105,21 @@ export const CalendarPrevButton = React.forwardRef<HTMLButtonElement, CalendarPr
       }
     };
 
+    const IconLeft = components.IconLeft;
+
     return (
       <button
         ref={ref}
         type="button"
-        className={cn('trc-calendar-nav-button', 'trc-calendar-prev', className)}
+        className={cn('trc-calendar-nav-button', 'trc-calendar-prev', classNames.navButton, classNames.navButtonPrev, className)}
         onClick={handleClick}
         disabled={disabled ?? isPrevMonthDisabled}
         aria-label="Previous month"
         {...props}
       >
-        {children ?? (
+        {children ?? (IconLeft ? (
+          <IconLeft direction="left" />
+        ) : (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -125,7 +133,7 @@ export const CalendarPrevButton = React.forwardRef<HTMLButtonElement, CalendarPr
           >
             <path d="m15 18-6-6 6-6" />
           </svg>
-        )}
+        ))}
       </button>
     );
   }
@@ -149,6 +157,7 @@ export const CalendarNextButton = React.forwardRef<HTMLButtonElement, CalendarNe
   ({ className, children, disabled, ...props }, ref) => {
     const { actions, viewMode } = useCalendarContext();
     const { isNextMonthDisabled } = useCalendarInternal();
+    const { classNames, components } = useCalendarCustomization();
 
     const handleClick = () => {
       if (viewMode === 'day') {
@@ -158,17 +167,21 @@ export const CalendarNextButton = React.forwardRef<HTMLButtonElement, CalendarNe
       }
     };
 
+    const IconRight = components.IconRight;
+
     return (
       <button
         ref={ref}
         type="button"
-        className={cn('trc-calendar-nav-button', 'trc-calendar-next', className)}
+        className={cn('trc-calendar-nav-button', 'trc-calendar-next', classNames.navButton, classNames.navButtonNext, className)}
         onClick={handleClick}
         disabled={disabled ?? isNextMonthDisabled}
         aria-label="Next month"
         {...props}
       >
-        {children ?? (
+        {children ?? (IconRight ? (
+          <IconRight direction="right" />
+        ) : (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -182,7 +195,7 @@ export const CalendarNextButton = React.forwardRef<HTMLButtonElement, CalendarNe
           >
             <path d="m9 18 6-6-6-6" />
           </svg>
-        )}
+        ))}
       </button>
     );
   }

@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { useCalendar, type UseCalendarOptions } from '../hooks/use-calendar';
 import { CalendarProvider } from '../context/calendar-context';
+import { CalendarCustomizationProvider } from '../context/customization-context';
 import { cn } from '../utils/cn';
 import type { Locale } from '@thaparoyal/calendar-core';
+import type { CalendarClassNames, CalendarComponents } from '../types';
 
 /**
  * Calendar root component props
@@ -12,6 +14,33 @@ export interface CalendarRootProps extends UseCalendarOptions {
   className?: string;
   /** Children */
   children?: React.ReactNode;
+  /**
+   * Custom class names for calendar elements (shadcn-style)
+   * @example
+   * ```tsx
+   * <Calendar.Root
+   *   classNames={{
+   *     root: 'my-calendar',
+   *     daySelected: 'bg-blue-500 text-white',
+   *     dayToday: 'ring-2 ring-blue-500',
+   *   }}
+   * />
+   * ```
+   */
+  classNames?: CalendarClassNames;
+  /**
+   * Custom components for rendering (shadcn-style)
+   * @example
+   * ```tsx
+   * <Calendar.Root
+   *   components={{
+   *     IconLeft: () => <ChevronLeft />,
+   *     IconRight: () => <ChevronRight />,
+   *   }}
+   * />
+   * ```
+   */
+  components?: CalendarComponents;
 }
 
 /**
@@ -60,7 +89,7 @@ export function useCalendarInternal() {
  * ```
  */
 export const CalendarRoot = React.forwardRef<HTMLDivElement, CalendarRootProps>(
-  ({ className, children, config, defaultValue, value, onValueChange, disabledDates }, ref) => {
+  ({ className, children, config, defaultValue, value, onValueChange, disabledDates, classNames, components }, ref) => {
     const {
       state,
       actions,
@@ -126,18 +155,20 @@ export const CalendarRoot = React.forwardRef<HTMLDivElement, CalendarRootProps>(
 
     return (
       <CalendarProvider state={state} dispatch={dispatch}>
-        <CalendarInternalContext.Provider value={internalValue}>
-          <div
-            ref={ref}
-            className={cn('trc-calendar', className)}
-            role="application"
-            aria-label="Calendar"
-            data-locale={locale}
-            data-calendar-type={state.config.calendarType}
-          >
-            {children}
-          </div>
-        </CalendarInternalContext.Provider>
+        <CalendarCustomizationProvider classNames={classNames} components={components}>
+          <CalendarInternalContext.Provider value={internalValue}>
+            <div
+              ref={ref}
+              className={cn('trc-calendar', classNames?.root, className)}
+              role="application"
+              aria-label="Calendar"
+              data-locale={locale}
+              data-calendar-type={state.config.calendarType}
+            >
+              {children}
+            </div>
+          </CalendarInternalContext.Provider>
+        </CalendarCustomizationProvider>
       </CalendarProvider>
     );
   }

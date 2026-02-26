@@ -31,6 +31,11 @@ export interface DateRange {
 }
 
 /**
+ * Selection mode types
+ */
+export type SelectionMode = 'single' | 'range' | 'multiple';
+
+/**
  * Week day representation
  */
 export interface WeekDay {
@@ -40,6 +45,13 @@ export interface WeekDay {
   isDisabled: boolean;
   isOutsideMonth: boolean;
   dayOfWeek: number; // 0 = Sunday, 6 = Saturday
+  // Range selection flags
+  isRangeStart?: boolean;
+  isRangeEnd?: boolean;
+  isInRange?: boolean;
+  isRangeHover?: boolean;
+  // Multi-select flag
+  isMultiSelected?: boolean;
 }
 
 /**
@@ -144,3 +156,41 @@ export type DateRangeEvent =
   | { type: 'SELECT_END'; date: CalendarDate }
   | { type: 'HOVER_DATE'; date: CalendarDate }
   | { type: 'CLEAR' };
+
+/**
+ * Multi-calendar configuration
+ */
+export interface MultiCalendarConfig extends CalendarConfig {
+  numberOfMonths: number;
+  showOutsideDays?: boolean;
+  fixedWeeks?: boolean;
+  pagedNavigation?: boolean; // Navigate all months at once
+}
+
+/**
+ * Month info for month picker
+ */
+export interface MonthPickerItem {
+  month: number;
+  name: string;
+  shortName: string;
+  disabled: boolean;
+  isCurrentMonth: boolean;
+}
+
+/**
+ * Year info for year picker
+ */
+export interface YearPickerItem {
+  year: number;
+  disabled: boolean;
+  isCurrentYear: boolean;
+}
+
+/**
+ * Decade range for year picker navigation
+ */
+export interface DecadeRange {
+  start: number;
+  end: number;
+}
