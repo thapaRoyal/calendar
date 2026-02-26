@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useCalendar, type UseCalendarOptions } from '../hooks/use-calendar';
 import { CalendarProvider } from '../context/calendar-context';
 import { cn } from '../utils/cn';
+import type { Locale } from '@thaparoyal/calendar-core';
 
 /**
  * Calendar root component props
@@ -22,6 +23,8 @@ interface CalendarInternalContextValue {
   weekdayNames: readonly string[];
   isPrevMonthDisabled: boolean;
   isNextMonthDisabled: boolean;
+  locale: Locale;
+  formatDayNumber: (day: number) => string;
 }
 
 export const CalendarInternalContext = React.createContext<CalendarInternalContextValue | null>(
@@ -66,6 +69,8 @@ export const CalendarRoot = React.forwardRef<HTMLDivElement, CalendarRootProps>(
       weekdayNames,
       isPrevMonthDisabled,
       isNextMonthDisabled,
+      locale,
+      formatDayNumber,
     } = useCalendar({
       config,
       defaultValue,
@@ -113,8 +118,10 @@ export const CalendarRoot = React.forwardRef<HTMLDivElement, CalendarRootProps>(
         weekdayNames,
         isPrevMonthDisabled,
         isNextMonthDisabled,
+        locale,
+        formatDayNumber,
       }),
-      [weeks, title, weekdayNames, isPrevMonthDisabled, isNextMonthDisabled]
+      [weeks, title, weekdayNames, isPrevMonthDisabled, isNextMonthDisabled, locale, formatDayNumber]
     );
 
     return (
@@ -125,6 +132,8 @@ export const CalendarRoot = React.forwardRef<HTMLDivElement, CalendarRootProps>(
             className={cn('trc-calendar', className)}
             role="application"
             aria-label="Calendar"
+            data-locale={locale}
+            data-calendar-type={state.config.calendarType}
           >
             {children}
           </div>

@@ -1,17 +1,42 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar, DatePicker } from '@thaparoyal/calendar-react';
-import { adToBs, bsToAd } from '@thaparoyal/calendar-core';
-import type { CalendarDate } from '@thaparoyal/calendar-core';
+import { adToBs, toNepaliNumeral } from '@thaparoyal/calendar-core';
+import type { CalendarDate, Locale } from '@thaparoyal/calendar-core';
+
+const THEMES = [
+  { id: 'default', name: 'Default', label: 'Light' },
+  { id: 'dark', name: 'Dark', label: 'Dark' },
+  { id: 'nepal', name: 'Nepal', label: 'Nepal' },
+  { id: 'nepal-dark', name: 'Nepal Dark', label: 'Nepal Dark' },
+  { id: 'ocean', name: 'Ocean', label: 'Ocean' },
+  { id: 'ocean-dark', name: 'Ocean Dark', label: 'Ocean Dark' },
+  { id: 'forest', name: 'Forest', label: 'Forest' },
+  { id: 'forest-dark', name: 'Forest Dark', label: 'Forest Dark' },
+  { id: 'sunset', name: 'Sunset', label: 'Sunset' },
+  { id: 'sunset-dark', name: 'Sunset Dark', label: 'Sunset Dark' },
+  { id: 'royal', name: 'Royal', label: 'Royal' },
+  { id: 'royal-dark', name: 'Royal Dark', label: 'Royal Dark' },
+] as const;
 
 function App() {
   const [adDate, setAdDate] = useState<CalendarDate | null>(null);
   const [bsDate, setBsDate] = useState<CalendarDate | null>(null);
+  const [bsNepaliDate, setBsNepaliDate] = useState<CalendarDate | null>(null);
   const [pickerDate, setPickerDate] = useState<CalendarDate | null>(null);
   const [bsPickerDate, setBsPickerDate] = useState<CalendarDate | null>(null);
+
+  // Theme and locale state
+  const [theme, setTheme] = useState<string>('dark');
+  const [locale, setLocale] = useState<Locale>('en');
 
   // Converter state
   const [adInput, setAdInput] = useState('2024-01-15');
   const [convertedBs, setConvertedBs] = useState<CalendarDate | null>(null);
+
+  // Apply theme
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   const handleConvert = () => {
     try {
@@ -23,8 +48,20 @@ function App() {
     }
   };
 
-  const formatDate = (date: CalendarDate | null): string => {
-    if (!date) return 'No date selected';
+  useEffect(() => {
+    handleConvert();
+  }, [adInput]);
+
+  const formatDateDisplay = (date: CalendarDate | null, displayLocale: Locale = 'en'): string => {
+    if (!date) return locale === 'ne' ? 'मिति छानिएको छैन' : 'No date selected';
+
+    if (displayLocale === 'ne') {
+      const nepYear = toNepaliNumeral(date.year);
+      const nepMonth = toNepaliNumeral(date.month);
+      const nepDay = toNepaliNumeral(date.day);
+      return `${nepYear}-${nepMonth.padStart(2, '०')}-${nepDay.padStart(2, '०')} (${date.calendarType})`;
+    }
+
     return `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')} (${date.calendarType})`;
   };
 
@@ -45,6 +82,36 @@ function App() {
             <span className="logo-text">@thaparoyal/calendar</span>
             <span className="logo-badge">React</span>
           </a>
+
+          <div className="header-controls">
+            {/* Theme Selector */}
+            <div className="control-group">
+              <label className="control-label">Theme</label>
+              <select
+                className="control-select"
+                value={theme}
+                onChange={(e) => setTheme(e.target.value)}
+              >
+                {THEMES.map((t) => (
+                  <option key={t.id} value={t.id}>{t.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Locale Selector */}
+            <div className="control-group">
+              <label className="control-label">Locale</label>
+              <select
+                className="control-select"
+                value={locale}
+                onChange={(e) => setLocale(e.target.value as Locale)}
+              >
+                <option value="en">English</option>
+                <option value="ne">नेपाली (Nepali)</option>
+              </select>
+            </div>
+          </div>
+
           <div className="header-links">
             <a href="http://localhost:4321" className="header-link">Documentation</a>
             <a href="https://github.com/thaparoyal/calendar" className="header-link github-link" target="_blank" rel="noopener noreferrer">
@@ -61,19 +128,23 @@ function App() {
       <main className="main">
         {/* Hero */}
         <section className="hero">
-          <h1 className="hero-title">Calendar Components</h1>
+          <h1 className="hero-title">
+            {locale === 'ne' ? 'पात्रो कम्पोनेन्टहरू' : 'Calendar Components'}
+          </h1>
           <p className="hero-description">
-            Beautiful, accessible calendar components for React.
-            Supporting both AD (Gregorian) and BS (Bikram Sambat) calendars.
+            {locale === 'ne'
+              ? 'React को लागि सुन्दर, पहुँचयोग्य पात्रो कम्पोनेन्टहरू। AD (ग्रेगोरियन) र BS (विक्रम संवत) दुवै पात्रो समर्थन गर्दछ।'
+              : 'Beautiful, accessible calendar components for React. Supporting both AD (Gregorian) and BS (Bikram Sambat) calendars.'
+            }
           </p>
           <div className="hero-badges">
             <span className="badge">
               <span className="badge-dot ad"></span>
-              AD Calendar
+              {locale === 'ne' ? 'AD पात्रो' : 'AD Calendar'}
             </span>
             <span className="badge">
               <span className="badge-dot bs"></span>
-              BS Calendar
+              {locale === 'ne' ? 'BS पात्रो' : 'BS Calendar'}
             </span>
             <span className="badge">
               <span className="badge-dot react"></span>
@@ -88,14 +159,14 @@ function App() {
           <div className="demo-card">
             <div className="demo-header">
               <div>
-                <h3 className="demo-title">AD Calendar</h3>
-                <p className="demo-subtitle">Gregorian calendar system</p>
+                <h3 className="demo-title">{locale === 'ne' ? 'AD पात्रो' : 'AD Calendar'}</h3>
+                <p className="demo-subtitle">{locale === 'ne' ? 'ग्रेगोरियन पात्रो प्रणाली' : 'Gregorian calendar system'}</p>
               </div>
               <span className="demo-tag">AD</span>
             </div>
             <div className="demo-content">
               <Calendar.Root
-                calendarType="AD"
+                config={{ calendarType: 'AD', locale }}
                 value={adDate}
                 onValueChange={setAdDate}
               >
@@ -112,23 +183,23 @@ function App() {
             </div>
             <div className="demo-footer">
               <span className="demo-value">
-                <strong>Selected:</strong> {formatDate(adDate)}
+                <strong>{locale === 'ne' ? 'छानिएको:' : 'Selected:'}</strong> {formatDateDisplay(adDate, locale)}
               </span>
             </div>
           </div>
 
-          {/* BS Calendar */}
+          {/* BS Calendar (English) */}
           <div className="demo-card">
             <div className="demo-header">
               <div>
-                <h3 className="demo-title">BS Calendar</h3>
-                <p className="demo-subtitle">Bikram Sambat (Nepali) calendar</p>
+                <h3 className="demo-title">{locale === 'ne' ? 'BS पात्रो' : 'BS Calendar'}</h3>
+                <p className="demo-subtitle">{locale === 'ne' ? 'विक्रम संवत (नेपाली) पात्रो' : 'Bikram Sambat (Nepali) calendar'}</p>
               </div>
               <span className="demo-tag">BS</span>
             </div>
             <div className="demo-content">
               <Calendar.Root
-                calendarType="BS"
+                config={{ calendarType: 'BS', locale }}
                 value={bsDate}
                 onValueChange={setBsDate}
               >
@@ -145,7 +216,40 @@ function App() {
             </div>
             <div className="demo-footer">
               <span className="demo-value">
-                <strong>Selected:</strong> {formatDate(bsDate)}
+                <strong>{locale === 'ne' ? 'छानिएको:' : 'Selected:'}</strong> {formatDateDisplay(bsDate, locale)}
+              </span>
+            </div>
+          </div>
+
+          {/* BS Calendar with Nepali Numerals */}
+          <div className="demo-card">
+            <div className="demo-header">
+              <div>
+                <h3 className="demo-title">नेपाली अंकहरू</h3>
+                <p className="demo-subtitle">{locale === 'ne' ? 'देवनागरी अंकहरूमा' : 'With Devanagari numerals'}</p>
+              </div>
+              <span className="demo-tag">नेपाली</span>
+            </div>
+            <div className="demo-content">
+              <Calendar.Root
+                config={{ calendarType: 'BS', locale: 'ne' }}
+                value={bsNepaliDate}
+                onValueChange={setBsNepaliDate}
+              >
+                <Calendar.Header>
+                  <Calendar.PrevButton />
+                  <Calendar.Title />
+                  <Calendar.NextButton />
+                </Calendar.Header>
+                <Calendar.Grid>
+                  <Calendar.GridHead />
+                  <Calendar.GridBody />
+                </Calendar.Grid>
+              </Calendar.Root>
+            </div>
+            <div className="demo-footer">
+              <span className="demo-value">
+                <strong>छानिएको:</strong> {formatDateDisplay(bsNepaliDate, 'ne')}
               </span>
             </div>
           </div>
@@ -154,19 +258,19 @@ function App() {
           <div className="demo-card">
             <div className="demo-header">
               <div>
-                <h3 className="demo-title">Date Picker (AD)</h3>
-                <p className="demo-subtitle">With dropdown calendar</p>
+                <h3 className="demo-title">{locale === 'ne' ? 'मिति पिकर (AD)' : 'Date Picker (AD)'}</h3>
+                <p className="demo-subtitle">{locale === 'ne' ? 'ड्रपडाउन पात्रोको साथ' : 'With dropdown calendar'}</p>
               </div>
               <span className="demo-tag">Picker</span>
             </div>
             <div className="demo-content">
               <DatePicker.Root
-                calendarType="AD"
+                config={{ calendarType: 'AD', locale }}
                 value={pickerDate}
                 onValueChange={setPickerDate}
               >
                 <div className="trc-date-picker-input-wrapper">
-                  <DatePicker.Input placeholder="Select a date..." />
+                  <DatePicker.Input placeholder={locale === 'ne' ? 'मिति छान्नुहोस्...' : 'Select a date...'} />
                   <DatePicker.Trigger />
                 </div>
                 <DatePicker.Content>
@@ -176,7 +280,7 @@ function App() {
             </div>
             <div className="demo-footer">
               <span className="demo-value">
-                <strong>Selected:</strong> {formatDate(pickerDate)}
+                <strong>{locale === 'ne' ? 'छानिएको:' : 'Selected:'}</strong> {formatDateDisplay(pickerDate, locale)}
               </span>
             </div>
           </div>
@@ -185,19 +289,19 @@ function App() {
           <div className="demo-card">
             <div className="demo-header">
               <div>
-                <h3 className="demo-title">Date Picker (BS)</h3>
-                <p className="demo-subtitle">Nepali date selection</p>
+                <h3 className="demo-title">{locale === 'ne' ? 'मिति पिकर (BS)' : 'Date Picker (BS)'}</h3>
+                <p className="demo-subtitle">{locale === 'ne' ? 'नेपाली मिति छनौट' : 'Nepali date selection'}</p>
               </div>
               <span className="demo-tag">Picker</span>
             </div>
             <div className="demo-content">
               <DatePicker.Root
-                calendarType="BS"
+                config={{ calendarType: 'BS', locale }}
                 value={bsPickerDate}
                 onValueChange={setBsPickerDate}
               >
                 <div className="trc-date-picker-input-wrapper">
-                  <DatePicker.Input placeholder="Select a date..." />
+                  <DatePicker.Input placeholder={locale === 'ne' ? 'मिति छान्नुहोस्...' : 'Select a date...'} />
                   <DatePicker.Trigger />
                 </div>
                 <DatePicker.Content>
@@ -207,7 +311,7 @@ function App() {
             </div>
             <div className="demo-footer">
               <span className="demo-value">
-                <strong>Selected:</strong> {formatDate(bsPickerDate)}
+                <strong>{locale === 'ne' ? 'छानिएको:' : 'Selected:'}</strong> {formatDateDisplay(bsPickerDate, locale)}
               </span>
             </div>
           </div>
@@ -215,20 +319,19 @@ function App() {
 
         {/* Converter Section */}
         <section className="converter-section">
-          <h2 className="section-title">Date Converter</h2>
+          <h2 className="section-title">{locale === 'ne' ? 'मिति रूपान्तरण' : 'Date Converter'}</h2>
           <div className="converter-card">
             <div className="converter-grid">
               <div className="converter-input-group">
                 <label className="converter-label">
-                  AD Date
-                  <span className="converter-label-badge">Gregorian</span>
+                  {locale === 'ne' ? 'AD मिति' : 'AD Date'}
+                  <span className="converter-label-badge">{locale === 'ne' ? 'ग्रेगोरियन' : 'Gregorian'}</span>
                 </label>
                 <input
                   type="date"
                   className="converter-input"
                   value={adInput}
                   onChange={(e) => setAdInput(e.target.value)}
-                  onBlur={handleConvert}
                 />
               </div>
 
@@ -240,17 +343,54 @@ function App() {
 
               <div className="converter-input-group">
                 <label className="converter-label">
-                  BS Date
-                  <span className="converter-label-badge">Bikram Sambat</span>
+                  {locale === 'ne' ? 'BS मिति' : 'BS Date'}
+                  <span className="converter-label-badge">{locale === 'ne' ? 'विक्रम संवत' : 'Bikram Sambat'}</span>
                 </label>
                 <div className="converter-result">
                   {convertedBs
-                    ? `${convertedBs.year}-${String(convertedBs.month).padStart(2, '0')}-${String(convertedBs.day).padStart(2, '0')}`
-                    : 'Enter AD date to convert'
+                    ? locale === 'ne'
+                      ? `${toNepaliNumeral(convertedBs.year)}-${toNepaliNumeral(convertedBs.month).padStart(2, '०')}-${toNepaliNumeral(convertedBs.day).padStart(2, '०')}`
+                      : `${convertedBs.year}-${String(convertedBs.month).padStart(2, '0')}-${String(convertedBs.day).padStart(2, '0')}`
+                    : locale === 'ne' ? 'रूपान्तरण गर्न AD मिति प्रविष्ट गर्नुहोस्' : 'Enter AD date to convert'
                   }
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Theme Preview Section */}
+        <section className="theme-preview-section">
+          <h2 className="section-title">{locale === 'ne' ? 'थिम प्रिभ्यू' : 'Theme Preview'}</h2>
+          <div className="theme-grid">
+            {THEMES.map((t) => (
+              <button
+                key={t.id}
+                className={`theme-preview-card ${theme === t.id ? 'active' : ''}`}
+                onClick={() => setTheme(t.id)}
+                data-theme={t.id}
+              >
+                <div className="theme-preview-mini-calendar">
+                  <div className="mini-header">
+                    <span className="mini-dot"></span>
+                    <span className="mini-title"></span>
+                    <span className="mini-dot"></span>
+                  </div>
+                  <div className="mini-grid">
+                    {[...Array(7)].map((_, i) => (
+                      <span key={i} className="mini-weekday"></span>
+                    ))}
+                    {[...Array(35)].map((_, i) => (
+                      <span
+                        key={i}
+                        className={`mini-day ${i === 15 ? 'today' : ''} ${i === 20 ? 'selected' : ''}`}
+                      ></span>
+                    ))}
+                  </div>
+                </div>
+                <span className="theme-preview-label">{t.label}</span>
+              </button>
+            ))}
           </div>
         </section>
       </main>
@@ -258,11 +398,23 @@ function App() {
       {/* Footer */}
       <footer className="footer">
         <p>
-          Built with <a href="https://github.com/thaparoyal/calendar">@thaparoyal/calendar</a>
-          {' '}&bull;{' '}
-          <a href="http://localhost:4321">Documentation</a>
-          {' '}&bull;{' '}
-          MIT License
+          {locale === 'ne'
+            ? <>
+                <a href="https://github.com/thaparoyal/calendar">@thaparoyal/calendar</a>
+                {' '}द्वारा निर्मित
+                {' '}&bull;{' '}
+                <a href="http://localhost:4321">कागजात</a>
+                {' '}&bull;{' '}
+                MIT लाइसेन्स
+              </>
+            : <>
+                Built with <a href="https://github.com/thaparoyal/calendar">@thaparoyal/calendar</a>
+                {' '}&bull;{' '}
+                <a href="http://localhost:4321">Documentation</a>
+                {' '}&bull;{' '}
+                MIT License
+              </>
+          }
         </p>
       </footer>
     </div>

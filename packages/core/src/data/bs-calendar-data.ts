@@ -238,6 +238,74 @@ export const WEEKDAYS_SHORT_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat
 export const WEEKDAYS_SHORT_NP = ['आइत', 'सोम', 'मंगल', 'बुध', 'बिही', 'शुक्र', 'शनि'] as const;
 
 /**
+ * Minimal week day names in Nepali (single letter equivalent)
+ */
+export const WEEKDAYS_MIN_NP = ['आ', 'सो', 'मं', 'बु', 'बि', 'शु', 'श'] as const;
+
+/**
+ * Minimal week day names in English
+ */
+export const WEEKDAYS_MIN_EN = ['S', 'M', 'T', 'W', 'T', 'F', 'S'] as const;
+
+/**
+ * BS month short names in Nepali
+ */
+export const BS_MONTHS_SHORT_NP = [
+  'बै',
+  'जे',
+  'अ',
+  'श्रा',
+  'भा',
+  'आ',
+  'का',
+  'मं',
+  'पौ',
+  'मा',
+  'फा',
+  'चै',
+] as const;
+
+/**
+ * Today text translations
+ */
+export const TODAY_TEXT = {
+  en: 'Today',
+  ne: 'आज',
+} as const;
+
+/**
+ * Clear text translations
+ */
+export const CLEAR_TEXT = {
+  en: 'Clear',
+  ne: 'मेटाउनुहोस्',
+} as const;
+
+/**
+ * Select date text translations
+ */
+export const SELECT_DATE_TEXT = {
+  en: 'Select date',
+  ne: 'मिति छान्नुहोस्',
+} as const;
+
+/**
+ * Previous month text translations
+ */
+export const PREV_MONTH_TEXT = {
+  en: 'Previous month',
+  ne: 'अघिल्लो महिना',
+} as const;
+
+/**
+ * Next month text translations
+ */
+export const NEXT_MONTH_TEXT = {
+  en: 'Next month',
+  ne: 'अर्को महिना',
+} as const;
+
+/**
  * Nepali numerals (Devanagari digits)
  */
 export const NEPALI_DIGITS = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'] as const;

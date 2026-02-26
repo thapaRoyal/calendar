@@ -1,15 +1,44 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { createCalendar } from '@thaparoyal/calendar-svelte';
-  import { adToBs } from '@thaparoyal/calendar-core';
-  import type { CalendarDate } from '@thaparoyal/calendar-core';
+  import { adToBs, toNepaliNumeral } from '@thaparoyal/calendar-core';
+  import type { CalendarDate, Locale } from '@thaparoyal/calendar-core';
+
+  // Themes
+  const themes = [
+    { id: 'default', label: 'Light' },
+    { id: 'dark', label: 'Dark' },
+    { id: 'nepal', label: 'Nepal' },
+    { id: 'nepal-dark', label: 'Nepal Dark' },
+    { id: 'ocean', label: 'Ocean' },
+    { id: 'ocean-dark', label: 'Ocean Dark' },
+    { id: 'forest', label: 'Forest' },
+    { id: 'forest-dark', label: 'Forest Dark' },
+    { id: 'sunset', label: 'Sunset' },
+    { id: 'sunset-dark', label: 'Sunset Dark' },
+    { id: 'royal', label: 'Royal' },
+    { id: 'royal-dark', label: 'Royal Dark' },
+  ];
+
+  let theme = 'dark';
+  let locale: Locale = 'en';
+
+  // Apply theme
+  $: if (typeof document !== 'undefined') {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
 
   // AD Calendar
-  const adCalendar = createCalendar({ calendarType: 'AD' });
+  const adCalendar = createCalendar({ config: { calendarType: 'AD', locale: 'en' } });
   let adDate: CalendarDate | null = null;
 
   // BS Calendar
-  const bsCalendar = createCalendar({ calendarType: 'BS' });
+  const bsCalendar = createCalendar({ config: { calendarType: 'BS', locale: 'en' } });
   let bsDate: CalendarDate | null = null;
+
+  // BS Calendar with Nepali numerals
+  const bsNepaliCalendar = createCalendar({ config: { calendarType: 'BS', locale: 'ne' } });
+  let bsNepaliDate: CalendarDate | null = null;
 
   // Converter
   let adInput = '2024-01-15';
@@ -24,20 +53,55 @@
     }
   }
 
-  function formatDate(date: CalendarDate | null): string {
-    if (!date) return 'No date selected';
+  // Auto-convert on mount and input change
+  $: if (adInput) handleConvert();
+
+  function formatDate(date: CalendarDate | null, displayLocale: Locale = 'en'): string {
+    if (!date) return displayLocale === 'ne' ? 'मिति छानिएको छैन' : 'No date selected';
+
+    if (displayLocale === 'ne') {
+      const nepYear = toNepaliNumeral(date.year);
+      const nepMonth = toNepaliNumeral(date.month);
+      const nepDay = toNepaliNumeral(date.day);
+      return `${nepYear}-${nepMonth.padStart(2, '०')}-${nepDay.padStart(2, '०')} (${date.calendarType})`;
+    }
+
     return `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')} (${date.calendarType})`;
   }
 
   function selectAdDate(date: CalendarDate) {
     adDate = date;
-    adCalendar.actions.selectDate(date);
+    adCalendar.selectDate(date);
   }
 
   function selectBsDate(date: CalendarDate) {
     bsDate = date;
-    bsCalendar.actions.selectDate(date);
+    bsCalendar.selectDate(date);
   }
+
+  function selectBsNepaliDate(date: CalendarDate) {
+    bsNepaliDate = date;
+    bsNepaliCalendar.selectDate(date);
+  }
+
+  // Computed text based on locale
+  $: text = {
+    title: locale === 'ne' ? 'Svelte पात्रो कम्पोनेन्टहरू' : 'Svelte Calendar Components',
+    description: locale === 'ne'
+      ? 'Svelte 4 को लागि सुन्दर, पहुँचयोग्य पात्रो कम्पोनेन्टहरू। AD (ग्रेगोरियन) र BS (विक्रम संवत) दुवै पात्रो समर्थन गर्दछ।'
+      : 'Beautiful, accessible calendar components for Svelte 4. Supporting both AD (Gregorian) and BS (Bikram Sambat) calendars.',
+    adCalendar: locale === 'ne' ? 'AD पात्रो' : 'AD Calendar',
+    bsCalendar: locale === 'ne' ? 'BS पात्रो' : 'BS Calendar',
+    nepaliNumerals: 'नेपाली अंकहरू',
+    gregorian: locale === 'ne' ? 'ग्रेगोरियन पात्रो प्रणाली' : 'Gregorian calendar system',
+    bikramSambat: locale === 'ne' ? 'विक्रम संवत (नेपाली) पात्रो' : 'Bikram Sambat (Nepali) calendar',
+    devanagari: locale === 'ne' ? 'देवनागरी अंकहरूमा' : 'With Devanagari numerals',
+    selected: locale === 'ne' ? 'छानिएको:' : 'Selected:',
+    dateConverter: locale === 'ne' ? 'मिति रूपान्तरण' : 'Date Converter',
+    adDate: locale === 'ne' ? 'AD मिति' : 'AD Date',
+    bsDate: locale === 'ne' ? 'BS मिति' : 'BS Date',
+    enterAdDate: locale === 'ne' ? 'रूपान्तरण गर्न AD मिति प्रविष्ट गर्नुहोस्' : 'Enter AD date to convert',
+  };
 </script>
 
 <div class="app">
@@ -56,6 +120,28 @@
         <span class="logo-text">@thaparoyal/calendar</span>
         <span class="logo-badge svelte">Svelte</span>
       </a>
+
+      <div class="header-controls">
+        <!-- Theme Selector -->
+        <div class="control-group">
+          <label class="control-label" for="theme-select">Theme</label>
+          <select id="theme-select" class="control-select" bind:value={theme}>
+            {#each themes as t}
+              <option value={t.id}>{t.label}</option>
+            {/each}
+          </select>
+        </div>
+
+        <!-- Locale Selector -->
+        <div class="control-group">
+          <label class="control-label" for="locale-select">Locale</label>
+          <select id="locale-select" class="control-select" bind:value={locale}>
+            <option value="en">English</option>
+            <option value="ne">नेपाली (Nepali)</option>
+          </select>
+        </div>
+      </div>
+
       <div class="header-links">
         <a href="http://localhost:4321" class="header-link">Documentation</a>
         <a href="https://github.com/thaparoyal/calendar" class="header-link github-link" target="_blank" rel="noopener noreferrer">
@@ -72,19 +158,16 @@
   <main class="main">
     <!-- Hero -->
     <section class="hero">
-      <h1 class="hero-title">Svelte Calendar Components</h1>
-      <p class="hero-description">
-        Beautiful, accessible calendar components for Svelte 4.
-        Supporting both AD (Gregorian) and BS (Bikram Sambat) calendars.
-      </p>
+      <h1 class="hero-title">{text.title}</h1>
+      <p class="hero-description">{text.description}</p>
       <div class="hero-badges">
         <span class="badge">
           <span class="badge-dot ad"></span>
-          AD Calendar
+          {locale === 'ne' ? 'AD पात्रो' : 'AD Calendar'}
         </span>
         <span class="badge">
           <span class="badge-dot bs"></span>
-          BS Calendar
+          {locale === 'ne' ? 'BS पात्रो' : 'BS Calendar'}
         </span>
         <span class="badge">
           <span class="badge-dot svelte"></span>
@@ -99,17 +182,17 @@
       <div class="demo-card">
         <div class="demo-header">
           <div>
-            <h3 class="demo-title">AD Calendar</h3>
-            <p class="demo-subtitle">Gregorian calendar system</p>
+            <h3 class="demo-title">{text.adCalendar}</h3>
+            <p class="demo-subtitle">{text.gregorian}</p>
           </div>
           <span class="demo-tag">AD</span>
         </div>
         <div class="demo-content">
-          <div class="calendar">
+          <div class="calendar" data-locale={locale}>
             <div class="calendar-header">
               <button
                 class="calendar-nav-button"
-                on:click={adCalendar.actions.prevMonth}
+                on:click={adCalendar.prevMonth}
                 disabled={$adCalendar.isPrevMonthDisabled}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -119,7 +202,7 @@
               <span class="calendar-title">{$adCalendar.title}</span>
               <button
                 class="calendar-nav-button"
-                on:click={adCalendar.actions.nextMonth}
+                on:click={adCalendar.nextMonth}
                 disabled={$adCalendar.isNextMonthDisabled}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -151,7 +234,7 @@
                           on:click={() => !day.isDisabled && selectAdDate(day.date)}
                           disabled={day.isDisabled}
                         >
-                          {day.date.day}
+                          {adCalendar.formatDayNumber(day.date.day)}
                         </button>
                       </td>
                     {/each}
@@ -163,7 +246,7 @@
         </div>
         <div class="demo-footer">
           <span class="demo-value">
-            <strong>Selected:</strong> {formatDate(adDate)}
+            <strong>{text.selected}</strong> {formatDate(adDate, locale)}
           </span>
         </div>
       </div>
@@ -172,17 +255,17 @@
       <div class="demo-card">
         <div class="demo-header">
           <div>
-            <h3 class="demo-title">BS Calendar</h3>
-            <p class="demo-subtitle">Bikram Sambat (Nepali) calendar</p>
+            <h3 class="demo-title">{text.bsCalendar}</h3>
+            <p class="demo-subtitle">{text.bikramSambat}</p>
           </div>
           <span class="demo-tag">BS</span>
         </div>
         <div class="demo-content">
-          <div class="calendar">
+          <div class="calendar" data-locale={locale}>
             <div class="calendar-header">
               <button
                 class="calendar-nav-button"
-                on:click={bsCalendar.actions.prevMonth}
+                on:click={bsCalendar.prevMonth}
                 disabled={$bsCalendar.isPrevMonthDisabled}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -192,7 +275,7 @@
               <span class="calendar-title">{$bsCalendar.title}</span>
               <button
                 class="calendar-nav-button"
-                on:click={bsCalendar.actions.nextMonth}
+                on:click={bsCalendar.nextMonth}
                 disabled={$bsCalendar.isNextMonthDisabled}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -224,7 +307,7 @@
                           on:click={() => !day.isDisabled && selectBsDate(day.date)}
                           disabled={day.isDisabled}
                         >
-                          {day.date.day}
+                          {bsCalendar.formatDayNumber(day.date.day)}
                         </button>
                       </td>
                     {/each}
@@ -236,7 +319,80 @@
         </div>
         <div class="demo-footer">
           <span class="demo-value">
-            <strong>Selected:</strong> {formatDate(bsDate)}
+            <strong>{text.selected}</strong> {formatDate(bsDate, locale)}
+          </span>
+        </div>
+      </div>
+
+      <!-- BS Calendar with Nepali Numerals -->
+      <div class="demo-card">
+        <div class="demo-header">
+          <div>
+            <h3 class="demo-title">{text.nepaliNumerals}</h3>
+            <p class="demo-subtitle">{text.devanagari}</p>
+          </div>
+          <span class="demo-tag">नेपाली</span>
+        </div>
+        <div class="demo-content">
+          <div class="calendar" data-locale="ne">
+            <div class="calendar-header">
+              <button
+                class="calendar-nav-button"
+                on:click={bsNepaliCalendar.prevMonth}
+                disabled={$bsNepaliCalendar.isPrevMonthDisabled}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m15 18-6-6 6-6"/>
+                </svg>
+              </button>
+              <span class="calendar-title">{$bsNepaliCalendar.title}</span>
+              <button
+                class="calendar-nav-button"
+                on:click={bsNepaliCalendar.nextMonth}
+                disabled={$bsNepaliCalendar.isNextMonthDisabled}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </button>
+            </div>
+            <table class="calendar-grid">
+              <thead>
+                <tr>
+                  {#each $bsNepaliCalendar.weekdayNames as day}
+                    <th class="calendar-weekday">{day}</th>
+                  {/each}
+                </tr>
+              </thead>
+              <tbody>
+                {#each $bsNepaliCalendar.weeks as week}
+                  <tr>
+                    {#each week as day}
+                      <td
+                        class="calendar-cell"
+                        class:today={day.isToday}
+                        class:selected={day.isSelected}
+                        class:outside={day.isOutsideMonth}
+                        class:disabled={day.isDisabled}
+                      >
+                        <button
+                          class="calendar-day"
+                          on:click={() => !day.isDisabled && selectBsNepaliDate(day.date)}
+                          disabled={day.isDisabled}
+                        >
+                          {bsNepaliCalendar.formatDayNumber(day.date.day)}
+                        </button>
+                      </td>
+                    {/each}
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="demo-footer">
+          <span class="demo-value">
+            <strong>छानिएको:</strong> {formatDate(bsNepaliDate, 'ne')}
           </span>
         </div>
       </div>
@@ -244,19 +400,19 @@
 
     <!-- Converter Section -->
     <section class="converter-section">
-      <h2 class="section-title">Date Converter</h2>
+      <h2 class="section-title">{text.dateConverter}</h2>
       <div class="converter-card">
         <div class="converter-grid">
           <div class="converter-input-group">
-            <label class="converter-label">
-              AD Date
-              <span class="converter-label-badge">Gregorian</span>
+            <label class="converter-label" for="ad-date-input">
+              {text.adDate}
+              <span class="converter-label-badge">{locale === 'ne' ? 'ग्रेगोरियन' : 'Gregorian'}</span>
             </label>
             <input
+              id="ad-date-input"
               type="date"
               class="converter-input"
               bind:value={adInput}
-              on:blur={handleConvert}
             />
           </div>
 
@@ -267,14 +423,16 @@
           </div>
 
           <div class="converter-input-group">
-            <label class="converter-label">
-              BS Date
-              <span class="converter-label-badge">Bikram Sambat</span>
-            </label>
-            <div class="converter-result">
+            <span class="converter-label" aria-label="{text.bsDate}">
+              {text.bsDate}
+              <span class="converter-label-badge">{locale === 'ne' ? 'विक्रम संवत' : 'Bikram Sambat'}</span>
+            </span>
+            <div class="converter-result" role="status" aria-live="polite">
               {convertedBs
-                ? `${convertedBs.year}-${String(convertedBs.month).padStart(2, '0')}-${String(convertedBs.day).padStart(2, '0')}`
-                : 'Enter AD date to convert'
+                ? locale === 'ne'
+                  ? `${toNepaliNumeral(convertedBs.year)}-${toNepaliNumeral(convertedBs.month).padStart(2, '०')}-${toNepaliNumeral(convertedBs.day).padStart(2, '०')}`
+                  : `${convertedBs.year}-${String(convertedBs.month).padStart(2, '0')}-${String(convertedBs.day).padStart(2, '0')}`
+                : text.enterAdDate
               }
             </div>
           </div>
@@ -285,13 +443,24 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <p>
-      Built with <a href="https://github.com/thaparoyal/calendar">@thaparoyal/calendar</a>
-      &bull;
-      <a href="http://localhost:4321">Documentation</a>
-      &bull;
-      MIT License
-    </p>
+    {#if locale === 'ne'}
+      <p>
+        <a href="https://github.com/thaparoyal/calendar">@thaparoyal/calendar</a>
+        द्वारा निर्मित
+        &bull;
+        <a href="http://localhost:4321">कागजात</a>
+        &bull;
+        MIT लाइसेन्स
+      </p>
+    {:else}
+      <p>
+        Built with <a href="https://github.com/thaparoyal/calendar">@thaparoyal/calendar</a>
+        &bull;
+        <a href="http://localhost:4321">Documentation</a>
+        &bull;
+        MIT License
+      </p>
+    {/if}
   </footer>
 </div>
 
@@ -308,11 +477,16 @@
 
   /* Calendar component styles */
   .calendar {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    background: var(--trc-background-elevated);
+    border: 1px solid var(--trc-border);
+    border-radius: var(--trc-radius-lg);
     padding: 1rem;
     width: 320px;
+    font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+  }
+
+  .calendar[data-locale="ne"] {
+    font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
   }
 
   .calendar-header {
@@ -320,31 +494,34 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.5rem 0 1rem;
+    border-bottom: 1px solid var(--trc-border);
+    margin-bottom: 0.5rem;
   }
 
   .calendar-title {
     font-weight: 600;
     font-size: 1rem;
+    color: var(--trc-foreground);
   }
 
   .calendar-nav-button {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    background: var(--trc-background-secondary);
+    border: 1px solid var(--trc-border);
+    border-radius: var(--trc-radius);
     width: 32px;
     height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--text-secondary);
+    color: var(--trc-foreground-secondary);
     transition: all 0.2s;
   }
 
   .calendar-nav-button:hover:not(:disabled) {
-    background: var(--bg-elevated);
-    border-color: var(--border-hover);
-    color: var(--text-primary);
+    background: var(--trc-primary-muted);
+    border-color: var(--trc-primary);
+    color: var(--trc-primary);
   }
 
   .calendar-nav-button:disabled {
@@ -360,9 +537,17 @@
   .calendar-weekday {
     padding: 0.5rem;
     font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--text-muted);
+    font-weight: 600;
+    color: var(--trc-foreground-muted);
     text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+
+  .calendar[data-locale="ne"] .calendar-weekday {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.8125rem;
   }
 
   .calendar-cell {
@@ -374,36 +559,42 @@
     height: 36px;
     border: none;
     background: transparent;
-    border-radius: var(--radius-sm);
+    border-radius: var(--trc-radius);
     cursor: pointer;
     font-size: 0.875rem;
-    color: var(--text-primary);
+    font-weight: 500;
+    color: var(--trc-foreground);
     transition: all 0.2s;
   }
 
+  .calendar[data-locale="ne"] .calendar-day {
+    font-size: 0.9375rem;
+  }
+
   .calendar-day:hover:not(:disabled) {
-    background: var(--bg-tertiary);
+    background: var(--trc-background-tertiary);
   }
 
   .calendar-cell.today .calendar-day {
-    background: var(--accent-muted);
-    color: var(--accent);
+    background: var(--trc-primary-muted);
+    color: var(--trc-primary);
     font-weight: 600;
   }
 
   .calendar-cell.selected .calendar-day {
-    background: var(--accent);
-    color: white;
+    background: var(--trc-primary);
+    color: var(--trc-primary-foreground);
     font-weight: 600;
   }
 
   .calendar-cell.outside .calendar-day {
-    color: var(--text-muted);
+    color: var(--trc-foreground-muted);
+    opacity: 0.5;
   }
 
   .calendar-cell.disabled .calendar-day {
-    color: var(--text-muted);
+    color: var(--trc-foreground-muted);
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.35;
   }
 </style>

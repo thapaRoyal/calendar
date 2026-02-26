@@ -86,7 +86,7 @@ export interface CalendarGridBodyProps {
  */
 export const CalendarGridBody = React.forwardRef<HTMLTableSectionElement, CalendarGridBodyProps>(
   ({ className, renderDay }, ref) => {
-    const { weeks } = useCalendarInternal();
+    const { weeks, formatDayNumber } = useCalendarInternal();
     const { actions } = useCalendarContext();
 
     return (
@@ -103,7 +103,12 @@ export const CalendarGridBody = React.forwardRef<HTMLTableSectionElement, Calend
               }
 
               return (
-                <CalendarCell key={dayIndex} day={day} onSelect={actions.selectDate} />
+                <CalendarCell
+                  key={dayIndex}
+                  day={day}
+                  onSelect={actions.selectDate}
+                  formatDayNumber={formatDayNumber}
+                />
               );
             })}
           </tr>
@@ -121,12 +126,13 @@ CalendarGridBody.displayName = 'Calendar.GridBody';
 interface CalendarCellProps {
   day: WeekDay;
   onSelect: (date: CalendarDate) => void;
+  formatDayNumber: (day: number) => string;
 }
 
 /**
  * Individual calendar day cell
  */
-function CalendarCell({ day, onSelect }: CalendarCellProps) {
+function CalendarCell({ day, onSelect, formatDayNumber }: CalendarCellProps) {
   const handleClick = () => {
     if (!day.isDisabled) {
       onSelect(day.date);
@@ -162,7 +168,7 @@ function CalendarCell({ day, onSelect }: CalendarCellProps) {
         tabIndex={day.isDisabled ? -1 : 0}
         aria-label={`${day.date.day}`}
       >
-        {day.date.day}
+        {formatDayNumber(day.date.day)}
       </button>
     </td>
   );
@@ -211,6 +217,7 @@ export interface CalendarDayCellProps {
 export const CalendarDayCell = React.forwardRef<HTMLTableCellElement, CalendarDayCellProps>(
   ({ day, className, children }, ref) => {
     const { actions } = useCalendarContext();
+    const { formatDayNumber } = useCalendarInternal();
 
     const handleClick = () => {
       if (!day.isDisabled) {
@@ -240,7 +247,7 @@ export const CalendarDayCell = React.forwardRef<HTMLTableCellElement, CalendarDa
           disabled={day.isDisabled}
           tabIndex={day.isDisabled ? -1 : 0}
         >
-          {children ?? day.date.day}
+          {children ?? formatDayNumber(day.date.day)}
         </button>
       </td>
     );

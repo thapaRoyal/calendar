@@ -8,10 +8,13 @@ import {
   BS_MONTHS_EN,
   BS_MONTHS_NP,
   BS_MONTHS_SHORT_EN,
+  BS_MONTHS_SHORT_NP,
   WEEKDAYS_EN,
   WEEKDAYS_NP,
   WEEKDAYS_SHORT_EN,
   WEEKDAYS_SHORT_NP,
+  WEEKDAYS_MIN_EN,
+  WEEKDAYS_MIN_NP,
   toNepaliNumeral,
 } from '../data/bs-calendar-data';
 import { getDayOfWeekBs } from '../converters/bs-converter';
@@ -123,6 +126,41 @@ export function getWeekdayNames(locale: Locale = 'en'): readonly string[] {
  */
 export function getWeekdayShortNames(locale: Locale = 'en'): readonly string[] {
   return locale === 'ne' ? WEEKDAYS_SHORT_NP : WEEKDAYS_SHORT_EN;
+}
+
+/**
+ * Get minimal weekday name (single character)
+ */
+export function getWeekdayMinName(dayOfWeek: number, locale: Locale = 'en'): string {
+  return locale === 'ne' ? WEEKDAYS_MIN_NP[dayOfWeek] : WEEKDAYS_MIN_EN[dayOfWeek];
+}
+
+/**
+ * Get all minimal weekday names
+ */
+export function getWeekdayMinNames(locale: Locale = 'en'): readonly string[] {
+  return locale === 'ne' ? WEEKDAYS_MIN_NP : WEEKDAYS_MIN_EN;
+}
+
+/**
+ * Get short month names for BS calendar
+ */
+export function getBsMonthShortNames(locale: Locale = 'en'): readonly string[] {
+  return locale === 'ne' ? BS_MONTHS_SHORT_NP : BS_MONTHS_SHORT_EN;
+}
+
+/**
+ * Format a day number with proper locale (Nepali numerals for ne)
+ */
+export function formatDay(day: number, locale: Locale = 'en'): string {
+  return locale === 'ne' ? toNepaliNumeral(day) : day.toString();
+}
+
+/**
+ * Format a year number with proper locale
+ */
+export function formatYear(year: number, locale: Locale = 'en'): string {
+  return locale === 'ne' ? toNepaliNumeral(year) : year.toString();
 }
 
 /**

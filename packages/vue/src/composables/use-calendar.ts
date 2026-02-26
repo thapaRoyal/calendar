@@ -5,12 +5,14 @@ import {
   createCalendarActions,
   getWeeksInMonth,
   formatMonthYear,
-  getWeekdayShortNames,
+  getWeekdayMinNames,
+  formatDay,
   type CalendarState,
   type CalendarEvent,
   type CalendarConfig,
   type CalendarDate,
   type Week,
+  type Locale,
 } from '@thaparoyal/calendar-core';
 
 /**
@@ -73,7 +75,11 @@ export function useCalendar(options: UseCalendarOptions = {}) {
     )
   );
 
-  const weekdayNames = computed(() => getWeekdayShortNames(state.value.config.locale));
+  const weekdayNames = computed(() => getWeekdayMinNames(state.value.config.locale));
+
+  const locale = computed<Locale>(() => state.value.config.locale);
+
+  const formatDayNumber = (day: number) => formatDay(day, state.value.config.locale);
 
   const isPrevMonthDisabled = computed(() => {
     if (!state.value.config.minDate) return false;
@@ -112,5 +118,7 @@ export function useCalendar(options: UseCalendarOptions = {}) {
     weekdayNames,
     isPrevMonthDisabled,
     isNextMonthDisabled,
+    locale,
+    formatDayNumber,
   };
 }

@@ -1,0 +1,796 @@
+/**
+ * @thaparoyal/calendar - Theme System
+ *
+ * A comprehensive theming system for the calendar component library.
+ * Includes multiple color schemes: default, dark, forest, ocean, sunset, and royal.
+ */
+
+/* ==========================================================================
+   Base CSS Custom Properties
+   ========================================================================== */
+
+:root,
+[data-theme="default"] {
+  /* Primary colors */
+  --trc-primary: #6366f1;
+  --trc-primary-hover: #4f46e5;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(99, 102, 241, 0.12);
+
+  /* Background colors */
+  --trc-background: #ffffff;
+  --trc-background-secondary: #f8fafc;
+  --trc-background-tertiary: #f1f5f9;
+  --trc-background-elevated: #ffffff;
+
+  /* Text colors */
+  --trc-foreground: #0f172a;
+  --trc-foreground-secondary: #475569;
+  --trc-foreground-muted: #94a3b8;
+
+  /* Border colors */
+  --trc-border: #e2e8f0;
+  --trc-border-hover: #cbd5e1;
+
+  /* State colors */
+  --trc-ring: rgba(99, 102, 241, 0.4);
+  --trc-success: #22c55e;
+  --trc-warning: #f59e0b;
+  --trc-error: #ef4444;
+
+  /* Spacing & Radius */
+  --trc-radius-sm: 6px;
+  --trc-radius: 8px;
+  --trc-radius-lg: 12px;
+  --trc-radius-xl: 16px;
+
+  /* Shadows */
+  --trc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --trc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --trc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --trc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  /* Transitions */
+  --trc-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --trc-transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --trc-transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   Dark Theme
+   ========================================================================== */
+
+[data-theme="dark"],
+.dark {
+  --trc-primary: #818cf8;
+  --trc-primary-hover: #a5b4fc;
+  --trc-primary-foreground: #0f0f11;
+  --trc-primary-muted: rgba(129, 140, 248, 0.15);
+
+  --trc-background: #0a0a0b;
+  --trc-background-secondary: #111113;
+  --trc-background-tertiary: #18181b;
+  --trc-background-elevated: #1f1f23;
+
+  --trc-foreground: #fafafa;
+  --trc-foreground-secondary: #a1a1aa;
+  --trc-foreground-muted: #52525b;
+
+  --trc-border: #27272a;
+  --trc-border-hover: #3f3f46;
+
+  --trc-ring: rgba(129, 140, 248, 0.4);
+
+  --trc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --trc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --trc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --trc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Forest Theme (Green)
+   ========================================================================== */
+
+[data-theme="forest"] {
+  --trc-primary: #22c55e;
+  --trc-primary-hover: #16a34a;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(34, 197, 94, 0.12);
+
+  --trc-background: #f0fdf4;
+  --trc-background-secondary: #dcfce7;
+  --trc-background-tertiary: #bbf7d0;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #14532d;
+  --trc-foreground-secondary: #166534;
+  --trc-foreground-muted: #4ade80;
+
+  --trc-border: #86efac;
+  --trc-border-hover: #4ade80;
+
+  --trc-ring: rgba(34, 197, 94, 0.4);
+}
+
+[data-theme="forest-dark"] {
+  --trc-primary: #4ade80;
+  --trc-primary-hover: #86efac;
+  --trc-primary-foreground: #052e16;
+  --trc-primary-muted: rgba(74, 222, 128, 0.15);
+
+  --trc-background: #052e16;
+  --trc-background-secondary: #14532d;
+  --trc-background-tertiary: #166534;
+  --trc-background-elevated: #15803d;
+
+  --trc-foreground: #f0fdf4;
+  --trc-foreground-secondary: #bbf7d0;
+  --trc-foreground-muted: #4ade80;
+
+  --trc-border: #166534;
+  --trc-border-hover: #22c55e;
+
+  --trc-ring: rgba(74, 222, 128, 0.4);
+}
+
+/* ==========================================================================
+   Ocean Theme (Blue)
+   ========================================================================== */
+
+[data-theme="ocean"] {
+  --trc-primary: #0ea5e9;
+  --trc-primary-hover: #0284c7;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(14, 165, 233, 0.12);
+
+  --trc-background: #f0f9ff;
+  --trc-background-secondary: #e0f2fe;
+  --trc-background-tertiary: #bae6fd;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #0c4a6e;
+  --trc-foreground-secondary: #075985;
+  --trc-foreground-muted: #38bdf8;
+
+  --trc-border: #7dd3fc;
+  --trc-border-hover: #38bdf8;
+
+  --trc-ring: rgba(14, 165, 233, 0.4);
+}
+
+[data-theme="ocean-dark"] {
+  --trc-primary: #38bdf8;
+  --trc-primary-hover: #7dd3fc;
+  --trc-primary-foreground: #082f49;
+  --trc-primary-muted: rgba(56, 189, 248, 0.15);
+
+  --trc-background: #082f49;
+  --trc-background-secondary: #0c4a6e;
+  --trc-background-tertiary: #075985;
+  --trc-background-elevated: #0369a1;
+
+  --trc-foreground: #f0f9ff;
+  --trc-foreground-secondary: #bae6fd;
+  --trc-foreground-muted: #38bdf8;
+
+  --trc-border: #075985;
+  --trc-border-hover: #0ea5e9;
+
+  --trc-ring: rgba(56, 189, 248, 0.4);
+}
+
+/* ==========================================================================
+   Sunset Theme (Orange/Red)
+   ========================================================================== */
+
+[data-theme="sunset"] {
+  --trc-primary: #f97316;
+  --trc-primary-hover: #ea580c;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(249, 115, 22, 0.12);
+
+  --trc-background: #fffbeb;
+  --trc-background-secondary: #fef3c7;
+  --trc-background-tertiary: #fde68a;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #78350f;
+  --trc-foreground-secondary: #92400e;
+  --trc-foreground-muted: #fbbf24;
+
+  --trc-border: #fcd34d;
+  --trc-border-hover: #fbbf24;
+
+  --trc-ring: rgba(249, 115, 22, 0.4);
+}
+
+[data-theme="sunset-dark"] {
+  --trc-primary: #fb923c;
+  --trc-primary-hover: #fdba74;
+  --trc-primary-foreground: #431407;
+  --trc-primary-muted: rgba(251, 146, 60, 0.15);
+
+  --trc-background: #431407;
+  --trc-background-secondary: #7c2d12;
+  --trc-background-tertiary: #9a3412;
+  --trc-background-elevated: #c2410c;
+
+  --trc-foreground: #fffbeb;
+  --trc-foreground-secondary: #fde68a;
+  --trc-foreground-muted: #fbbf24;
+
+  --trc-border: #9a3412;
+  --trc-border-hover: #f97316;
+
+  --trc-ring: rgba(251, 146, 60, 0.4);
+}
+
+/* ==========================================================================
+   Royal Theme (Purple)
+   ========================================================================== */
+
+[data-theme="royal"] {
+  --trc-primary: #a855f7;
+  --trc-primary-hover: #9333ea;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(168, 85, 247, 0.12);
+
+  --trc-background: #faf5ff;
+  --trc-background-secondary: #f3e8ff;
+  --trc-background-tertiary: #e9d5ff;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #3b0764;
+  --trc-foreground-secondary: #581c87;
+  --trc-foreground-muted: #c084fc;
+
+  --trc-border: #d8b4fe;
+  --trc-border-hover: #c084fc;
+
+  --trc-ring: rgba(168, 85, 247, 0.4);
+}
+
+[data-theme="royal-dark"] {
+  --trc-primary: #c084fc;
+  --trc-primary-hover: #d8b4fe;
+  --trc-primary-foreground: #2e1065;
+  --trc-primary-muted: rgba(192, 132, 252, 0.15);
+
+  --trc-background: #2e1065;
+  --trc-background-secondary: #3b0764;
+  --trc-background-tertiary: #581c87;
+  --trc-background-elevated: #6b21a8;
+
+  --trc-foreground: #faf5ff;
+  --trc-foreground-secondary: #e9d5ff;
+  --trc-foreground-muted: #c084fc;
+
+  --trc-border: #581c87;
+  --trc-border-hover: #a855f7;
+
+  --trc-ring: rgba(192, 132, 252, 0.4);
+}
+
+/* ==========================================================================
+   Nepal Theme (Nepal flag colors - crimson & blue)
+   ========================================================================== */
+
+[data-theme="nepal"] {
+  --trc-primary: #dc143c;
+  --trc-primary-hover: #b91031;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(220, 20, 60, 0.12);
+
+  --trc-background: #fff5f5;
+  --trc-background-secondary: #ffe4e6;
+  --trc-background-tertiary: #fecdd3;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #4c1d2f;
+  --trc-foreground-secondary: #881337;
+  --trc-foreground-muted: #f87171;
+
+  --trc-border: #fca5a5;
+  --trc-border-hover: #f87171;
+
+  --trc-ring: rgba(220, 20, 60, 0.4);
+  --trc-accent-secondary: #003893;
+}
+
+[data-theme="nepal-dark"] {
+  --trc-primary: #f87171;
+  --trc-primary-hover: #fca5a5;
+  --trc-primary-foreground: #4c1d2f;
+  --trc-primary-muted: rgba(248, 113, 113, 0.15);
+
+  --trc-background: #1c1017;
+  --trc-background-secondary: #2d1620;
+  --trc-background-tertiary: #4c1d2f;
+  --trc-background-elevated: #6b2142;
+
+  --trc-foreground: #fff5f5;
+  --trc-foreground-secondary: #fecdd3;
+  --trc-foreground-muted: #f87171;
+
+  --trc-border: #4c1d2f;
+  --trc-border-hover: #dc143c;
+
+  --trc-ring: rgba(248, 113, 113, 0.4);
+  --trc-accent-secondary: #60a5fa;
+}
+
+/* ==========================================================================
+   Calendar Component Styles
+   ========================================================================== */
+
+.trc-calendar {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Devanagari', sans-serif;
+  background-color: var(--trc-background-elevated);
+  color: var(--trc-foreground);
+  border: 1px solid var(--trc-border);
+  border-radius: var(--trc-radius-lg);
+  padding: 1rem;
+  width: fit-content;
+  box-shadow: var(--trc-shadow);
+  transition: border-color var(--trc-transition), box-shadow var(--trc-transition);
+}
+
+.trc-calendar:hover {
+  border-color: var(--trc-border-hover);
+}
+
+/* Calendar Header */
+.trc-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--trc-border);
+}
+
+.trc-calendar-title {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--trc-radius);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--trc-foreground);
+  transition: background-color var(--trc-transition-fast), color var(--trc-transition-fast);
+}
+
+.trc-calendar-title:hover {
+  background-color: var(--trc-primary-muted);
+  color: var(--trc-primary);
+}
+
+.trc-calendar-title:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--trc-ring);
+}
+
+.trc-calendar-nav-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--trc-border);
+  border-radius: var(--trc-radius);
+  background-color: var(--trc-background-secondary);
+  color: var(--trc-foreground-secondary);
+  cursor: pointer;
+  transition: all var(--trc-transition-fast);
+}
+
+.trc-calendar-nav-button:hover:not(:disabled) {
+  background-color: var(--trc-primary-muted);
+  border-color: var(--trc-primary);
+  color: var(--trc-primary);
+}
+
+.trc-calendar-nav-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--trc-ring);
+}
+
+.trc-calendar-nav-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Calendar Grid */
+.trc-calendar-grid {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.trc-calendar-grid-head {
+  border-bottom: 1px solid var(--trc-border);
+}
+
+.trc-calendar-weekday {
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  color: var(--trc-foreground-muted);
+  text-align: center;
+  padding: 0.625rem 0;
+  width: 2.5rem;
+}
+
+.trc-calendar-week {
+  /* Row styling if needed */
+}
+
+.trc-calendar-cell {
+  text-align: center;
+  padding: 0.125rem;
+}
+
+.trc-calendar-day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--trc-radius);
+  background-color: transparent;
+  color: var(--trc-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--trc-transition-fast);
+  position: relative;
+}
+
+.trc-calendar-day:hover:not(:disabled) {
+  background-color: var(--trc-background-tertiary);
+}
+
+.trc-calendar-day:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--trc-ring);
+}
+
+/* Today indicator */
+.trc-calendar-cell-today .trc-calendar-day {
+  background-color: var(--trc-primary-muted);
+  color: var(--trc-primary);
+  font-weight: 600;
+}
+
+.trc-calendar-cell-today .trc-calendar-day::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background-color: var(--trc-primary);
+  border-radius: 50%;
+}
+
+/* Selected state */
+.trc-calendar-cell-selected .trc-calendar-day {
+  background-color: var(--trc-primary);
+  color: var(--trc-primary-foreground);
+  font-weight: 600;
+}
+
+.trc-calendar-cell-selected .trc-calendar-day:hover {
+  background-color: var(--trc-primary-hover);
+}
+
+.trc-calendar-cell-selected .trc-calendar-day::after {
+  display: none;
+}
+
+/* Disabled state */
+.trc-calendar-cell-disabled .trc-calendar-day {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.trc-calendar-cell-disabled .trc-calendar-day:hover {
+  background-color: transparent;
+}
+
+/* Outside month state */
+.trc-calendar-cell-outside .trc-calendar-day {
+  color: var(--trc-foreground-muted);
+  opacity: 0.5;
+}
+
+/* ==========================================================================
+   Date Picker Component Styles
+   ========================================================================== */
+
+.trc-date-picker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.trc-date-picker-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.trc-date-picker-input {
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--trc-border);
+  border-radius: var(--trc-radius);
+  font-size: 0.875rem;
+  font-family: inherit;
+  background-color: var(--trc-background);
+  color: var(--trc-foreground);
+  width: 11rem;
+  transition: all var(--trc-transition-fast);
+}
+
+.trc-date-picker-input::placeholder {
+  color: var(--trc-foreground-muted);
+}
+
+.trc-date-picker-input:focus {
+  outline: none;
+  border-color: var(--trc-primary);
+  box-shadow: 0 0 0 3px var(--trc-ring);
+}
+
+.trc-date-picker-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--trc-background-secondary);
+}
+
+.trc-date-picker-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--trc-border);
+  border-radius: var(--trc-radius);
+  background-color: var(--trc-background);
+  color: var(--trc-foreground-secondary);
+  cursor: pointer;
+  transition: all var(--trc-transition-fast);
+}
+
+.trc-date-picker-trigger:hover:not(:disabled) {
+  background-color: var(--trc-primary-muted);
+  border-color: var(--trc-primary);
+  color: var(--trc-primary);
+}
+
+.trc-date-picker-trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--trc-ring);
+}
+
+.trc-date-picker-trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.trc-date-picker-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--trc-radius);
+  background-color: transparent;
+  color: var(--trc-foreground-muted);
+  cursor: pointer;
+  transition: all var(--trc-transition-fast);
+}
+
+.trc-date-picker-clear:hover {
+  color: var(--trc-foreground);
+  background-color: var(--trc-background-tertiary);
+}
+
+.trc-date-picker-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 50;
+  margin-top: 0.5rem;
+  background-color: var(--trc-background-elevated);
+  border: 1px solid var(--trc-border);
+  border-radius: var(--trc-radius-lg);
+  box-shadow: var(--trc-shadow-xl);
+  animation: trc-slide-down var(--trc-transition);
+}
+
+.trc-date-picker-content-bottom-end {
+  left: auto;
+  right: 0;
+}
+
+.trc-date-picker-content-top-start {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  animation: trc-slide-up var(--trc-transition);
+}
+
+.trc-date-picker-content-top-end {
+  top: auto;
+  bottom: 100%;
+  left: auto;
+  right: 0;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  animation: trc-slide-up var(--trc-transition);
+}
+
+.trc-date-picker-calendar {
+  padding: 1rem;
+}
+
+.trc-date-picker-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--trc-border);
+}
+
+.trc-date-picker-today-button,
+.trc-date-picker-clear-button {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--trc-border);
+  border-radius: var(--trc-radius);
+  background-color: var(--trc-background-secondary);
+  color: var(--trc-foreground-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--trc-transition-fast);
+}
+
+.trc-date-picker-today-button:hover,
+.trc-date-picker-clear-button:hover {
+  background-color: var(--trc-primary-muted);
+  border-color: var(--trc-primary);
+  color: var(--trc-primary);
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+@keyframes trc-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes trc-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes trc-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ==========================================================================
+   Nepali/Devanagari Font Support
+   ========================================================================== */
+
+.trc-calendar[data-locale="ne"],
+.trc-date-picker[data-locale="ne"] {
+  font-family: 'Noto Sans Devanagari', 'Mukta', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.trc-calendar[data-locale="ne"] .trc-calendar-day {
+  font-size: 0.9375rem;
+}
+
+.trc-calendar[data-locale="ne"] .trc-calendar-weekday {
+  font-size: 0.8125rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.trc-calendar[data-locale="ne"] .trc-calendar-title {
+  font-size: 1rem;
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+/* Size variants */
+.trc-calendar-sm {
+  padding: 0.75rem;
+}
+
+.trc-calendar-sm .trc-calendar-day {
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: 0.75rem;
+}
+
+.trc-calendar-sm .trc-calendar-weekday {
+  font-size: 0.6875rem;
+  width: 2rem;
+}
+
+.trc-calendar-lg {
+  padding: 1.25rem;
+}
+
+.trc-calendar-lg .trc-calendar-day {
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: 1rem;
+}
+
+.trc-calendar-lg .trc-calendar-weekday {
+  font-size: 0.8125rem;
+  width: 3rem;
+}
+
+/* Border variants */
+.trc-calendar-bordered {
+  border-width: 2px;
+}
+
+.trc-calendar-borderless {
+  border: none;
+  box-shadow: none;
+}
+
+/* Shadow variants */
+.trc-calendar-shadow-none {
+  box-shadow: none;
+}
+
+.trc-calendar-shadow-lg {
+  box-shadow: var(--trc-shadow-lg);
+}
+
+/* Rounded variants */
+.trc-calendar-rounded-none {
+  border-radius: 0;
+}
+
+.trc-calendar-rounded-full {
+  border-radius: var(--trc-radius-xl);
+}

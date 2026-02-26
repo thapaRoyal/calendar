@@ -4,12 +4,14 @@ import {
   createInitialState,
   getWeeksInMonth,
   formatMonthYear,
-  getWeekdayShortNames,
+  getWeekdayMinNames,
+  formatDay,
   type CalendarState,
   type CalendarEvent,
   type CalendarConfig,
   type CalendarDate,
   type Week,
+  type Locale,
 } from '@thaparoyal/calendar-core';
 
 /**
@@ -32,6 +34,8 @@ export interface CalendarStore {
   isPrevMonthDisabled: Readable<boolean>;
   isNextMonthDisabled: Readable<boolean>;
   selectedDate: Writable<CalendarDate | null>;
+  locale: Readable<Locale>;
+  formatDayNumber: (day: number) => string;
   selectDate: (date: CalendarDate) => void;
   focusDate: (date: CalendarDate) => void;
   nextMonth: () => void;
@@ -93,8 +97,17 @@ export function createCalendar(options: CreateCalendarOptions = {}): CalendarSto
   );
 
   const weekdayNames = derived(internalState, ($state) =>
-    getWeekdayShortNames($state.config.locale)
+    getWeekdayMinNames($state.config.locale)
   );
+
+  const locale = derived(internalState, ($state) => $state.config.locale);
+
+  // Format day number according to locale (Nepali numerals for 'ne')
+  let currentLocale: Locale = 'en';
+  internalState.subscribe(($state) => {
+    currentLocale = $state.config.locale;
+  });
+  const formatDayNumber = (day: number) => formatDay(day, currentLocale);
 
   const isPrevMonthDisabled = derived(internalState, ($state) => {
     if (!$state.config.minDate) return false;
@@ -143,6 +156,8 @@ export function createCalendar(options: CreateCalendarOptions = {}): CalendarSto
     isPrevMonthDisabled,
     isNextMonthDisabled,
     selectedDate,
+    locale,
+    formatDayNumber,
     selectDate,
     focusDate,
     nextMonth,

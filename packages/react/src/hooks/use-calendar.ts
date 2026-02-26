@@ -5,12 +5,14 @@ import {
   createCalendarActions,
   getWeeksInMonth,
   formatMonthYear,
-  getWeekdayShortNames,
+  getWeekdayMinNames,
+  formatDay,
   type CalendarState,
   type CalendarEvent,
   type CalendarConfig,
   type CalendarDate,
   type Week,
+  type Locale,
 } from '@thaparoyal/calendar-core';
 
 /**
@@ -47,6 +49,10 @@ export interface UseCalendarReturn {
   isPrevMonthDisabled: boolean;
   /** Whether next month navigation is disabled */
   isNextMonthDisabled: boolean;
+  /** Current locale */
+  locale: Locale;
+  /** Format a day number according to locale */
+  formatDayNumber: (day: number) => string;
 }
 
 /**
@@ -127,9 +133,15 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarReturn
     [state.focusedDate, state.config.calendarType, state.config.locale]
   );
 
-  // Compute weekday names
+  // Compute weekday names (using minimal/short names for cleaner UI)
   const weekdayNames = React.useMemo(
-    () => getWeekdayShortNames(state.config.locale),
+    () => getWeekdayMinNames(state.config.locale),
+    [state.config.locale]
+  );
+
+  // Format day number with locale support (Nepali numerals when locale is 'ne')
+  const formatDayNumber = React.useCallback(
+    (day: number) => formatDay(day, state.config.locale),
     [state.config.locale]
   );
 
@@ -160,5 +172,7 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarReturn
     weekdayNames,
     isPrevMonthDisabled,
     isNextMonthDisabled,
+    locale: state.config.locale,
+    formatDayNumber,
   };
 }

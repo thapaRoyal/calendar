@@ -28,7 +28,7 @@
     "@changesets/cli": "^2.27.0",
     "@types/node": "^20.11.0",
     "prettier": "^3.2.0",
-    "turbo": "^2.0.0",
+    "turbo": "^2.8.11",
     "typescript": "^5.3.0",
     "vitest": "^1.2.0"
   },
