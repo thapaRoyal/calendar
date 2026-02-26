@@ -1,0 +1,69 @@
+---
+title: CLI
+description: Using the @thaparoyal/calendar-cli to initialize and add components
+slug: /docs/getting-started/cli
+---
+
+# CLI
+
+The `@thaparoyal/calendar-cli` package helps you initialize a project config and add calendar components (shadcn-style).
+
+## Installation
+
+```bash
+npm install -g @thaparoyal/calendar-cli
+```
+
+Or use directly with npx:
+
+```bash
+npx trc --help
+```
+
+## Usage
+
+### Initialize your project
+
+```bash
+npx trc init
+```
+
+This creates `calendar.config.json` and can install framework packages for you.
+
+### Add components
+
+```bash
+npx trc add calendar
+npx trc add date-picker
+npx trc add calendar date-picker
+```
+
+### List available components
+
+```bash
+npx trc list
+```
+
+### Run in another directory
+
+```bash
+npx trc init --cwd .
+npx trc add calendar --cwd .
+```
+
+### Skip confirmation prompts
+
+```bash
+npx trc add calendar date-picker --yes
+```
+
+## What It Generates
+
+- `calendar.config.json`
+- UI component files in your configured components directory
+- supporting hooks/utils/styles based on selected components
+
+## Notes
+
+- The CLI focuses on project setup and component installation.
+- For date conversion utilities, import functions directly from `@thaparoyal/calendar-core`.

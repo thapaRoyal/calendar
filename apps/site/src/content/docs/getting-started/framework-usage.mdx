@@ -1,0 +1,76 @@
+---
+title: Framework Usage
+description: How to use the library in React, Vue, and Svelte projects
+slug: /docs/getting-started/framework-usage
+---
+
+# Framework Usage
+
+Use the site app for examples and demos:
+
+- Home: `/`
+- React playground: `/playground/react/`
+- Vue playground: `/playground/vue/`
+- Svelte playground: `/playground/svelte/`
+
+## React (Prebuilt Components)
+
+React currently has the most complete UI surface, including:
+
+- `Calendar`
+- `DatePicker`
+- `RangeCalendar`
+- `MultiCalendar`
+- Month/year pickers and dropdowns
+
+```tsx
+import { Calendar, RangeCalendar, MultiCalendar } from '@thaparoyal/calendar-react';
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+Use the React playground to see these components in action: `/playground/react/`.
+
+## Vue (Composable-first)
+
+Vue currently exposes a composable (`useCalendar`) for building your own UI while reusing the core calendar logic:
+
+```ts
+import { useCalendar } from '@thaparoyal/calendar-vue';
+
+const calendar = useCalendar({ config: { calendarType: 'BS', locale: 'en' } });
+```
+
+The Vue playground demonstrates rendering a custom calendar UI using that composable: `/playground/vue/`.
+
+## Svelte (Store-first)
+
+Svelte currently exposes a store factory (`createCalendar`) for building your own UI while reusing the core logic:
+
+```ts
+import { createCalendar } from '@thaparoyal/calendar-svelte';
+
+const calendar = createCalendar({ config: { calendarType: 'BS', locale: 'en' } });
+```
+
+The Svelte playground demonstrates rendering a custom calendar UI using the store: `/playground/svelte/`.
+
+## Core Utilities (All Frameworks)
+
+Use `@thaparoyal/calendar-core` for:
+
+- AD <-> BS date conversion
+- formatting/localization
+- calendar state logic and utilities
+
+```ts
+import { adToBs, bsToAd } from '@thaparoyal/calendar-core';
+```
+
+## Feature Status Summary
+
+| Feature | React | Vue | Svelte |
+|---|---|---|---|
+| Single calendar demo | Yes | Yes (custom UI via composable) | Yes (custom UI via store) |
+| Date range UI component | Yes | Not yet (core logic available) | Not yet (core logic available) |
+| Multi-calendar UI component | Yes | Not yet (core logic available) | Not yet (core logic available) |
+| Month/year picker UI | Yes | Custom implementation needed | Custom implementation needed |

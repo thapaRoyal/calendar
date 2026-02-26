@@ -1,0 +1,69 @@
+---
+title: Installation
+description: How to install @thaparoyal/calendar packages
+slug: /docs/getting-started/installation
+---
+
+# Installation
+
+Choose your preferred package manager and framework.
+
+## React
+
+```bash
+npm install @thaparoyal/calendar-react @thaparoyal/calendar-core
+```
+
+```bash
+pnpm add @thaparoyal/calendar-react @thaparoyal/calendar-core
+```
+
+```bash
+yarn add @thaparoyal/calendar-react @thaparoyal/calendar-core
+```
+
+## Vue
+
+```bash
+npm install @thaparoyal/calendar-vue @thaparoyal/calendar-core
+```
+
+## Svelte
+
+```bash
+npm install @thaparoyal/calendar-svelte @thaparoyal/calendar-core
+```
+
+## Core Only
+
+If you only need the date conversion utilities and don't need UI components:
+
+```bash
+npm install @thaparoyal/calendar-core
+```
+
+## Importing Styles
+
+Don't forget to import the CSS for themes:
+
+```tsx
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+Or include in your CSS:
+
+```css
+@import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+## Using Themes
+
+Apply a theme using the `data-theme` attribute:
+
+```html
+<div data-theme="ocean">
+  <Calendar.Root ... />
+</div>
+```
+
+Available themes: `default`, `ocean`, `forest`, `sunset`, `lavender`, `midnight`, `rose`, `mint`, `amber`, `slate`, `coral`, `indigo`

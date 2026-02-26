@@ -1,20 +1,17 @@
 services:
-  # Development environment - no volume mount, all inside container
+  # Site app development (home + docs + playgrounds)
   dev:
     build:
       context: ..
       dockerfile: docker/Dockerfile
       target: development
     ports:
-      - "4321:4321"   # Astro docs
-      - "5173:5173"   # React playground
-      - "5174:5174"   # Vue playground
-      - "5175:5175"   # Svelte playground
+      - "3000:3000"   # Site app (/, /docs/*, /playground/*)
     environment:
       - NODE_ENV=development
     stdin_open: true
     tty: true
-    command: pnpm dev
+    command: pnpm --filter site dev
 
   # Run tests
   test:
@@ -44,7 +41,7 @@ services:
       - ../packages/cli/dist:/app/packages/cli/dist
     command: pnpm build
 
-  # Documentation site (production)
+  # Site app (production preview)
   docs:
     build:
       context: ..

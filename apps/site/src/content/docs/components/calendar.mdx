@@ -1,0 +1,95 @@
+---
+title: Calendar
+description: The base Calendar component for single date selection
+slug: /docs/components/calendar
+---
+
+# Calendar
+
+The Calendar component provides single date selection with support for month/year pickers.
+
+## Basic Usage
+
+```tsx
+import { Calendar } from '@thaparoyal/calendar-react';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+function MyCalendar() {
+  const [date, setDate] = useState(null);
+
+  return (
+    <Calendar.Root
+      config={{ calendarType: 'BS', locale: 'en' }}
+      value={date}
+      onValueChange={setDate}
+    >
+      <Calendar.Header>
+        <Calendar.PrevButton />
+        <Calendar.Title />
+        <Calendar.NextButton />
+      </Calendar.Header>
+      <Calendar.Grid>
+        <Calendar.GridHead />
+        <Calendar.GridBody />
+      </Calendar.Grid>
+    </Calendar.Root>
+  );
+}
+```
+
+## With Month/Year Pickers
+
+Click the title to switch between day, month, and year views:
+
+```tsx
+<Calendar.Root ...>
+  <Calendar.Header>
+    <Calendar.PrevButton />
+    <Calendar.Title />  {/* Click to cycle views */}
+    <Calendar.NextButton />
+  </Calendar.Header>
+  <Calendar.Grid>
+    <Calendar.GridHead />
+    <Calendar.GridBody />
+  </Calendar.Grid>
+  <Calendar.MonthPicker />  {/* Shows when viewMode='month' */}
+  <Calendar.YearPicker />   {/* Shows when viewMode='year' */}
+</Calendar.Root>
+```
+
+## With Dropdowns
+
+Use dropdown selects for quick month/year navigation:
+
+```tsx
+<Calendar.Root ...>
+  <Calendar.Header>
+    <Calendar.PrevButton />
+    <Calendar.MonthDropdown />
+    <Calendar.YearDropdown />
+    <Calendar.NextButton />
+  </Calendar.Header>
+  <Calendar.Grid>
+    <Calendar.GridHead />
+    <Calendar.GridBody />
+  </Calendar.Grid>
+</Calendar.Root>
+```
+
+## Custom Styling (shadcn-style)
+
+```tsx
+<Calendar.Root
+  classNames={{
+    root: 'my-calendar',
+    daySelected: 'bg-blue-500 text-white rounded-full',
+    dayToday: 'ring-2 ring-blue-500',
+  }}
+  components={{
+    IconLeft: () => <ChevronLeft className="h-4 w-4" />,
+    IconRight: () => <ChevronRight className="h-4 w-4" />,
+  }}
+>
+  ...
+</Calendar.Root>
+```

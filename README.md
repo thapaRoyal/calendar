@@ -116,10 +116,20 @@ Create a `calendar.config.json` in your project root:
 }
 ```
 
+## Unified App Routes
+
+The repository now uses a single Astro app (`apps/site`) that serves:
+
+- `/` - Home/landing page
+- `/docs/*` - Documentation (Starlight)
+- `/playground/react/` - React component demos
+- `/playground/vue/` - Vue composable-based demos
+- `/playground/svelte/` - Svelte store-based demos
+
 ## Docker
 
 ```bash
-# Development
+# Development (site app on http://localhost:3000)
 docker-compose -f docker/docker-compose.yml up dev
 
 # Run tests
@@ -127,6 +137,9 @@ docker-compose -f docker/docker-compose.yml up test
 
 # Build
 docker-compose -f docker/docker-compose.yml up build
+
+# Production preview (site app on http://localhost:4321)
+docker-compose -f docker/docker-compose.yml up docs
 ```
 
 ## Development
@@ -135,8 +148,11 @@ docker-compose -f docker/docker-compose.yml up build
 # Install dependencies
 pnpm install
 
-# Start development
+# Start all workspace dev tasks (turbo)
 pnpm dev
+
+# Start site app only (recommended for site/docs/playgrounds)
+pnpm --filter site dev
 
 # Build all packages
 pnpm build

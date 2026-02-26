@@ -14,7 +14,7 @@ COPY packages/react/package.json ./packages/react/
 COPY packages/vue/package.json ./packages/vue/ 2>/dev/null || true
 COPY packages/svelte/package.json ./packages/svelte/ 2>/dev/null || true
 COPY packages/cli/package.json ./packages/cli/ 2>/dev/null || true
-COPY apps/docs/package.json ./apps/docs/ 2>/dev/null || true
+COPY apps/site/package.json ./apps/site/ 2>/dev/null || true
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile || pnpm install
@@ -44,7 +44,7 @@ EXPOSE 3000 4321 5173 5174
 
 CMD ["pnpm", "dev"]
 
-# Production stage (for docs site)
+# Production stage (for site app preview)
 FROM node:20-alpine AS production
 
 # Enable corepack for pnpm
@@ -52,12 +52,13 @@ RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 
 WORKDIR /app
 
-# Copy built files from builder
-COPY --from=builder /app/apps/docs/.astro ./apps/docs/.astro
-COPY --from=builder /app/apps/docs/dist ./apps/docs/dist
+# Copy workspace/runtime files from builder
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
+COPY --from=builder /app/pnpm-workspace.yaml ./
+COPY --from=builder /app/pnpm-lock.yaml ./
+COPY --from=builder /app/apps/site ./apps/site
 
 EXPOSE 4321
 
-CMD ["node", "./apps/docs/dist/server/entry.mjs"]
+CMD ["pnpm", "--dir", "./apps/site", "exec", "astro", "preview", "--host", "0.0.0.0", "--port", "4321"]

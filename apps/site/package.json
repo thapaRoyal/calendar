@@ -1,0 +1,33 @@
+{
+  "name": "site",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev --port 3000 --host",
+    "start": "astro dev --port 3000 --host",
+    "build": "astro check && astro build",
+    "preview": "astro preview --port 3000"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/react": "^3.6.2",
+    "@astrojs/starlight": "^0.21.5",
+    "@astrojs/svelte": "^5.7.3",
+    "@astrojs/vue": "^4.5.2",
+    "@thaparoyal/calendar-core": "workspace:*",
+    "@thaparoyal/calendar-react": "workspace:*",
+    "@thaparoyal/calendar-svelte": "workspace:*",
+    "@thaparoyal/calendar-vue": "workspace:*",
+    "astro": "^4.16.19",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "svelte": "^4.2.19",
+    "typescript": "^5.6.3",
+    "vue": "^3.5.16"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1"
+  }
+}
