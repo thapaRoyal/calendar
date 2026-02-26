@@ -1,0 +1,70 @@
+---
+title: DatePicker
+description: Date picker with input field and calendar dropdown
+---
+
+# DatePicker
+
+The DatePicker component combines an input field with a calendar dropdown for date selection.
+
+## Basic Usage
+
+```tsx
+import { DatePicker } from '@thaparoyal/calendar-react';
+
+function MyDatePicker() {
+  const [date, setDate] = useState(null);
+
+  return (
+    <DatePicker.Root
+      config={{ calendarType: 'BS', locale: 'en' }}
+      value={date}
+      onValueChange={setDate}
+    >
+      <DatePicker.Input placeholder="Select date..." />
+      <DatePicker.Trigger />
+      <DatePicker.Content>
+        <DatePicker.Calendar />
+      </DatePicker.Content>
+    </DatePicker.Root>
+  );
+}
+```
+
+## With Clear Button
+
+```tsx
+<DatePicker.Root value={date} onValueChange={setDate}>
+  <DatePicker.Input placeholder="Select date..." />
+  <DatePicker.ClearButton />
+  <DatePicker.Trigger />
+  <DatePicker.Content>
+    <DatePicker.Calendar />
+  </DatePicker.Content>
+</DatePicker.Root>
+```
+
+## Props
+
+### format
+
+Custom date format string.
+
+```tsx
+<DatePicker.Root format="YYYY/MM/DD">
+  ...
+</DatePicker.Root>
+```
+
+### minDate / maxDate
+
+Restrict the selectable date range.
+
+```tsx
+<DatePicker.Root
+  minDate={{ year: 2080, month: 1, day: 1, calendarType: 'BS' }}
+  maxDate={{ year: 2080, month: 12, day: 30, calendarType: 'BS' }}
+>
+  ...
+</DatePicker.Root>
+```

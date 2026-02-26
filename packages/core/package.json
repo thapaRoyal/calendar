@@ -28,10 +28,13 @@
         "types": "./dist/converters/index.d.cts",
         "default": "./dist/converters/index.cjs"
       }
-    }
+    },
+    "./themes/themes.css": "./themes/themes.css",
+    "./themes/*": "./themes/*"
   },
   "files": [
     "dist",
+    "themes",
     "README.md"
   ],
   "sideEffects": false,

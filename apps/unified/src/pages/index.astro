@@ -1,0 +1,252 @@
+---
+import { Calendar } from '@thaparoyal/calendar-react';
+import '@thaparoyal/calendar-core/themes/themes.css';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@thaparoyal/calendar - AD & BS Calendar Components</title>
+    <link rel="stylesheet" href="/src/styles/custom.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #fff;
+        min-height: 100vh;
+      }
+      .hero {
+        text-align: center;
+        padding: 6rem 2rem;
+        background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0f 100%);
+      }
+      .hero h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .hero p {
+        font-size: 1.25rem;
+        color: #888;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+      }
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .cta-btn {
+        padding: 0.875rem 2rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .cta-btn.primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+      .cta-btn.secondary {
+        background: transparent;
+        border: 1px solid #333;
+        color: #fff;
+      }
+      .cta-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+      }
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        padding: 4rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .feature {
+        text-align: center;
+        padding: 2rem;
+        background: #111;
+        border-radius: 1rem;
+        border: 1px solid #222;
+      }
+      .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+      .feature h3 {
+        margin-bottom: 0.5rem;
+        font-size: 1.25rem;
+      }
+      .feature p {
+        color: #888;
+        font-size: 0.95rem;
+      }
+      .demo-section {
+        padding: 4rem 2rem;
+        background: #111;
+      }
+      .demo-section h2 {
+        text-align: center;
+        margin-bottom: 3rem;
+        font-size: 2rem;
+      }
+      .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .demo-card {
+        background: #0a0a0f;
+        border: 1px solid #222;
+        border-radius: 1rem;
+        padding: 1.5rem;
+      }
+      .demo-card h3 {
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+        color: #667eea;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: rgba(10, 10, 15, 0.8);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 1px solid #222;
+      }
+      nav a {
+        color: #fff;
+        text-decoration: none;
+      }
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+      }
+      .nav-links a {
+        color: #888;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/" style="font-weight: 700; font-size: 1.1rem;">@thaparoyal/calendar</a>
+      <div class="nav-links">
+        <a href="/docs/getting-started/introduction/">Docs</a>
+        <a href="/playground/react/">Playground</a>
+        <a href="https://github.com/thaparoyal/calendar" target="_blank">GitHub</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <h1>@thaparoyal/calendar</h1>
+      <p>Beautiful, accessible calendar components for React, Vue, and Svelte with full support for AD (Gregorian) and BS (Bikram Sambat) calendars.</p>
+      <div class="cta-buttons">
+        <a href="/docs/getting-started/introduction/" class="cta-btn primary">Get Started</a>
+        <a href="/playground/react/" class="cta-btn secondary">Try Playground</a>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="feature">
+        <div class="feature-icon">📅</div>
+        <h3>Dual Calendar Support</h3>
+        <p>Seamlessly switch between AD (Gregorian) and BS (Bikram Sambat) calendars with accurate date conversion.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎨</div>
+        <h3>12 Beautiful Themes</h3>
+        <p>Choose from 12 pre-built themes or customize with CSS variables and shadcn-style classNames API.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⚛️</div>
+        <h3>Multi-Framework</h3>
+        <p>First-class support for React, Vue 3, and Svelte with framework-specific components.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📆</div>
+        <h3>Advanced Selection</h3>
+        <p>Single date, date range, and multi-date selection modes with hover preview support.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🗓️</div>
+        <h3>Multi-Calendar View</h3>
+        <p>Display multiple months side-by-side with synchronized navigation.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">♿</div>
+        <h3>Fully Accessible</h3>
+        <p>WAI-ARIA compliant with full keyboard navigation support.</p>
+      </div>
+    </section>
+
+    <section class="demo-section">
+      <h2>Live Demo</h2>
+      <div class="demo-grid">
+        <div class="demo-card" data-theme="ocean">
+          <h3>BS Calendar (Ocean Theme)</h3>
+          <Calendar.Root client:load config={{ calendarType: 'BS', locale: 'en' }}>
+            <Calendar.Header>
+              <Calendar.PrevButton />
+              <Calendar.Title />
+              <Calendar.NextButton />
+            </Calendar.Header>
+            <Calendar.Grid>
+              <Calendar.GridHead />
+              <Calendar.GridBody />
+            </Calendar.Grid>
+          </Calendar.Root>
+        </div>
+        <div class="demo-card" data-theme="sunset">
+          <h3>AD Calendar (Sunset Theme)</h3>
+          <Calendar.Root client:load config={{ calendarType: 'AD', locale: 'en' }}>
+            <Calendar.Header>
+              <Calendar.PrevButton />
+              <Calendar.Title />
+              <Calendar.NextButton />
+            </Calendar.Header>
+            <Calendar.Grid>
+              <Calendar.GridHead />
+              <Calendar.GridBody />
+            </Calendar.Grid>
+          </Calendar.Root>
+        </div>
+        <div class="demo-card" data-theme="midnight">
+          <h3>Nepali Numerals (Midnight Theme)</h3>
+          <Calendar.Root client:load config={{ calendarType: 'BS', locale: 'ne' }}>
+            <Calendar.Header>
+              <Calendar.PrevButton />
+              <Calendar.Title />
+              <Calendar.NextButton />
+            </Calendar.Header>
+            <Calendar.Grid>
+              <Calendar.GridHead />
+              <Calendar.GridBody />
+            </Calendar.Grid>
+          </Calendar.Root>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
