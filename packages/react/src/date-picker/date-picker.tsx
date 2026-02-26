@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { useDatePicker, type UseDatePickerOptions } from '../hooks/use-date-picker';
-import { Calendar } from '../calendar';
 import { cn } from '../utils/cn';
-import type { CalendarDate } from '@thaparoyal/calendar-core';
 
 /**
  * Date picker context
@@ -64,7 +62,7 @@ export const DatePickerRoot = React.forwardRef<HTMLDivElement, DatePickerRootPro
     );
 
     // Close on outside click
-    const containerRef = React.useRef<HTMLDivElement>(null);
+    const containerRef = React.useRef<HTMLDivElement | null>(null);
 
     React.useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
@@ -93,19 +91,22 @@ export const DatePickerRoot = React.forwardRef<HTMLDivElement, DatePickerRootPro
       return () => document.removeEventListener('keydown', handleEscape);
     }, [picker.state.isOpen, picker.actions]);
 
+    // Merge refs
+    const setRefs = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        containerRef.current = node;
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        }
+      },
+      [ref]
+    );
+
     return (
       <DatePickerContext.Provider value={contextValue}>
-        <div
-          ref={(node) => {
-            containerRef.current = node;
-            if (typeof ref === 'function') {
-              ref(node);
-            } else if (ref) {
-              ref.current = node;
-            }
-          }}
-          className={cn('trc-date-picker', className)}
-        >
+        <div ref={setRefs} className={cn('trc-date-picker', className)}>
           {children}
         </div>
       </DatePickerContext.Provider>

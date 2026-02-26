@@ -123,9 +123,9 @@ function daysSinceBsEpoch(year: number, month: number, day: number): number {
  * Convert AD date to number of days since epoch, then to BS date
  */
 function daysToBS(totalDays: number): DateComponents {
-  let year = BS_EPOCH.bs.year;
-  let month = BS_EPOCH.bs.month;
-  let day = BS_EPOCH.bs.day + totalDays;
+  let year: number = BS_EPOCH.bs.year;
+  let month: number = BS_EPOCH.bs.month;
+  let day: number = BS_EPOCH.bs.day + totalDays;
 
   // Handle negative days (dates before epoch)
   while (day <= 0) {
@@ -164,9 +164,9 @@ function daysToBS(totalDays: number): DateComponents {
  * Convert BS date to number of days since epoch, then to AD date
  */
 function daysToAD(totalDays: number): DateComponents {
-  let year = BS_EPOCH.ad.year;
-  let month = BS_EPOCH.ad.month;
-  let day = BS_EPOCH.ad.day + totalDays;
+  let year: number = BS_EPOCH.ad.year;
+  let month: number = BS_EPOCH.ad.month;
+  let day: number = BS_EPOCH.ad.day + totalDays;
 
   // Handle negative days (dates before epoch)
   while (day <= 0) {

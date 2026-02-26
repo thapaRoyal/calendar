@@ -15,7 +15,7 @@ import {
   toNepaliNumeral,
 } from '../data/bs-calendar-data';
 import { getDayOfWeekBs } from '../converters/bs-converter';
-import type { CalendarDate, Locale, FormatOptions } from '../types';
+import type { CalendarDate, Locale } from '../types';
 
 /**
  * AD month names in English

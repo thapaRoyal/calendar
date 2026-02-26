@@ -1,16 +1,10 @@
-version: '3.8'
-
 services:
-  # Development environment
+  # Development environment - no volume mount, all inside container
   dev:
     build:
       context: ..
       dockerfile: docker/Dockerfile
       target: development
-    volumes:
-      - ..:/app
-      - /app/node_modules
-      - pnpm-store:/root/.local/share/pnpm/store
     ports:
       - "3000:3000"   # React playground
       - "4321:4321"   # Astro docs
@@ -19,7 +13,6 @@ services:
       - "5175:5175"   # Vite dev server (Svelte)
     environment:
       - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
     stdin_open: true
     tty: true
     command: pnpm dev

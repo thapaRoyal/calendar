@@ -11,10 +11,5 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   minify: false,
-  external: ['react', 'react-dom', '@thaparoyal/calendar-core'],
-  esbuildOptions(options) {
-    options.banner = {
-      js: '"use client";',
-    };
-  },
+  external: ['vue', '@thaparoyal/calendar-core'],
 });

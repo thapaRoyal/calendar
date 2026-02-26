@@ -34,11 +34,11 @@ RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 # Set working directory
 WORKDIR /app
 
-# Copy package files and install
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml* ./
+# Copy all files (will be overridden by volume mount for source, but keeps node_modules)
+COPY . .
 
-# We'll mount the source code as a volume
-# Just set up the basic environment
+# Install dependencies
+RUN pnpm install
 
 EXPOSE 3000 4321 5173 5174
 

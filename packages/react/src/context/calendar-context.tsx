@@ -1,7 +1,6 @@
 import * as React from 'react';
 import type {
   CalendarState,
-  CalendarConfig,
   CalendarDate,
   CalendarType,
   Locale,

@@ -159,7 +159,9 @@ export function getWeeksInMonth(
   disabledDates?: CalendarDate[]
 ): Week[] {
   const weeks: Week[] = [];
-  const daysInMonth = getDaysInMonth(year, month, calendarType);
+  // daysInMonth is used for validation in future enhancements
+  const _daysInMonth = getDaysInMonth(year, month, calendarType);
+  void _daysInMonth;
 
   // Get the first day of the month
   const firstDay: CalendarDate = {

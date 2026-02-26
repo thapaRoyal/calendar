@@ -108,7 +108,6 @@ export function datePickerReducer(state: DatePickerState, event: DatePickerEvent
 
       return {
         ...calendarResult,
-        isOpen: state.isOpen,
         inputValue: event.date
           ? formatDate(event.date, 'YYYY-MM-DD', state.config.locale)
           : state.inputValue,
