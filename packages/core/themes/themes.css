@@ -1397,12 +1397,26 @@
 
 .trc-multi-calendar {
   display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.trc-multi-calendar-calendars {
+  display: flex;
   gap: 1.5rem;
 }
 
 .trc-multi-calendar-month {
   flex: 1;
   min-width: 280px;
+}
+
+.trc-multi-calendar-month-title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.5rem 0;
+  color: var(--trc-foreground);
 }
 
 .trc-multi-calendar-divider {
@@ -1413,7 +1427,7 @@
 
 /* Responsive multi-calendar */
 @media (max-width: 640px) {
-  .trc-multi-calendar {
+  .trc-multi-calendar-calendars {
     flex-direction: column;
   }
 

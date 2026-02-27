@@ -256,11 +256,12 @@
 }
 
 /* ==========================================================================
-   Multi-calendar responsive fix
+   Multi-calendar layout fix — always side-by-side
    ========================================================================== */
 
 .trc-multi-calendar {
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 
 /* ==========================================================================

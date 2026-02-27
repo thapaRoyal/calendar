@@ -1,5 +1,6 @@
 ---
 import PlaygroundLayout from '../../layouts/PlaygroundLayout.astro';
+import '@thaparoyal/calendar-core/themes/themes.css';
 ---
 
 <PlaygroundLayout title="Vanilla JS Playground" activeTab="vanilla">
@@ -69,6 +70,7 @@ import PlaygroundLayout from '../../layouts/PlaygroundLayout.astro';
     render('#vanilla-bs', {
       config: { calendarType: 'BS', locale: 'en' },
       selectionMode: 'single',
+      theme: 'dark',
       onValueChange: (val) => {
         const el = document.getElementById('vanilla-bs-value');
         if (el) el.textContent = `Selected: ${fmtDate(val)}`;
@@ -79,6 +81,7 @@ import PlaygroundLayout from '../../layouts/PlaygroundLayout.astro';
     render('#vanilla-ad', {
       config: { calendarType: 'AD', locale: 'en' },
       selectionMode: 'single',
+      theme: 'ocean',
       onValueChange: (val) => {
         const el = document.getElementById('vanilla-ad-value');
         if (el) el.textContent = `Selected: ${fmtDate(val)}`;
@@ -89,6 +92,7 @@ import PlaygroundLayout from '../../layouts/PlaygroundLayout.astro';
     render('#vanilla-ne', {
       config: { calendarType: 'BS', locale: 'ne' },
       selectionMode: 'single',
+      theme: 'sunset',
       onValueChange: (val) => {
         const el = document.getElementById('vanilla-ne-value');
         if (el) el.textContent = `Selected: ${fmtDate(val)}`;
@@ -99,6 +103,7 @@ import PlaygroundLayout from '../../layouts/PlaygroundLayout.astro';
     render('#vanilla-range', {
       config: { calendarType: 'BS', locale: 'en' },
       selectionMode: 'range',
+      theme: 'royal',
       onValueChange: (val: any) => {
         const el = document.getElementById('vanilla-range-value');
         if (el && val) {

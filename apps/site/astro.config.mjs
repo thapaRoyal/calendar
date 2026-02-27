@@ -20,9 +20,18 @@ export default defineConfig({
         {
           label: 'Getting Started',
           items: [
-            { label: 'Introduction', link: '/docs/getting-started/introduction/' },
-            { label: 'Installation', link: '/docs/getting-started/installation/' },
-            { label: 'CLI', link: '/docs/getting-started/cli/' },
+            { label: 'Introduction', link: '/getting-started/introduction/' },
+            { label: 'Installation', link: '/getting-started/installation/' },
+            { label: 'CLI', link: '/getting-started/cli/' },
+          ],
+        },
+        {
+          label: 'Components',
+          items: [
+            { label: 'Calendar', link: '/components/calendar/' },
+            { label: 'DatePicker', link: '/components/date-picker/' },
+            { label: 'RangeCalendar', link: '/components/range-calendar/' },
+            { label: 'MultiCalendar', link: '/components/multi-calendar/' },
           ],
         },
         {
