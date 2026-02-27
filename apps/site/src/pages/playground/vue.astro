@@ -1,11 +1,3 @@
 ---
-import PlaygroundLayout from '../../layouts/PlaygroundLayout.astro';
-import VuePlayground from '../../components/VuePlayground.vue';
-import '@thaparoyal/calendar-core/themes/themes.css';
+return Astro.redirect('/playground/react/');
 ---
-
-<PlaygroundLayout title="Vue Playground" activeTab="vue">
-  <div class="playground-container">
-    <VuePlayground client:only="vue" />
-  </div>
-</PlaygroundLayout>

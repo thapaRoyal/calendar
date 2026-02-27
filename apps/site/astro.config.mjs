@@ -86,10 +86,7 @@ export default defineConfig({
         {
           label: 'Playground',
           items: [
-            { label: 'React', link: '/playground/react/' },
-            { label: 'Vue', link: '/playground/vue/' },
-            { label: 'Svelte', link: '/playground/svelte/' },
-            { label: 'Vanilla JS', link: '/playground/vanilla/' },
+            { label: 'Interactive Demo', link: '/playground/react/' },
           ],
         },
       ],

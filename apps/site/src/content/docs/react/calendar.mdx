@@ -5,46 +5,83 @@ description: The base Calendar component for single date selection
 
 # Calendar
 
-The Calendar component provides single date selection with support for month/year pickers.
+The Calendar component provides single date selection with support for month/year pickers, dropdown navigation, themes, and Nepali locale.
 
-## Basic Usage
+## Import
 
 ```tsx
 import { Calendar } from '@thaparoyal/calendar-react';
+import type { CalendarDate } from '@thaparoyal/calendar-react';
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+## Basic BS Calendar
+
+```tsx
+import { useState } from 'react';
+import { Calendar } from '@thaparoyal/calendar-react';
+import type { CalendarDate } from '@thaparoyal/calendar-react';
 import '@thaparoyal/calendar-core/themes/themes.css';
 
 function MyCalendar() {
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState<CalendarDate | null>(null);
 
   return (
-    <Calendar.Root
-      config={{ calendarType: 'BS', locale: 'en' }}
-      value={date}
-      onValueChange={setDate}
-    >
-      <Calendar.Header>
-        <Calendar.PrevButton />
-        <Calendar.Title />
-        <Calendar.NextButton />
-      </Calendar.Header>
-      <Calendar.Grid>
-        <Calendar.GridHead />
-        <Calendar.GridBody />
-      </Calendar.Grid>
-    </Calendar.Root>
+    <div data-theme="default">
+      <Calendar.Root
+        config={{ calendarType: 'BS', locale: 'en' }}
+        value={date}
+        onValueChange={setDate}
+      >
+        <Calendar.Header>
+          <Calendar.PrevButton />
+          <Calendar.Title />
+          <Calendar.NextButton />
+        </Calendar.Header>
+        <Calendar.Grid>
+          <Calendar.GridHead />
+          <Calendar.GridBody />
+        </Calendar.Grid>
+      </Calendar.Root>
+      <p>Selected: {date ? `${date.year}-${date.month}-${date.day}` : 'None'}</p>
+    </div>
   );
 }
 ```
 
-## With Month/Year Pickers
+## AD Calendar
 
-Click the title to switch between day, month, and year views:
+Switch to Gregorian by changing `calendarType`:
 
 ```tsx
-<Calendar.Root ...>
+<Calendar.Root config={{ calendarType: 'AD', locale: 'en' }}>
+  ...
+</Calendar.Root>
+```
+
+## Nepali Numerals
+
+Use `locale: 'ne'` to render Devanagari numerals and Nepali month names:
+
+```tsx
+<Calendar.Root config={{ calendarType: 'BS', locale: 'ne' }}>
+  ...
+</Calendar.Root>
+```
+
+## Month/Year Pickers
+
+Click the `Calendar.Title` to cycle between views: **day → month → year → day**. Include `MonthPicker` and `YearPicker` sub-components to render the picker grids:
+
+```tsx
+<Calendar.Root
+  config={{ calendarType: 'BS', locale: 'en' }}
+  value={date}
+  onValueChange={setDate}
+>
   <Calendar.Header>
     <Calendar.PrevButton />
-    <Calendar.Title />  {/* Click to cycle views */}
+    <Calendar.Title />  {/* Click to cycle: day → month → year → day */}
     <Calendar.NextButton />
   </Calendar.Header>
   <Calendar.Grid>
@@ -56,12 +93,28 @@ Click the title to switch between day, month, and year views:
 </Calendar.Root>
 ```
 
-## With Dropdowns
+### How View Mode Cycling Works
+
+1. In **day** view, clicking the title switches to **month** view (3×4 month grid)
+2. In **month** view, clicking a month selects it and returns to **day** view
+3. In **month** view, clicking the title switches to **year** view (3×4 year grid with decade navigation)
+4. In **year** view, clicking a year selects it and returns to **month** view
+
+The `PrevButton` / `NextButton` behavior adapts to the current view mode:
+- **Day view**: navigate months
+- **Month view**: navigate years
+- **Year view**: navigate decades
+
+## Month/Year Dropdowns
 
 Use dropdown selects for quick month/year navigation:
 
 ```tsx
-<Calendar.Root ...>
+<Calendar.Root
+  config={{ calendarType: 'BS', locale: 'en' }}
+  value={date}
+  onValueChange={setDate}
+>
   <Calendar.Header>
     <Calendar.PrevButton />
     <Calendar.MonthDropdown />
@@ -75,21 +128,25 @@ Use dropdown selects for quick month/year navigation:
 </Calendar.Root>
 ```
 
-## Nepali Numerals
+## Week Starts on Monday
 
 ```tsx
-<Calendar.Root config={{ calendarType: 'BS', locale: 'ne' }}>
+<Calendar.Root config={{ calendarType: 'BS', locale: 'en', weekStartsOn: 1 }}>
   ...
 </Calendar.Root>
 ```
 
 ## Disabled Dates
 
+Pass an array of specific dates that cannot be selected:
+
 ```tsx
 <Calendar.Root
+  config={{ calendarType: 'BS', locale: 'en' }}
   disabledDates={[
     { year: 2081, month: 10, day: 5, calendarType: 'BS' },
     { year: 2081, month: 10, day: 15, calendarType: 'BS' },
+    { year: 2081, month: 10, day: 20, calendarType: 'BS' },
   ]}
 >
   ...
@@ -98,20 +155,38 @@ Use dropdown selects for quick month/year navigation:
 
 ## Min/Max Date Constraints
 
+Restrict navigation and selection to a date range:
+
 ```tsx
 <Calendar.Root
   config={{
     calendarType: 'BS',
     locale: 'en',
-    minDate: { year: 2081, month: 10, day: 1, calendarType: 'BS' },
-    maxDate: { year: 2081, month: 10, day: 28, calendarType: 'BS' },
+    minDate: { year: 2081, month: 1, day: 1, calendarType: 'BS' },
+    maxDate: { year: 2081, month: 12, day: 30, calendarType: 'BS' },
   }}
 >
   ...
 </Calendar.Root>
 ```
 
+When min/max are set, the `PrevButton` and `NextButton` are automatically disabled at the boundaries.
+
+## Themes
+
+Wrap your calendar in a container with `data-theme`:
+
+```tsx
+<div data-theme="lavender">
+  <Calendar.Root>...</Calendar.Root>
+</div>
+```
+
+Available themes: `default`, `dark`, `ocean`, `ocean-dark`, `forest`, `forest-dark`, `sunset`, `sunset-dark`, `royal`, `royal-dark`, `nepal`, `nepal-dark`, `lavender`, `midnight`, `rose`, `mint`, `amber`, `slate`, `coral`, `indigo`.
+
 ## Custom Styling (shadcn-style)
+
+Override CSS classes and custom components for full control:
 
 ```tsx
 <Calendar.Root
@@ -142,19 +217,54 @@ Use dropdown selects for quick month/year navigation:
 | `classNames` | `CalendarClassNames` | Override all element classes |
 | `components` | `CalendarComponents` | Custom render components |
 
+### CalendarConfig
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `calendarType` | `'AD' \| 'BS'` | Gregorian or Bikram Sambat |
+| `locale` | `'en' \| 'ne'` | English or Nepali (Devanagari numerals) |
+| `weekStartsOn` | `0 \| 1` | `0` = Sunday, `1` = Monday |
+| `minDate` | `CalendarDate` | Earliest navigable date |
+| `maxDate` | `CalendarDate` | Latest navigable date |
+
 ## Sub-components
 
 | Component | Description |
 |-----------|-------------|
-| `Calendar.Root` | Root provider |
+| `Calendar.Root` | Root provider — holds all state in React Context |
 | `Calendar.Header` | Navigation header container |
-| `Calendar.Title` | Month/year title (click to switch views) |
-| `Calendar.PrevButton` | Previous month/year button |
-| `Calendar.NextButton` | Next month/year button |
+| `Calendar.Title` | Month/year title (click to switch views: day → month → year) |
+| `Calendar.PrevButton` | Previous month/year/decade button |
+| `Calendar.NextButton` | Next month/year/decade button |
 | `Calendar.Grid` | Calendar grid container |
-| `Calendar.GridHead` | Weekday headers |
-| `Calendar.GridBody` | Day cells |
-| `Calendar.MonthPicker` | Month selection grid |
-| `Calendar.YearPicker` | Year selection grid |
-| `Calendar.MonthDropdown` | Month dropdown select |
-| `Calendar.YearDropdown` | Year dropdown select |
+| `Calendar.GridHead` | Weekday headers row |
+| `Calendar.GridBody` | Day cells grid |
+| `Calendar.MonthPicker` | 3×4 month selection grid |
+| `Calendar.YearPicker` | 3×4 year selection grid with decade navigation |
+| `Calendar.MonthDropdown` | Native month dropdown select |
+| `Calendar.YearDropdown` | Native year dropdown select |
+
+## CSS Classes
+
+The component uses `trc-*` CSS classes from the core theme stylesheet:
+
+| Class | Element |
+|-------|---------|
+| `.trc-calendar` | Root container |
+| `.trc-calendar-header` | Header row |
+| `.trc-calendar-title` | Title button |
+| `.trc-calendar-nav-button` | Prev/Next buttons |
+| `.trc-calendar-grid` | Grid table |
+| `.trc-calendar-grid-head` | Weekday header row |
+| `.trc-calendar-weekday` | Individual weekday label |
+| `.trc-calendar-week` | Week row |
+| `.trc-calendar-cell` | Day cell |
+| `.trc-calendar-cell-today` | Today's date |
+| `.trc-calendar-cell-selected` | Selected date |
+| `.trc-calendar-cell-outside` | Outside current month |
+| `.trc-calendar-cell-disabled` | Disabled date |
+| `.trc-calendar-day` | Day button inside cell |
+| `.trc-calendar-month-picker` | Month picker container |
+| `.trc-calendar-month-cell` | Month picker cell |
+| `.trc-calendar-year-picker` | Year picker container |
+| `.trc-calendar-year-cell` | Year picker cell |

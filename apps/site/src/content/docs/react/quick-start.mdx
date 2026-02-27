@@ -5,7 +5,7 @@ description: Get started with @thaparoyal/calendar-react
 
 # React Quick Start
 
-React has the most complete UI surface with prebuilt compound components for every feature.
+`@thaparoyal/calendar-react` provides **prebuilt compound components** for every calendar feature. Unlike the headless Vue/Svelte packages, the React package includes fully styled UI components out of the box.
 
 ## Installation
 
@@ -19,7 +19,27 @@ Import the theme CSS in your app entry point:
 import '@thaparoyal/calendar-core/themes/themes.css';
 ```
 
-## Basic Calendar
+## Components
+
+| Component | Purpose |
+|-----------|---------|
+| [`Calendar`](/react/calendar/) | Single date selection with month/year pickers |
+| [`DatePicker`](/react/date-picker/) | Input field with calendar dropdown |
+| [`RangeCalendar`](/react/range-calendar/) | Select a date range (start → end) |
+| [`MultiCalendar`](/react/multi-calendar/) | Multiple months side by side |
+
+## Hooks
+
+| Hook | Purpose |
+|------|---------|
+| `useCalendar` | Headless calendar state and actions |
+| `useSelection` | Selection logic for single/range/multiple modes |
+| `useDatePicker` | Date picker state (open/close, input, calendar) |
+| `useDateConverter` | AD↔BS date conversion utilities |
+
+## Compound Component Pattern
+
+Every React component uses a compound component pattern. You compose your calendar from small, focused sub-components:
 
 ```tsx
 import { useState } from 'react';
@@ -52,23 +72,7 @@ function App() {
 }
 ```
 
-## Available Components
-
-| Component | Purpose |
-|-----------|---------|
-| `Calendar` | Single date selection with month/year pickers |
-| `DatePicker` | Input field with calendar dropdown |
-| `RangeCalendar` | Select a date range (start → end) |
-| `MultiCalendar` | Multiple months side by side |
-
-## Available Hooks
-
-| Hook | Purpose |
-|------|---------|
-| `useCalendar` | Headless calendar state and actions |
-| `useSelection` | Selection logic for single/range/multiple modes |
-| `useDatePicker` | Date picker state (open/close, input, calendar) |
-| `useDateConverter` | AD↔BS date conversion utilities |
+Each sub-component (`Calendar.Header`, `Calendar.Title`, etc.) renders its portion of the UI and reads shared state from React Context internally.
 
 ## Calendar Types
 
@@ -96,12 +100,78 @@ Wrap your calendar in a container with `data-theme` attribute:
 </div>
 ```
 
-Available themes: `default`, `ocean`, `forest`, `sunset`, `lavender`, `midnight`, `rose`, `mint`, `amber`, `slate`, `coral`, `indigo` — each with a `-dark` variant.
+Available themes: `default`, `dark`, `ocean`, `ocean-dark`, `forest`, `forest-dark`, `sunset`, `sunset-dark`, `royal`, `royal-dark`, `nepal`, `nepal-dark`, `lavender`, `midnight`, `rose`, `mint`, `amber`, `slate`, `coral`, `indigo`.
+
+## Quick Examples
+
+### Date Picker
+
+```tsx
+import { DatePicker } from '@thaparoyal/calendar-react';
+
+<DatePicker.Root
+  config={{ calendarType: 'BS', locale: 'en' }}
+  value={date}
+  onValueChange={setDate}
+>
+  <DatePicker.Input placeholder="Select date..." />
+  <DatePicker.Trigger />
+  <DatePicker.Content>
+    <DatePicker.Calendar />
+  </DatePicker.Content>
+</DatePicker.Root>
+```
+
+### Range Calendar
+
+```tsx
+import { RangeCalendar } from '@thaparoyal/calendar-react';
+import type { DateRangeValue } from '@thaparoyal/calendar-react';
+
+const [range, setRange] = useState<DateRangeValue | null>(null);
+
+<RangeCalendar.Root
+  config={{ calendarType: 'BS', locale: 'en' }}
+  value={range}
+  onValueChange={setRange}
+>
+  <RangeCalendar.Header>
+    <RangeCalendar.PrevButton />
+    <RangeCalendar.Title />
+    <RangeCalendar.NextButton />
+  </RangeCalendar.Header>
+  <RangeCalendar.Grid>
+    <RangeCalendar.GridHead />
+    <RangeCalendar.GridBody />
+  </RangeCalendar.Grid>
+</RangeCalendar.Root>
+```
+
+### Multi-Calendar
+
+```tsx
+import { MultiCalendar } from '@thaparoyal/calendar-react';
+
+<MultiCalendar.Root
+  numberOfMonths={2}
+  mode="range"
+  config={{ calendarType: 'BS', locale: 'en' }}
+  value={range}
+  onValueChange={setRange}
+>
+  <MultiCalendar.Header>
+    <MultiCalendar.PrevButton />
+    <MultiCalendar.Title />
+    <MultiCalendar.NextButton />
+  </MultiCalendar.Header>
+  <MultiCalendar.Calendars />
+</MultiCalendar.Root>
+```
 
 ## Next Steps
 
-- [Calendar](/docs/react/calendar/) — Full calendar component reference
-- [DatePicker](/docs/react/date-picker/) — Input + dropdown calendar
-- [RangeCalendar](/docs/react/range-calendar/) — Date range selection
-- [MultiCalendar](/docs/react/multi-calendar/) — Multiple months display
-- [All Examples](/docs/react/examples/) — Every feature demonstrated
+- [Calendar](/react/calendar/) — Full calendar component reference
+- [DatePicker](/react/date-picker/) — Input + dropdown calendar
+- [RangeCalendar](/react/range-calendar/) — Date range selection
+- [MultiCalendar](/react/multi-calendar/) — Multiple months display
+- [All Examples](/react/examples/) — Every feature demonstrated

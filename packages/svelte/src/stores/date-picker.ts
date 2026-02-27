@@ -8,12 +8,18 @@ import {
   getWeekdayMinNames,
   formatDay,
   formatDate,
+  getMonthGrid,
+  getYearGrid,
+  getDecadeRange,
   type DatePickerState,
   type DatePickerEvent,
   type CalendarConfig,
   type CalendarDate,
   type Week,
   type Locale,
+  type MonthPickerItem,
+  type YearPickerItem,
+  type DecadeRange,
 } from '@thaparoyal/calendar-core';
 
 /**
@@ -39,9 +45,14 @@ export interface DatePickerStore {
   weekdayNames: Readable<readonly string[]>;
   formattedValue: Readable<string>;
   locale: Readable<Locale>;
+  monthPickerItems: Readable<MonthPickerItem[]>;
+  yearPickerItems: Readable<YearPickerItem[]>;
+  decadeRange: Readable<DecadeRange>;
+  viewMode: Readable<'day' | 'month' | 'year'>;
   isPrevMonthDisabled: Readable<boolean>;
   isNextMonthDisabled: Readable<boolean>;
   formatDayNumber: (day: number) => string;
+  focusDate: (date: CalendarDate) => void;
   // Actions
   open: () => void;
   close: () => void;
@@ -129,6 +140,33 @@ export function createDatePicker(options: CreateDatePickerOptions = {}): DatePic
 
   const locale = derived(internalState, ($state) => $state.config.locale);
 
+  const monthPickerItems = derived(internalState, ($state) =>
+    getMonthGrid(
+      $state.focusedDate.year,
+      $state.config.calendarType,
+      $state.config.locale,
+      $state.focusedDate.month,
+      $state.config.minDate,
+      $state.config.maxDate
+    )
+  );
+
+  const yearPickerItems = derived(internalState, ($state) =>
+    getYearGrid(
+      $state.focusedDate.year,
+      $state.config.calendarType,
+      12,
+      $state.config.minDate,
+      $state.config.maxDate
+    )
+  );
+
+  const decadeRangeStore = derived(internalState, ($state) =>
+    getDecadeRange($state.focusedDate.year)
+  );
+
+  const viewModeStore = derived(internalState, ($state) => $state.viewMode);
+
   const isPrevMonthDisabled = derived(internalState, ($state) => {
     if (!$state.config.minDate) return false;
     const { year, month } = $state.focusedDate;
@@ -154,6 +192,14 @@ export function createDatePicker(options: CreateDatePickerOptions = {}): DatePic
   });
   const formatDayNumber = (day: number) => formatDay(day, currentLocale);
 
+  const focusDate = (date: CalendarDate) => {
+    dispatch({ type: 'FOCUS_DATE', date } as any);
+    internalState.update(($state) => ({
+      ...$state,
+      focusedDate: date,
+    }));
+  };
+
   // Wrapped selectDate that also syncs the selectedDate writable
   const selectDate = (date: CalendarDate) => {
     actions.selectDate(date);
@@ -176,9 +222,14 @@ export function createDatePicker(options: CreateDatePickerOptions = {}): DatePic
     weekdayNames,
     formattedValue,
     locale,
+    monthPickerItems,
+    yearPickerItems,
+    decadeRange: decadeRangeStore,
+    viewMode: viewModeStore,
     isPrevMonthDisabled,
     isNextMonthDisabled,
     formatDayNumber,
+    focusDate,
     // Actions
     open: actions.open,
     close: actions.close,

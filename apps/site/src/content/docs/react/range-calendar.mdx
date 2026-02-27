@@ -5,43 +5,63 @@ description: Calendar component for selecting date ranges
 
 # RangeCalendar
 
-The RangeCalendar component allows users to select a date range with start and end dates.
+The RangeCalendar component allows users to select a date range with start and end dates. It provides hover preview highlighting as the user selects.
+
+## Import
+
+```tsx
+import { RangeCalendar } from '@thaparoyal/calendar-react';
+import type { DateRangeValue, CalendarDate } from '@thaparoyal/calendar-react';
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
 
 ## Basic Usage
 
 ```tsx
+import { useState } from 'react';
 import { RangeCalendar } from '@thaparoyal/calendar-react';
 import type { DateRangeValue } from '@thaparoyal/calendar-react';
+import '@thaparoyal/calendar-core/themes/themes.css';
 
 function MyRangeCalendar() {
   const [range, setRange] = useState<DateRangeValue | null>(null);
 
   return (
-    <RangeCalendar.Root
-      config={{ calendarType: 'BS', locale: 'en' }}
-      value={range}
-      onValueChange={setRange}
-    >
-      <RangeCalendar.Header>
-        <RangeCalendar.PrevButton />
-        <RangeCalendar.Title />
-        <RangeCalendar.NextButton />
-      </RangeCalendar.Header>
-      <RangeCalendar.Grid>
-        <RangeCalendar.GridHead />
-        <RangeCalendar.GridBody />
-      </RangeCalendar.Grid>
-    </RangeCalendar.Root>
+    <div data-theme="rose">
+      <RangeCalendar.Root
+        config={{ calendarType: 'BS', locale: 'en' }}
+        value={range}
+        onValueChange={setRange}
+      >
+        <RangeCalendar.Header>
+          <RangeCalendar.PrevButton />
+          <RangeCalendar.Title />
+          <RangeCalendar.NextButton />
+        </RangeCalendar.Header>
+        <RangeCalendar.Grid>
+          <RangeCalendar.GridHead />
+          <RangeCalendar.GridBody />
+        </RangeCalendar.Grid>
+      </RangeCalendar.Root>
+
+      {range && (
+        <p>
+          Start: {range.start?.year}-{range.start?.month}-{range.start?.day}
+          {' | '}
+          End: {range.end?.year}-{range.end?.month}-{range.end?.day}
+        </p>
+      )}
+    </div>
   );
 }
 ```
 
-## How It Works
+## How Range Selection Works
 
-1. Click a date to set the **start date**
-2. Hover over other dates to see the **preview range**
-3. Click another date to set the **end date**
-4. Click again to reset and start a new selection
+1. **First click** — sets the start date. The calendar enters "selecting end" mode.
+2. **Mouse hover** — shows a preview highlight between start and the hovered date.
+3. **Second click** — sets the end date. The range is complete.
+4. **Third click** — resets and starts a new range.
 
 ## Value Type
 
@@ -52,36 +72,103 @@ interface DateRangeValue {
 }
 ```
 
+## AD Calendar
+
+```tsx
+<RangeCalendar.Root
+  config={{ calendarType: 'AD', locale: 'en' }}
+  value={range}
+  onValueChange={setRange}
+>
+  ...
+</RangeCalendar.Root>
+```
+
+## Nepali Numerals
+
+```tsx
+<RangeCalendar.Root
+  config={{ calendarType: 'BS', locale: 'ne' }}
+  value={range}
+  onValueChange={setRange}
+>
+  ...
+</RangeCalendar.Root>
+```
+
+## Disabled Dates
+
+Prevent specific dates from being selected within the range:
+
+```tsx
+<RangeCalendar.Root
+  config={{ calendarType: 'BS', locale: 'en' }}
+  disabledDates={[
+    { year: 2081, month: 10, day: 10, calendarType: 'BS' },
+    { year: 2081, month: 10, day: 20, calendarType: 'BS' },
+  ]}
+  value={range}
+  onValueChange={setRange}
+>
+  ...
+</RangeCalendar.Root>
+```
+
+## Min/Max Constraints
+
+```tsx
+<RangeCalendar.Root
+  config={{
+    calendarType: 'BS',
+    locale: 'en',
+    minDate: { year: 2081, month: 1, day: 1, calendarType: 'BS' },
+    maxDate: { year: 2081, month: 12, day: 30, calendarType: 'BS' },
+  }}
+  value={range}
+  onValueChange={setRange}
+>
+  ...
+</RangeCalendar.Root>
+```
+
+## Themes
+
+```tsx
+<div data-theme="coral">
+  <RangeCalendar.Root>...</RangeCalendar.Root>
+</div>
+```
+
 ## Props
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `config` | `Partial<CalendarConfig>` | Calendar configuration |
+| `config` | `Partial<CalendarConfig>` | Calendar configuration (type, locale, min/max, etc.) |
 | `value` | `DateRangeValue \| null` | Controlled range value |
 | `defaultValue` | `DateRangeValue` | Initial range |
 | `onValueChange` | `(value: DateRangeValue \| null) => void` | Selection callback |
 | `disabledDates` | `CalendarDate[]` | Non-selectable dates |
 
-## Styling Range States
+## Range CSS Classes
 
-The component applies these CSS classes:
+The component applies these CSS classes to day cells based on their range state:
 
-| Class | Description |
+| Class | Applied when |
 |-------|-------------|
-| `.trc-calendar-cell-range-start` | First date in range |
-| `.trc-calendar-cell-range-end` | Last date in range |
-| `.trc-calendar-cell-range-middle` | Dates between start and end |
-| `.trc-calendar-cell-range-hover` | Hover preview when selecting |
+| `.trc-calendar-cell-range-start` | Cell is the range start date |
+| `.trc-calendar-cell-range-end` | Cell is the range end date |
+| `.trc-calendar-cell-range-middle` | Cell is between start and end |
+| `.trc-calendar-cell-range-hover` | Cell is in the hover preview (before second click) |
 
 ## Sub-components
 
 | Component | Description |
 |-----------|-------------|
-| `RangeCalendar.Root` | Root provider |
+| `RangeCalendar.Root` | Root provider — manages range state with dual calendar + selection reducers |
 | `RangeCalendar.Header` | Navigation header |
 | `RangeCalendar.Title` | Month/year title |
 | `RangeCalendar.PrevButton` | Previous month |
 | `RangeCalendar.NextButton` | Next month |
 | `RangeCalendar.Grid` | Calendar grid container |
 | `RangeCalendar.GridHead` | Weekday headers |
-| `RangeCalendar.GridBody` | Day cells with range styling |
+| `RangeCalendar.GridBody` | Day cells with range styling and hover handlers |

@@ -1,9 +1,9 @@
 ---
 import PlaygroundLayout from '../../layouts/PlaygroundLayout.astro';
-import ReactPlayground from '../../components/ReactPlayground';
+import Playground from '../../components/Playground';
 import '@thaparoyal/calendar-core/themes/themes.css';
 ---
 
-<PlaygroundLayout title="React Playground" activeTab="react">
-  <ReactPlayground client:only="react" />
+<PlaygroundLayout title="Playground">
+  <Playground client:only="react" />
 </PlaygroundLayout>

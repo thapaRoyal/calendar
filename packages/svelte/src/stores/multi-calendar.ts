@@ -59,8 +59,10 @@ export interface MultiCalendarStore {
   locale: Readable<Locale>;
   formatDayNumber: (day: number) => string;
   select: (date: CalendarDate) => void;
+  toggle: (date: CalendarDate) => void;
   hover: (date: CalendarDate | null) => void;
   clear: () => void;
+  focusDate: (date: CalendarDate) => void;
   nextMonth: () => void;
   prevMonth: () => void;
 }
@@ -185,12 +187,23 @@ export function createMultiCalendar(options: CreateMultiCalendarOptions = {}): M
     dispatch({ type: 'SELECT', date });
   };
 
+  const toggle = (date: CalendarDate) => {
+    dispatch({ type: 'TOGGLE', date });
+  };
+
   const hover = (date: CalendarDate | null) => {
     dispatch({ type: 'HOVER', date });
   };
 
   const clear = () => {
     dispatch({ type: 'CLEAR' });
+  };
+
+  const focusDate = (date: CalendarDate) => {
+    internalState.update(($state) => ({
+      ...$state,
+      focusedDate: date,
+    }));
   };
 
   const nextMonth = () => {
@@ -228,8 +241,10 @@ export function createMultiCalendar(options: CreateMultiCalendarOptions = {}): M
     locale,
     formatDayNumber,
     select,
+    toggle,
     hover,
     clear,
+    focusDate,
     nextMonth,
     prevMonth,
   };

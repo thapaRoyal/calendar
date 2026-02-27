@@ -5,36 +5,56 @@ description: Date picker with input field and calendar dropdown
 
 # DatePicker
 
-The DatePicker component combines an input field with a calendar dropdown for date selection.
+The DatePicker component combines an input field with a calendar dropdown for date selection. It manages open/close state, date formatting, and auto-closes after selection.
+
+## Import
+
+```tsx
+import { DatePicker } from '@thaparoyal/calendar-react';
+import type { CalendarDate } from '@thaparoyal/calendar-react';
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
 
 ## Basic Usage
 
 ```tsx
+import { useState } from 'react';
 import { DatePicker } from '@thaparoyal/calendar-react';
+import type { CalendarDate } from '@thaparoyal/calendar-react';
+import '@thaparoyal/calendar-core/themes/themes.css';
 
 function MyDatePicker() {
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState<CalendarDate | null>(null);
 
   return (
-    <DatePicker.Root
-      config={{ calendarType: 'BS', locale: 'en' }}
-      value={date}
-      onValueChange={setDate}
-    >
-      <DatePicker.Input placeholder="Select date..." />
-      <DatePicker.Trigger />
-      <DatePicker.Content>
-        <DatePicker.Calendar />
-      </DatePicker.Content>
-    </DatePicker.Root>
+    <div data-theme="indigo">
+      <DatePicker.Root
+        config={{ calendarType: 'BS', locale: 'en' }}
+        value={date}
+        onValueChange={setDate}
+      >
+        <DatePicker.Input placeholder="Select date..." />
+        <DatePicker.Trigger />
+        <DatePicker.Content>
+          <DatePicker.Calendar />
+        </DatePicker.Content>
+      </DatePicker.Root>
+      <p>Selected: {date ? `${date.year}-${date.month}-${date.day}` : 'None'}</p>
+    </div>
   );
 }
 ```
 
 ## With Clear Button
 
+Add `DatePicker.ClearButton` to let users clear the selection:
+
 ```tsx
-<DatePicker.Root value={date} onValueChange={setDate}>
+<DatePicker.Root
+  config={{ calendarType: 'BS', locale: 'en' }}
+  value={date}
+  onValueChange={setDate}
+>
   <DatePicker.Input placeholder="Select date..." />
   <DatePicker.ClearButton />
   <DatePicker.Trigger />
@@ -46,44 +66,122 @@ function MyDatePicker() {
 
 ## Custom Format
 
+Change the date display format in the input field:
+
 ```tsx
-<DatePicker.Root format="YYYY/MM/DD">
+<DatePicker.Root
+  config={{ calendarType: 'BS', locale: 'en' }}
+  format="YYYY/MM/DD"
+  value={date}
+  onValueChange={setDate}
+>
+  ...
+</DatePicker.Root>
+```
+
+Supported format tokens: `YYYY` (year), `MM` (month), `DD` (day).
+
+## AD Calendar DatePicker
+
+```tsx
+<DatePicker.Root
+  config={{ calendarType: 'AD', locale: 'en' }}
+  value={date}
+  onValueChange={setDate}
+>
+  ...
+</DatePicker.Root>
+```
+
+## Nepali Numerals
+
+```tsx
+<DatePicker.Root
+  config={{ calendarType: 'BS', locale: 'ne' }}
+  value={date}
+  onValueChange={setDate}
+>
+  ...
+</DatePicker.Root>
+```
+
+## Disabled Dates
+
+Prevent specific dates from being selected:
+
+```tsx
+<DatePicker.Root
+  config={{ calendarType: 'BS', locale: 'en' }}
+  disabledDates={[
+    { year: 2081, month: 10, day: 5, calendarType: 'BS' },
+    { year: 2081, month: 10, day: 15, calendarType: 'BS' },
+  ]}
+  value={date}
+  onValueChange={setDate}
+>
   ...
 </DatePicker.Root>
 ```
 
 ## Min/Max Date Constraints
 
+Restrict the selectable date range:
+
 ```tsx
 <DatePicker.Root
   config={{
     calendarType: 'BS',
+    locale: 'en',
     minDate: { year: 2080, month: 1, day: 1, calendarType: 'BS' },
-    maxDate: { year: 2080, month: 12, day: 30, calendarType: 'BS' },
+    maxDate: { year: 2082, month: 12, day: 30, calendarType: 'BS' },
   }}
+  value={date}
+  onValueChange={setDate}
 >
   ...
 </DatePicker.Root>
 ```
 
+## Themes
+
+Wrap with `data-theme` to apply any of the built-in themes:
+
+```tsx
+<div data-theme="ocean">
+  <DatePicker.Root>...</DatePicker.Root>
+</div>
+```
+
 ## Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `config` | `Partial<CalendarConfig>` | Calendar configuration |
-| `value` | `CalendarDate \| null` | Controlled selected date |
-| `defaultValue` | `CalendarDate` | Initial date |
-| `onValueChange` | `(date: CalendarDate \| null) => void` | Selection callback |
-| `disabledDates` | `CalendarDate[]` | Non-selectable dates |
-| `format` | `string` | Date format string (e.g., `'YYYY/MM/DD'`) |
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `config` | `Partial<CalendarConfig>` | — | Calendar configuration (type, locale, min/max, etc.) |
+| `value` | `CalendarDate \| null` | — | Controlled selected date |
+| `defaultValue` | `CalendarDate` | — | Initial date |
+| `onValueChange` | `(date: CalendarDate \| null) => void` | — | Selection callback |
+| `disabledDates` | `CalendarDate[]` | — | Non-selectable dates |
+| `format` | `string` | `'YYYY-MM-DD'` | Date format string |
 
 ## Sub-components
 
 | Component | Description |
 |-----------|-------------|
-| `DatePicker.Root` | Root provider |
-| `DatePicker.Input` | Text input showing formatted date |
-| `DatePicker.Trigger` | Button to open/close calendar |
-| `DatePicker.Content` | Dropdown container |
-| `DatePicker.Calendar` | Calendar grid inside dropdown |
-| `DatePicker.ClearButton` | Clear selection button |
+| `DatePicker.Root` | Root provider — manages open/close state and selection |
+| `DatePicker.Input` | Text input showing the formatted date value |
+| `DatePicker.Trigger` | Button to toggle the calendar dropdown |
+| `DatePicker.Content` | Dropdown container (positioned below input) |
+| `DatePicker.Calendar` | Calendar grid rendered inside the dropdown |
+| `DatePicker.ClearButton` | Button to clear the current selection |
+
+## CSS Classes
+
+| Class | Element |
+|-------|---------|
+| `.trc-date-picker` | Root container |
+| `.trc-date-picker-input-wrapper` | Input + buttons wrapper |
+| `.trc-date-picker-input` | Text input |
+| `.trc-date-picker-trigger` | Open/close button |
+| `.trc-date-picker-clear` | Clear button |
+| `.trc-date-picker-content` | Dropdown container |
+| `.trc-date-picker-calendar` | Calendar inside dropdown |

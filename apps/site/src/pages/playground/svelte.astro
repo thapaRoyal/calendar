@@ -1,11 +1,3 @@
 ---
-import PlaygroundLayout from '../../layouts/PlaygroundLayout.astro';
-import SveltePlayground from '../../components/SveltePlayground.svelte';
-import '@thaparoyal/calendar-core/themes/themes.css';
+return Astro.redirect('/playground/react/');
 ---
-
-<PlaygroundLayout title="Svelte Playground" activeTab="svelte">
-  <div class="playground-container">
-    <SveltePlayground client:only="svelte" />
-  </div>
-</PlaygroundLayout>

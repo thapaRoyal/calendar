@@ -9,6 +9,9 @@ import {
   getWeekdayMinNames,
   formatDay,
   enhanceWeekDayWithSelection,
+  getMonthGrid,
+  getYearGrid,
+  getDecadeRange,
   type SelectionState,
   type SelectionEvent,
   type SelectionConfig,
@@ -17,6 +20,9 @@ import {
   type SelectionMode,
   type Week,
   type Locale,
+  type MonthPickerItem,
+  type YearPickerItem,
+  type DecadeRange,
 } from '@thaparoyal/calendar-core';
 
 /**
@@ -42,8 +48,13 @@ export interface SelectionStore {
   isPrevMonthDisabled: Readable<boolean>;
   isNextMonthDisabled: Readable<boolean>;
   locale: Readable<Locale>;
+  monthPickerItems: Readable<MonthPickerItem[]>;
+  yearPickerItems: Readable<YearPickerItem[]>;
+  decadeRange: Readable<DecadeRange>;
+  viewMode: Readable<'day' | 'month' | 'year'>;
   formatDayNumber: (day: number) => string;
   // Actions
+  focusDate: (date: CalendarDate) => void;
   select: (date: CalendarDate) => void;
   toggle: (date: CalendarDate) => void;
   hover: (date: CalendarDate | null) => void;
@@ -148,6 +159,33 @@ export function createSelection(options: CreateSelectionOptions = {}): Selection
 
   const locale = derived(internalState, ($state) => $state.config.locale);
 
+  const monthPickerItems = derived(internalState, ($state) =>
+    getMonthGrid(
+      $state.focusedDate.year,
+      $state.config.calendarType,
+      $state.config.locale,
+      $state.focusedDate.month,
+      $state.config.minDate,
+      $state.config.maxDate
+    )
+  );
+
+  const yearPickerItems = derived(internalState, ($state) =>
+    getYearGrid(
+      $state.focusedDate.year,
+      $state.config.calendarType,
+      12,
+      $state.config.minDate,
+      $state.config.maxDate
+    )
+  );
+
+  const decadeRangeStore = derived(internalState, ($state) =>
+    getDecadeRange($state.focusedDate.year)
+  );
+
+  const viewModeStore = derived(internalState, ($state) => $state.viewMode);
+
   // Format day number according to locale (Nepali numerals for 'ne')
   let currentLocale: Locale = 'en';
   internalState.subscribe(($state) => {
@@ -165,8 +203,13 @@ export function createSelection(options: CreateSelectionOptions = {}): Selection
     isPrevMonthDisabled,
     isNextMonthDisabled,
     locale,
+    monthPickerItems,
+    yearPickerItems,
+    decadeRange: decadeRangeStore,
+    viewMode: viewModeStore,
     formatDayNumber,
     // Actions
+    focusDate: actions.focusDate,
     select: actions.select,
     toggle: actions.toggle,
     hover: actions.hover,
