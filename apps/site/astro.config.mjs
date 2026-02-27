@@ -35,6 +35,8 @@ export default defineConfig({
             { label: 'Introduction', link: '/getting-started/introduction/' },
             { label: 'Installation', link: '/getting-started/installation/' },
             { label: 'CLI', link: '/getting-started/cli/' },
+            { label: 'Publishing to npm', link: '/getting-started/publishing/' },
+            { label: 'Deploying Docs', link: '/getting-started/deployment/' },
           ],
         },
         {

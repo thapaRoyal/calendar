@@ -4,7 +4,7 @@
   "commit": false,
   "fixed": [],
   "linked": [
-    ["@thaparoyal/calendar-core", "@thaparoyal/calendar-react", "@thaparoyal/calendar-vue", "@thaparoyal/calendar-svelte", "@thaparoyal/calendar-cli"]
+    ["@thaparoyal/calendar-core", "@thaparoyal/calendar-react", "@thaparoyal/calendar-vue", "@thaparoyal/calendar-svelte", "@thaparoyal/calendar-vanilla", "@thaparoyal/calendar-cli"]
   ],
   "access": "public",
   "baseBranch": "main",
