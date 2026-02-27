@@ -9,7 +9,6 @@ import '@thaparoyal/calendar-core/themes/themes.css';
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@thaparoyal/calendar - AD & BS Calendar Components</title>
-    <link rel="stylesheet" href="/src/styles/custom.css" />
     <style>
       * {
         margin: 0;
@@ -21,120 +20,27 @@ import '@thaparoyal/calendar-core/themes/themes.css';
         background: #0a0a0f;
         color: #fff;
         min-height: 100vh;
+        overflow-x: hidden;
       }
-      .hero {
-        text-align: center;
-        padding: 6rem 2rem;
-        background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0f 100%);
-      }
-      .hero h1 {
-        font-size: 3.5rem;
-        margin-bottom: 1rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      .hero p {
-        font-size: 1.25rem;
-        color: #888;
-        max-width: 600px;
-        margin: 0 auto 2rem;
-      }
-      .cta-buttons {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .cta-btn {
-        padding: 0.875rem 2rem;
-        border-radius: 0.5rem;
-        text-decoration: none;
-        font-weight: 600;
-        transition: all 0.2s;
-      }
-      .cta-btn.primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-      }
-      .cta-btn.secondary {
-        background: transparent;
-        border: 1px solid #333;
-        color: #fff;
-      }
-      .cta-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
-      }
-      .features {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
-        padding: 4rem 2rem;
-        max-width: 1200px;
-        margin: 0 auto;
-      }
-      .feature {
-        text-align: center;
-        padding: 2rem;
-        background: #111;
-        border-radius: 1rem;
-        border: 1px solid #222;
-      }
-      .feature-icon {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-      }
-      .feature h3 {
-        margin-bottom: 0.5rem;
-        font-size: 1.25rem;
-      }
-      .feature p {
-        color: #888;
-        font-size: 0.95rem;
-      }
-      .demo-section {
-        padding: 4rem 2rem;
-        background: #111;
-      }
-      .demo-section h2 {
-        text-align: center;
-        margin-bottom: 3rem;
-        font-size: 2rem;
-      }
-      .demo-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 2rem;
-        max-width: 1200px;
-        margin: 0 auto;
-      }
-      .demo-card {
-        background: #0a0a0f;
-        border: 1px solid #222;
-        border-radius: 1rem;
-        padding: 1.5rem;
-      }
-      .demo-card h3 {
-        margin-bottom: 1rem;
-        font-size: 1.1rem;
-        color: #667eea;
-      }
+
+      /* ── Nav ── */
       nav {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 1rem 2rem;
-        background: rgba(10, 10, 15, 0.8);
-        backdrop-filter: blur(10px);
+        background: rgba(10, 10, 15, 0.85);
+        backdrop-filter: blur(12px);
         position: sticky;
         top: 0;
         z-index: 100;
-        border-bottom: 1px solid #222;
+        border-bottom: 1px solid #1a1a2e;
       }
-      nav a {
+      nav .brand {
         color: #fff;
         text-decoration: none;
+        font-weight: 700;
+        font-size: 1.1rem;
       }
       .nav-links {
         display: flex;
@@ -142,16 +48,445 @@ import '@thaparoyal/calendar-core/themes/themes.css';
       }
       .nav-links a {
         color: #888;
+        text-decoration: none;
         transition: color 0.2s;
+        font-size: 0.95rem;
       }
       .nav-links a:hover {
         color: #fff;
+      }
+
+      /* ── Hero ── */
+      .hero {
+        text-align: center;
+        padding: 7rem 2rem 5rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, #1a1a3e 0%, #0a0a0f 40%, #0f0a1a 70%, #0a0a0f 100%);
+        background-size: 300% 300%;
+        animation: heroGradient 12s ease infinite;
+        z-index: 0;
+      }
+      .hero > * {
+        position: relative;
+        z-index: 1;
+      }
+      @keyframes heroGradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      .hero h1 {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        margin-bottom: 1.25rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #667eea 0%, #a855f7 50%, #667eea 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero .subtitle {
+        font-size: clamp(1.05rem, 2vw, 1.35rem);
+        color: #8888aa;
+        max-width: 640px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+      }
+
+      /* npm install command box */
+      .install-cmd {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: #111118;
+        border: 1px solid #2a2a3a;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem 0.75rem 1.25rem;
+        margin-bottom: 2.5rem;
+        font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+        font-size: 0.9rem;
+        color: #a5b4fc;
+      }
+      .install-cmd .prompt {
+        color: #555;
+        user-select: none;
+      }
+      .install-cmd .copy-btn {
+        background: transparent;
+        border: 1px solid #333;
+        color: #888;
+        cursor: pointer;
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+      .install-cmd .copy-btn:hover {
+        border-color: #667eea;
+        color: #667eea;
+      }
+      .install-cmd .copy-btn.copied {
+        border-color: #22c55e;
+        color: #22c55e;
+      }
+
+      /* Framework badges */
+      .framework-badges {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+        margin-bottom: 2.5rem;
+        flex-wrap: wrap;
+      }
+      .framework-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.85rem;
+        border-radius: 2rem;
+        background: #111118;
+        border: 1px solid #1e1e2e;
+        font-size: 0.8rem;
+        color: #aaa;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+      .framework-badge:hover {
+        border-color: #444;
+        color: #fff;
+      }
+      .framework-badge .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      /* CTA buttons */
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .cta-btn {
+        padding: 0.9rem 2.25rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.25s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .cta-btn.primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.25);
+      }
+      .cta-btn.primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+      }
+      .cta-btn.secondary {
+        background: transparent;
+        border: 1px solid #333;
+        color: #ccc;
+      }
+      .cta-btn.secondary:hover {
+        transform: translateY(-2px);
+        border-color: #555;
+        background: #111118;
+        color: #fff;
+      }
+
+      /* ── Features ── */
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        padding: 5rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .feature {
+        text-align: left;
+        padding: 2rem;
+        background: #111118;
+        border-radius: 0.75rem;
+        border: 1px solid #1e1e2e;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .feature:hover {
+        transform: translateY(-4px);
+        border-color: #333;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      }
+      .feature-icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #1a1a3e 0%, #111118 100%);
+        border-radius: 0.75rem;
+        border: 1px solid #2a2a4a;
+      }
+      .feature-icon svg {
+        width: 24px;
+        height: 24px;
+        stroke: #667eea;
+        stroke-width: 1.75;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .feature h3 {
+        margin-bottom: 0.5rem;
+        font-size: 1.15rem;
+        font-weight: 650;
+        color: #e8e8f0;
+      }
+      .feature p {
+        color: #777;
+        font-size: 0.9rem;
+        line-height: 1.55;
+      }
+
+      /* ── Demo section ── */
+      .demo-section {
+        padding: 5rem 2rem;
+        background: linear-gradient(180deg, #0a0a0f 0%, #0e0e18 50%, #0a0a0f 100%);
+      }
+      .demo-section .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+      .demo-section .section-header h2 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        background: linear-gradient(135deg, #667eea, #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .demo-section .section-header p {
+        color: #666;
+        font-size: 1.05rem;
+      }
+      .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .demo-card {
+        background: #111118;
+        border: 1px solid #1e1e2e;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        transition: all 0.3s;
+      }
+      .demo-card:hover {
+        border-color: #333;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      }
+      .demo-card h3 {
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+        color: #a5b4fc;
+      }
+
+      /* ── Install section ── */
+      .install-section {
+        padding: 5rem 2rem;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      .install-section h2 {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        color: #e8e8f0;
+      }
+      .install-tabs {
+        display: flex;
+        gap: 0;
+        margin-bottom: 0;
+        border-bottom: 1px solid #1e1e2e;
+      }
+      .install-tab {
+        padding: 0.6rem 1.5rem;
+        background: transparent;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        font-family: inherit;
+      }
+      .install-tab:hover {
+        color: #aaa;
+      }
+      .install-tab.active {
+        color: #a5b4fc;
+        border-bottom-color: #667eea;
+      }
+      .install-code {
+        background: #111118;
+        border: 1px solid #1e1e2e;
+        border-top: none;
+        border-radius: 0 0 0.75rem 0.75rem;
+        padding: 1.25rem 1.5rem;
+        font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+        font-size: 0.9rem;
+        color: #a5b4fc;
+        overflow-x: auto;
+      }
+      .install-code .hidden {
+        display: none;
+      }
+
+      /* ── Framework section ── */
+      .framework-section {
+        padding: 5rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .framework-section h2 {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: #e8e8f0;
+      }
+      .framework-section > p {
+        text-align: center;
+        color: #666;
+        margin-bottom: 2.5rem;
+        font-size: 1.05rem;
+      }
+      .framework-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+      }
+      .framework-card {
+        padding: 2rem;
+        background: #111118;
+        border: 1px solid #1e1e2e;
+        border-radius: 0.75rem;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: block;
+      }
+      .framework-card:hover {
+        transform: translateY(-4px);
+        border-color: #333;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      }
+      .framework-card .fw-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      .framework-card h3 {
+        font-size: 1.15rem;
+        margin-bottom: 0.5rem;
+        color: #e8e8f0;
+      }
+      .framework-card p {
+        color: #666;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+      }
+      .framework-card .fw-link {
+        color: #667eea;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      /* ── Footer ── */
+      .footer {
+        padding: 3rem 2rem;
+        border-top: 1px solid #1a1a2e;
+        text-align: center;
+      }
+      .footer-links {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+      .footer-links a {
+        color: #666;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+      }
+      .footer-links a:hover {
+        color: #a5b4fc;
+      }
+      .footer p {
+        color: #444;
+        font-size: 0.8rem;
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          padding: 4rem 1.5rem 3rem;
+        }
+        .features {
+          grid-template-columns: 1fr;
+          padding: 3rem 1.5rem;
+        }
+        .demo-grid {
+          grid-template-columns: 1fr;
+        }
+        .framework-grid {
+          grid-template-columns: 1fr;
+        }
+        nav {
+          padding: 0.75rem 1rem;
+        }
+        .nav-links {
+          gap: 1rem;
+          font-size: 0.85rem;
+        }
+        .install-cmd {
+          font-size: 0.8rem;
+        }
       }
     </style>
   </head>
   <body>
     <nav>
-      <a href="/" style="font-weight: 700; font-size: 1.1rem;">@thaparoyal/calendar</a>
+      <a href="/" class="brand">@thaparoyal/calendar</a>
       <div class="nav-links">
         <a href="/docs/getting-started/introduction/">Docs</a>
         <a href="/playground/react/">Playground</a>
@@ -159,51 +494,214 @@ import '@thaparoyal/calendar-core/themes/themes.css';
       </div>
     </nav>
 
+    <!-- Hero -->
     <section class="hero">
       <h1>@thaparoyal/calendar</h1>
-      <p>Beautiful, accessible calendar components for React, Vue, and Svelte with full support for AD (Gregorian) and BS (Bikram Sambat) calendars.</p>
+      <p class="subtitle">
+        Beautiful, accessible calendar components for React, Vue, and Svelte with
+        full support for AD (Gregorian) and BS (Bikram Sambat) calendars.
+      </p>
+
+      <div class="install-cmd">
+        <span class="prompt">$</span>
+        <span id="install-text">npm install @thaparoyal/calendar-react</span>
+        <button class="copy-btn" id="copy-btn" aria-label="Copy install command">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span id="copy-label">Copy</span>
+        </button>
+      </div>
+
+      <div class="framework-badges">
+        <span class="framework-badge"><span class="dot" style="background: #61dafb;"></span> React</span>
+        <span class="framework-badge"><span class="dot" style="background: #42b883;"></span> Vue</span>
+        <span class="framework-badge"><span class="dot" style="background: #ff3e00;"></span> Svelte</span>
+        <span class="framework-badge"><span class="dot" style="background: #f7df1e;"></span> Vanilla JS</span>
+      </div>
+
       <div class="cta-buttons">
-        <a href="/docs/getting-started/introduction/" class="cta-btn primary">Get Started</a>
+        <a href="/docs/getting-started/introduction/" class="cta-btn primary">
+          Get Started
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
         <a href="/playground/react/" class="cta-btn secondary">Try Playground</a>
       </div>
     </section>
 
+    <!-- Features -->
     <section class="features">
       <div class="feature">
-        <div class="feature-icon">📅</div>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
         <h3>Dual Calendar Support</h3>
         <p>Seamlessly switch between AD (Gregorian) and BS (Bikram Sambat) calendars with accurate date conversion.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">🎨</div>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"></circle>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+          </svg>
+        </div>
         <h3>12 Beautiful Themes</h3>
         <p>Choose from 12 pre-built themes or customize with CSS variables and shadcn-style classNames API.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">⚛️</div>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+        </div>
         <h3>Multi-Framework</h3>
-        <p>First-class support for React, Vue 3, and Svelte with framework-specific components.</p>
+        <p>First-class support for React, Vue 3, Svelte, and Vanilla JS with framework-specific components.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">📆</div>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <rect x="7" y="7" width="3" height="3"></rect>
+            <rect x="14" y="7" width="3" height="3"></rect>
+            <rect x="7" y="14" width="3" height="3"></rect>
+            <rect x="14" y="14" width="3" height="3"></rect>
+          </svg>
+        </div>
         <h3>Advanced Selection</h3>
         <p>Single date, date range, and multi-date selection modes with hover preview support.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">🗓️</div>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="2" y="3" width="9" height="18" rx="1"></rect>
+            <rect x="13" y="3" width="9" height="18" rx="1"></rect>
+            <line x1="6.5" y1="7" x2="6.5" y2="7.01"></line>
+            <line x1="17.5" y1="7" x2="17.5" y2="7.01"></line>
+          </svg>
+        </div>
         <h3>Multi-Calendar View</h3>
         <p>Display multiple months side-by-side with synchronized navigation.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">♿</div>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 8a4 4 0 0 0-4 4h4V8z"></path>
+            <path d="M12 8v8"></path>
+            <path d="M8 12h8"></path>
+          </svg>
+        </div>
         <h3>Fully Accessible</h3>
-        <p>WAI-ARIA compliant with full keyboard navigation support.</p>
+        <p>WAI-ARIA compliant with full keyboard navigation and screen reader support.</p>
       </div>
     </section>
 
+    <!-- Demo Section -->
     <section class="demo-section">
-      <h2>Live Demo</h2>
+      <div class="section-header">
+        <h2>See it in action</h2>
+        <p>Interactive calendars with real-time theme switching</p>
+      </div>
       <LandingDemos client:only="react" />
     </section>
+
+    <!-- Install Section -->
+    <section class="install-section">
+      <h2>Quick Install</h2>
+      <div class="install-tabs">
+        <button class="install-tab active" data-pm="npm">npm</button>
+        <button class="install-tab" data-pm="pnpm">pnpm</button>
+        <button class="install-tab" data-pm="yarn">yarn</button>
+      </div>
+      <div class="install-code">
+        <div id="install-npm">npm install @thaparoyal/calendar-react</div>
+        <div id="install-pnpm" class="hidden">pnpm add @thaparoyal/calendar-react</div>
+        <div id="install-yarn" class="hidden">yarn add @thaparoyal/calendar-react</div>
+      </div>
+    </section>
+
+    <!-- Framework Section -->
+    <section class="framework-section">
+      <h2>Choose Your Framework</h2>
+      <p>Full support for all major UI frameworks</p>
+      <div class="framework-grid">
+        <a href="/docs/react/quick-start/" class="framework-card">
+          <div class="fw-icon" style="background: rgba(97, 218, 251, 0.1); color: #61dafb;">R</div>
+          <h3>React</h3>
+          <p>Headless, composable calendar components with hooks for maximum flexibility.</p>
+          <span class="fw-link">Get started with React &rarr;</span>
+        </a>
+        <a href="/docs/vue/guide/" class="framework-card">
+          <div class="fw-icon" style="background: rgba(66, 184, 131, 0.1); color: #42b883;">V</div>
+          <h3>Vue</h3>
+          <p>Reactive calendar components built for Vue 3 Composition API.</p>
+          <span class="fw-link">Get started with Vue &rarr;</span>
+        </a>
+        <a href="/docs/svelte/guide/" class="framework-card">
+          <div class="fw-icon" style="background: rgba(255, 62, 0, 0.1); color: #ff3e00;">S</div>
+          <h3>Svelte</h3>
+          <p>Lightweight calendar components that compile away for zero runtime overhead.</p>
+          <span class="fw-link">Get started with Svelte &rarr;</span>
+        </a>
+        <a href="/docs/vanilla/getting-started/" class="framework-card">
+          <div class="fw-icon" style="background: rgba(247, 223, 30, 0.1); color: #f7df1e;">JS</div>
+          <h3>Vanilla JS</h3>
+          <p>Framework-free usage via CDN or bundler. Render calendars with a single function call.</p>
+          <span class="fw-link">Get started with Vanilla JS &rarr;</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-links">
+        <a href="/docs/getting-started/introduction/">Documentation</a>
+        <a href="/playground/react/">Playground</a>
+        <a href="https://github.com/thaparoyal/calendar" target="_blank">GitHub</a>
+        <a href="https://www.npmjs.com/org/thaparoyal" target="_blank">npm</a>
+      </div>
+      <p>Built with care. Open source under MIT license.</p>
+    </footer>
+
+    <!-- Inline scripts -->
+    <script>
+      // Copy install command
+      document.getElementById('copy-btn')?.addEventListener('click', () => {
+        const text = document.getElementById('install-text')?.textContent || '';
+        navigator.clipboard.writeText(text).then(() => {
+          const label = document.getElementById('copy-label');
+          if (label) {
+            label.textContent = 'Copied!';
+            document.getElementById('copy-btn')?.classList.add('copied');
+            setTimeout(() => {
+              label.textContent = 'Copy';
+              document.getElementById('copy-btn')?.classList.remove('copied');
+            }, 2000);
+          }
+        });
+      });
+
+      // Install tabs
+      document.querySelectorAll('.install-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const pm = (tab as HTMLElement).dataset.pm;
+          ['npm', 'pnpm', 'yarn'].forEach(p => {
+            const el = document.getElementById('install-' + p);
+            if (el) el.classList.toggle('hidden', p !== pm);
+          });
+        });
+      });
+    </script>
   </body>
 </html>

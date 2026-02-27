@@ -1,0 +1,107 @@
+---
+title: Quick Start
+description: Get started with @thaparoyal/calendar-react
+---
+
+# React Quick Start
+
+React has the most complete UI surface with prebuilt compound components for every feature.
+
+## Installation
+
+```bash
+npm install @thaparoyal/calendar-react @thaparoyal/calendar-core
+```
+
+Import the theme CSS in your app entry point:
+
+```tsx
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+## Basic Calendar
+
+```tsx
+import { useState } from 'react';
+import { Calendar } from '@thaparoyal/calendar-react';
+import type { CalendarDate } from '@thaparoyal/calendar-react';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+function App() {
+  const [date, setDate] = useState<CalendarDate | null>(null);
+
+  return (
+    <div data-theme="ocean">
+      <Calendar.Root
+        config={{ calendarType: 'BS', locale: 'en' }}
+        value={date}
+        onValueChange={setDate}
+      >
+        <Calendar.Header>
+          <Calendar.PrevButton />
+          <Calendar.Title />
+          <Calendar.NextButton />
+        </Calendar.Header>
+        <Calendar.Grid>
+          <Calendar.GridHead />
+          <Calendar.GridBody />
+        </Calendar.Grid>
+      </Calendar.Root>
+    </div>
+  );
+}
+```
+
+## Available Components
+
+| Component | Purpose |
+|-----------|---------|
+| `Calendar` | Single date selection with month/year pickers |
+| `DatePicker` | Input field with calendar dropdown |
+| `RangeCalendar` | Select a date range (start → end) |
+| `MultiCalendar` | Multiple months side by side |
+
+## Available Hooks
+
+| Hook | Purpose |
+|------|---------|
+| `useCalendar` | Headless calendar state and actions |
+| `useSelection` | Selection logic for single/range/multiple modes |
+| `useDatePicker` | Date picker state (open/close, input, calendar) |
+| `useDateConverter` | AD↔BS date conversion utilities |
+
+## Calendar Types
+
+- **BS** (Bikram Sambat) — Nepali calendar system
+- **AD** (Anno Domini) — Gregorian calendar
+
+```tsx
+// BS Calendar
+<Calendar.Root config={{ calendarType: 'BS', locale: 'en' }}>
+
+// AD Calendar
+<Calendar.Root config={{ calendarType: 'AD', locale: 'en' }}>
+
+// Nepali Numerals
+<Calendar.Root config={{ calendarType: 'BS', locale: 'ne' }}>
+```
+
+## Themes
+
+Wrap your calendar in a container with `data-theme` attribute:
+
+```tsx
+<div data-theme="ocean">
+  <Calendar.Root>...</Calendar.Root>
+</div>
+```
+
+Available themes: `default`, `ocean`, `forest`, `sunset`, `lavender`, `midnight`, `rose`, `mint`, `amber`, `slate`, `coral`, `indigo` — each with a `-dark` variant.
+
+## Next Steps
+
+- [Calendar](/docs/react/calendar/) — Full calendar component reference
+- [DatePicker](/docs/react/date-picker/) — Input + dropdown calendar
+- [RangeCalendar](/docs/react/range-calendar/) — Date range selection
+- [MultiCalendar](/docs/react/multi-calendar/) — Multiple months display
+- [All Examples](/docs/react/examples/) — Every feature demonstrated

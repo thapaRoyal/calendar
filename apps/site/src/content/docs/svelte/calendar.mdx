@@ -1,0 +1,285 @@
+---
+title: Calendar (createCalendar)
+description: Full calendar store for Svelte with BS/AD, month picker, year picker, and themes
+---
+
+# Calendar (createCalendar)
+
+The `createCalendar` store creator provides everything you need to render a single-month calendar with date selection, month/year pickers, and theme support.
+
+## Import
+
+```ts
+import { createCalendar } from '@thaparoyal/calendar-svelte';
+import type { CalendarDate } from '@thaparoyal/calendar-svelte';
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+## Options
+
+```ts
+interface CreateCalendarOptions {
+  config?: Partial<CalendarConfig>;
+  defaultValue?: CalendarDate;
+  disabledDates?: CalendarDate[];
+}
+```
+
+| Option | Type | Description |
+|---|---|---|
+| `config.calendarType` | `'AD' \| 'BS'` | Gregorian or Bikram Sambat |
+| `config.locale` | `'en' \| 'ne'` | English or Nepali (Devanagari numerals) |
+| `config.weekStartsOn` | `0 \| 1` | `0` = Sunday, `1` = Monday |
+| `config.minDate` | `CalendarDate` | Earliest navigable date |
+| `config.maxDate` | `CalendarDate` | Latest navigable date |
+| `defaultValue` | `CalendarDate` | Initial selected date |
+| `disabledDates` | `CalendarDate[]` | Dates that cannot be selected |
+
+## Return Values
+
+| Property | Type | Description |
+|---|---|---|
+| `state` | `Readable<CalendarState>` | Raw internal state |
+| `weeks` | `Readable<Week[]>` | 2D grid of `WeekDay` objects |
+| `title` | `Readable<string>` | Formatted month/year title |
+| `weekdayNames` | `Readable<string[]>` | Short weekday labels |
+| `isPrevMonthDisabled` | `Readable<boolean>` | Whether prev nav is at min boundary |
+| `isNextMonthDisabled` | `Readable<boolean>` | Whether next nav is at max boundary |
+| `selectedDate` | `Writable<CalendarDate \| null>` | Two-way binding store for selected date |
+| `locale` | `Readable<Locale>` | Current locale |
+| `viewMode` | `Readable<'day' \| 'month' \| 'year'>` | Current picker view |
+| `monthPickerItems` | `Readable<MonthPickerItem[]>` | Data for month picker grid |
+| `yearPickerItems` | `Readable<YearPickerItem[]>` | Data for year picker grid |
+| `decadeRange` | `Readable<DecadeRange>` | Current decade boundaries |
+| `formatDayNumber` | `(day: number) => string` | Locale-aware day formatter (not a store) |
+| `selectDate` | `(date) => void` | Select a date |
+| `focusDate` | `(date) => void` | Navigate to a date |
+| `nextMonth` | `() => void` | Navigate forward one month |
+| `prevMonth` | `() => void` | Navigate back one month |
+| `nextYear` | `() => void` | Navigate forward one year |
+| `prevYear` | `() => void` | Navigate back one year |
+| `setViewMode` | `(mode) => void` | Switch between `'day'`, `'month'`, `'year'` |
+| `goToToday` | `() => void` | Jump to today |
+
+## Basic BS Calendar
+
+```svelte
+<script>
+  import { createCalendar } from '@thaparoyal/calendar-svelte';
+  import '@thaparoyal/calendar-core/themes/themes.css';
+
+  const {
+    weeks, title, weekdayNames, selectedDate, formatDayNumber,
+    isPrevMonthDisabled, isNextMonthDisabled,
+    selectDate, prevMonth, nextMonth,
+  } = createCalendar({
+    config: { calendarType: 'BS', locale: 'en' },
+  });
+</script>
+
+<div class="trc-calendar" data-theme="default">
+  <div class="trc-calendar-header">
+    <button class="trc-calendar-nav-button" on:click={prevMonth} disabled={$isPrevMonthDisabled}>&lsaquo;</button>
+    <span class="trc-calendar-title">{$title}</span>
+    <button class="trc-calendar-nav-button" on:click={nextMonth} disabled={$isNextMonthDisabled}>&rsaquo;</button>
+  </div>
+  <table class="trc-calendar-grid">
+    <thead class="trc-calendar-grid-head">
+      <tr>
+        {#each $weekdayNames as d}
+          <th class="trc-calendar-weekday">{d}</th>
+        {/each}
+      </tr>
+    </thead>
+    <tbody>
+      {#each $weeks as week}
+        <tr class="trc-calendar-week">
+          {#each week as day}
+            <td
+              class="trc-calendar-cell"
+              class:trc-calendar-cell-today={day.isToday}
+              class:trc-calendar-cell-selected={day.isSelected}
+              class:trc-calendar-cell-outside={day.isOutsideMonth}
+              class:trc-calendar-cell-disabled={day.isDisabled}
+            >
+              <button
+                class="trc-calendar-day"
+                disabled={day.isDisabled || day.isOutsideMonth}
+                on:click={() => selectDate(day.date)}
+              >{formatDayNumber(day.date.day)}</button>
+            </td>
+          {/each}
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+</div>
+<p>Selected: {$selectedDate ? `${$selectedDate.year}-${$selectedDate.month}-${$selectedDate.day}` : 'None'}</p>
+```
+
+## AD Calendar
+
+Switch to Gregorian by changing `calendarType`:
+
+```ts
+const { weeks, title, weekdayNames, ...rest } = createCalendar({
+  config: { calendarType: 'AD', locale: 'en' },
+});
+```
+
+## Nepali Numerals
+
+Use `locale: 'ne'` to render Devanagari numerals and Nepali month names:
+
+```ts
+const { weeks, title, weekdayNames, formatDayNumber, ...rest } = createCalendar({
+  config: { calendarType: 'BS', locale: 'ne' },
+});
+```
+
+Add `data-locale="ne"` to enable the Devanagari font:
+
+```html
+<div class="trc-calendar" data-theme="sunset" data-locale="ne">
+```
+
+## Month Picker
+
+Use `viewMode`, `monthPickerItems`, and `setViewMode` to build a month picker overlay:
+
+```svelte
+<script>
+  import { createCalendar } from '@thaparoyal/calendar-svelte';
+
+  const {
+    weeks, title, weekdayNames, formatDayNumber, state,
+    isPrevMonthDisabled, isNextMonthDisabled,
+    viewMode, monthPickerItems,
+    selectDate, prevMonth, nextMonth, setViewMode, focusDate,
+  } = createCalendar({
+    config: { calendarType: 'BS', locale: 'en' },
+  });
+</script>
+
+<div class="trc-calendar" data-theme="forest">
+  <div class="trc-calendar-header">
+    <button class="trc-calendar-nav-button" on:click={prevMonth} disabled={$isPrevMonthDisabled}>&lsaquo;</button>
+    <button class="trc-calendar-title trc-calendar-title-clickable" on:click={() => setViewMode($viewMode === 'day' ? 'month' : 'day')}>
+      {$title}
+    </button>
+    <button class="trc-calendar-nav-button" on:click={nextMonth} disabled={$isNextMonthDisabled}>&rsaquo;</button>
+  </div>
+
+  <!-- Day view -->
+  {#if $viewMode === 'day'}
+    <table class="trc-calendar-grid">
+      <thead class="trc-calendar-grid-head">
+        <tr>{#each $weekdayNames as d}<th class="trc-calendar-weekday">{d}</th>{/each}</tr>
+      </thead>
+      <tbody>
+        {#each $weeks as week}
+          <tr class="trc-calendar-week">
+            {#each week as day}
+              <td class="trc-calendar-cell"
+                class:trc-calendar-cell-today={day.isToday}
+                class:trc-calendar-cell-selected={day.isSelected}
+                class:trc-calendar-cell-outside={day.isOutsideMonth}
+              >
+                <button class="trc-calendar-day" disabled={day.isDisabled || day.isOutsideMonth} on:click={() => selectDate(day.date)}>
+                  {formatDayNumber(day.date.day)}
+                </button>
+              </td>
+            {/each}
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  {/if}
+
+  <!-- Month picker view -->
+  {#if $viewMode === 'month'}
+    <div class="trc-calendar-month-picker trc-calendar-view-transition">
+      {#each $monthPickerItems as m}
+        <button
+          class="trc-calendar-month-cell"
+          class:trc-calendar-month-cell-current={m.isCurrentMonth}
+          disabled={m.disabled}
+          on:click={() => { focusDate({ year: $state.focusedDate.year, month: m.month, day: 1, calendarType: 'BS' }); setViewMode('day'); }}
+        >{m.shortName}</button>
+      {/each}
+    </div>
+  {/if}
+</div>
+```
+
+## Year Picker
+
+Click the title to cycle through day -> month -> year views. Destructure `yearPickerItems` and `decadeRange` from the store:
+
+```svelte
+<script>
+  const {
+    viewMode, title, decadeRange, yearPickerItems, state,
+    setViewMode, focusDate, /* ...other stores and actions */
+  } = createCalendar({ config: { calendarType: 'BS', locale: 'en' } });
+</script>
+
+<button class="trc-calendar-title trc-calendar-title-clickable"
+  on:click={() => setViewMode($viewMode === 'day' ? 'month' : $viewMode === 'month' ? 'year' : 'day')}>
+  {$viewMode === 'year' ? `${$decadeRange.start} - ${$decadeRange.end}` : $title}
+</button>
+
+<!-- Year picker grid -->
+{#if $viewMode === 'year'}
+  <div class="trc-calendar-year-picker trc-calendar-view-transition">
+    {#each $yearPickerItems as y}
+      <button
+        class="trc-calendar-year-cell"
+        class:trc-calendar-year-cell-current={y.isCurrentYear}
+        disabled={y.disabled}
+        on:click={() => { focusDate({ year: y.year, month: $state.focusedDate.month, day: 1, calendarType: 'BS' }); setViewMode('month'); }}
+      >{y.year}</button>
+    {/each}
+  </div>
+{/if}
+```
+
+## Week Starts on Monday
+
+```ts
+const { weeks, weekdayNames, ...rest } = createCalendar({
+  config: { calendarType: 'BS', locale: 'en', weekStartsOn: 1 },
+});
+```
+
+## Themes
+
+Wrap your calendar in a container with `data-theme`:
+
+```html
+<div class="trc-calendar" data-theme="lavender">
+  <!-- calendar template -->
+</div>
+```
+
+Available themes: `default`, `ocean`, `forest`, `sunset`, `lavender`, `midnight`, `rose`, `mint`, `amber`, `slate`, `coral`, `indigo`.
+
+## WeekDay Object
+
+Each cell in the `weeks` grid is a `WeekDay`:
+
+```ts
+interface WeekDay {
+  date: CalendarDate;
+  isToday: boolean;
+  isSelected: boolean;
+  isDisabled: boolean;
+  isOutsideMonth: boolean;
+  dayOfWeek: number;
+  isRangeStart?: boolean;
+  isRangeEnd?: boolean;
+  isInRange?: boolean;
+  isRangeHover?: boolean;
+  isMultiSelected?: boolean;
+}
+```

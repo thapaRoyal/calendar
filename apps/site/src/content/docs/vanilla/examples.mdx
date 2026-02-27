@@ -1,0 +1,310 @@
+---
+title: Examples
+description: Comprehensive Vanilla JS calendar examples
+---
+
+# Vanilla JS Examples
+
+Complete code samples for every feature of `@thaparoyal/calendar-vanilla`. All examples use ESM imports; for CDN usage replace imports with the `TRCalendar` global (see [CDN Usage](/docs/vanilla/cdn/)).
+
+## BS Calendar (Default)
+
+```js
+import { render } from '@thaparoyal/calendar-vanilla';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+render('#bs-calendar', {
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'default',
+  selectionMode: 'single',
+  onValueChange: (date) => {
+    console.log('BS date:', date);
+    // { year: 2082, month: 11, day: 14, calendarType: 'BS' }
+  },
+});
+```
+
+## AD Calendar
+
+```js
+render('#ad-calendar', {
+  config: { calendarType: 'AD', locale: 'en' },
+  theme: 'default',
+  selectionMode: 'single',
+  onValueChange: (date) => {
+    console.log('AD date:', date);
+    // { year: 2026, month: 2, day: 27, calendarType: 'AD' }
+  },
+});
+```
+
+## Nepali Numerals
+
+Set `locale: 'ne'` to display Devanagari numerals and Nepali month names:
+
+```js
+render('#nepali-calendar', {
+  config: { calendarType: 'BS', locale: 'ne' },
+  theme: 'sunset',
+  selectionMode: 'single',
+});
+```
+
+## Range Selection
+
+Click twice to select a start and end date. Hovering between clicks shows a range preview.
+
+```js
+render('#range-calendar', {
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'ocean',
+  selectionMode: 'range',
+  onValueChange: (range) => {
+    if (range?.start && range?.end) {
+      console.log(
+        `Range: ${range.start.year}-${range.start.month}-${range.start.day}` +
+        ` to ${range.end.year}-${range.end.month}-${range.end.day}`
+      );
+    }
+  },
+});
+```
+
+## Multi-Date Selection
+
+Click any number of dates to toggle them on or off.
+
+```js
+render('#multi-calendar', {
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'forest',
+  selectionMode: 'multiple',
+  onValueChange: (dates) => {
+    console.log(`${dates.length} dates selected`);
+    dates.forEach((d) => console.log(`  ${d.year}-${d.month}-${d.day}`));
+  },
+});
+```
+
+## Min/Max Date Constraints
+
+Restrict navigation and selection to a date range:
+
+```js
+render('#constrained-calendar', {
+  config: {
+    calendarType: 'BS',
+    locale: 'en',
+    minDate: { year: 2082, month: 1, day: 1, calendarType: 'BS' },
+    maxDate: { year: 2082, month: 12, day: 30, calendarType: 'BS' },
+  },
+  theme: 'default',
+  selectionMode: 'single',
+});
+```
+
+## Disabled Dates
+
+Prevent specific dates from being selected:
+
+```js
+render('#disabled-calendar', {
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'lavender',
+  selectionMode: 'single',
+  disabledDates: [
+    { year: 2082, month: 11, day: 1, calendarType: 'BS' },
+    { year: 2082, month: 11, day: 15, calendarType: 'BS' },
+    { year: 2082, month: 11, day: 20, calendarType: 'BS' },
+  ],
+});
+```
+
+## Initial Value
+
+Pass a `value` to pre-select a date on mount:
+
+```js
+// Single
+render('#pre-selected', {
+  config: { calendarType: 'BS', locale: 'en' },
+  selectionMode: 'single',
+  value: { year: 2082, month: 11, day: 14, calendarType: 'BS' },
+});
+
+// Range
+render('#pre-selected-range', {
+  config: { calendarType: 'BS', locale: 'en' },
+  selectionMode: 'range',
+  value: {
+    start: { year: 2082, month: 11, day: 5, calendarType: 'BS' },
+    end: { year: 2082, month: 11, day: 20, calendarType: 'BS' },
+  },
+});
+
+// Multiple
+render('#pre-selected-multi', {
+  config: { calendarType: 'BS', locale: 'en' },
+  selectionMode: 'multiple',
+  value: [
+    { year: 2082, month: 11, day: 3, calendarType: 'BS' },
+    { year: 2082, month: 11, day: 10, calendarType: 'BS' },
+    { year: 2082, month: 11, day: 17, calendarType: 'BS' },
+  ],
+});
+```
+
+## Week Starts on Monday
+
+```js
+render('#monday-start', {
+  config: { calendarType: 'BS', locale: 'en', weekStartsOn: 1 },
+  theme: 'mint',
+  selectionMode: 'single',
+});
+```
+
+## Theme Showcase
+
+All 12 built-in themes:
+
+```js
+const themes = [
+  'default', 'ocean', 'forest', 'sunset',
+  'lavender', 'midnight', 'rose', 'mint',
+  'amber', 'slate', 'coral', 'indigo',
+];
+
+themes.forEach((theme) => {
+  const el = document.createElement('div');
+  el.id = `theme-${theme}`;
+  document.getElementById('theme-grid').appendChild(el);
+
+  render(`#theme-${theme}`, {
+    config: { calendarType: 'BS', locale: 'en' },
+    theme,
+    selectionMode: 'single',
+  });
+});
+```
+
+Each theme also has a `-dark` variant (e.g. `ocean-dark`). See [Themes](/docs/core/themes/) for details.
+
+## Runtime Theme Switching
+
+```js
+const cal = render('#switchable', {
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'default',
+  selectionMode: 'single',
+});
+
+document.getElementById('theme-select').addEventListener('change', (e) => {
+  cal.setTheme(e.target.value);
+});
+```
+
+## Programmatic Control
+
+```js
+const cal = render('#controlled', {
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'coral',
+  selectionMode: 'single',
+});
+
+// Navigate months
+document.getElementById('prev').onclick = () => cal.prevMonth();
+document.getElementById('next').onclick = () => cal.nextMonth();
+
+// Select a date programmatically
+document.getElementById('select-today').onclick = () => {
+  cal.selectDate({ year: 2082, month: 11, day: 14, calendarType: 'BS' });
+};
+
+// Read current value
+document.getElementById('read-value').onclick = () => {
+  const val = cal.getValue();
+  console.log('Current value:', val);
+};
+```
+
+## Destroy and Recreate
+
+```js
+let cal = render('#lifecycle', {
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'default',
+  selectionMode: 'single',
+});
+
+// Destroy
+document.getElementById('destroy').onclick = () => {
+  cal.destroy();
+  cal = null;
+};
+
+// Recreate with different options
+document.getElementById('recreate').onclick = () => {
+  if (cal) cal.destroy();
+  cal = render('#lifecycle', {
+    config: { calendarType: 'AD', locale: 'en' },
+    theme: 'indigo',
+    selectionMode: 'range',
+  });
+};
+```
+
+## Calendar Class (Direct Instantiation)
+
+The `Calendar` class accepts the same options as `render()` but takes `element` as a property:
+
+```js
+import { Calendar } from '@thaparoyal/calendar-vanilla';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+const cal = new Calendar({
+  element: '#my-calendar',
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'ocean',
+  selectionMode: 'single',
+  onValueChange: (date) => console.log(date),
+});
+
+// Same public API as render()
+cal.nextMonth();
+cal.prevMonth();
+cal.selectDate({ year: 2082, month: 5, day: 1, calendarType: 'BS' });
+cal.setTheme('forest');
+cal.getValue();
+cal.destroy();
+```
+
+## Using with Core Utilities
+
+Combine the calendar with core conversion functions:
+
+```js
+import { render } from '@thaparoyal/calendar-vanilla';
+import { adToBs, bsToAd, formatDate } from '@thaparoyal/calendar-core';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+render('#converter-calendar', {
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'default',
+  selectionMode: 'single',
+  onValueChange: (bsDate) => {
+    if (!bsDate) return;
+
+    // Convert to AD
+    const adDate = bsToAd(bsDate);
+
+    // Format both dates
+    const bsFormatted = formatDate(bsDate, 'YYYY MMMM DD');
+    const adFormatted = formatDate(adDate, 'YYYY MMMM DD');
+
+    document.getElementById('bs-display').textContent = bsFormatted;
+    document.getElementById('ad-display').textContent = adFormatted;
+  },
+});
+```

@@ -1,0 +1,224 @@
+---
+title: Date Conversion
+description: AD/BS date conversion utilities
+---
+
+# Date Conversion
+
+`@thaparoyal/calendar-core` provides accurate conversion between AD (Gregorian) and BS (Bikram Sambat) dates. These utilities are framework-agnostic and can be used with any JavaScript project.
+
+## Installation
+
+```bash
+npm install @thaparoyal/calendar-core
+```
+
+## CalendarDate Type
+
+All conversion functions operate on the `CalendarDate` interface:
+
+```ts
+interface CalendarDate {
+  year: number;
+  month: number;   // 1-12
+  day: number;      // 1-32 (BS months can have up to 32 days)
+  calendarType: 'AD' | 'BS';
+}
+```
+
+## AD to BS
+
+```ts
+import { adToBs } from '@thaparoyal/calendar-core';
+
+// From a plain object
+const bsDate = adToBs({ year: 2025, month: 1, day: 15 });
+// { year: 2081, month: 10, day: 1, calendarType: 'BS' }
+
+// From a JavaScript Date
+const bsDate2 = adToBs(new Date(2025, 0, 15));
+// { year: 2081, month: 10, day: 1, calendarType: 'BS' }
+```
+
+## BS to AD
+
+```ts
+import { bsToAd } from '@thaparoyal/calendar-core';
+
+const adDate = bsToAd({ year: 2082, month: 1, day: 1, calendarType: 'BS' });
+// { year: 2025, month: 4, day: 14, calendarType: 'AD' }
+
+// Also accepts plain objects (without calendarType)
+const adDate2 = bsToAd({ year: 2082, month: 1, day: 1 });
+```
+
+## JavaScript Date Interop
+
+```ts
+import { bsToJsDate, jsDateToBs } from '@thaparoyal/calendar-core';
+
+// BS -> JavaScript Date
+const jsDate = bsToJsDate({ year: 2082, month: 1, day: 1, calendarType: 'BS' });
+// Date object representing April 14, 2025
+
+// JavaScript Date -> BS
+const bsDate = jsDateToBs(new Date(2025, 3, 14));
+// { year: 2082, month: 1, day: 1, calendarType: 'BS' }
+```
+
+## Validation
+
+```ts
+import { isValidBsDate, isValidAdDate } from '@thaparoyal/calendar-core';
+
+isValidBsDate(2082, 1, 15);   // true
+isValidBsDate(2082, 13, 1);   // false (month out of range)
+isValidBsDate(2082, 1, 35);   // false (day out of range)
+isValidBsDate(1900, 1, 1);    // false (year out of supported range)
+
+isValidAdDate(2025, 2, 28);   // true
+isValidAdDate(2025, 2, 29);   // false (2025 is not a leap year)
+isValidAdDate(2024, 2, 29);   // true  (2024 is a leap year)
+```
+
+## Today
+
+```ts
+import { getTodayBs, getTodayAd } from '@thaparoyal/calendar-core';
+
+const todayBs = getTodayBs();
+// { year: 2082, month: 11, day: 14, calendarType: 'BS' }
+
+const todayAd = getTodayAd();
+// { year: 2026, month: 2, day: 27, calendarType: 'AD' }
+```
+
+## Comparison
+
+```ts
+import { compareDates, isSameDate, isSameMonth } from '@thaparoyal/calendar-core';
+
+const a = { year: 2082, month: 5, day: 10, calendarType: 'BS' as const };
+const b = { year: 2082, month: 5, day: 20, calendarType: 'BS' as const };
+const c = { year: 2082, month: 5, day: 10, calendarType: 'BS' as const };
+
+// compareDates returns -1, 0, or 1
+compareDates(a, b);  // -1 (a is before b)
+compareDates(b, a);  //  1 (b is after a)
+compareDates(a, c);  //  0 (same date)
+
+// Boolean checks
+isSameDate(a, c);    // true
+isSameDate(a, b);    // false
+isSameMonth(a, b);   // true  (same year and month)
+```
+
+## Date Math
+
+Add or subtract days, months, and years from BS dates:
+
+```ts
+import { addDaysBs, addMonthsBs, addYearsBs } from '@thaparoyal/calendar-core';
+
+const date = { year: 2082, month: 1, day: 15, calendarType: 'BS' as const };
+
+// Add days
+addDaysBs(date, 10);
+// { year: 2082, month: 1, day: 25, calendarType: 'BS' }
+
+addDaysBs(date, -5);
+// { year: 2082, month: 1, day: 10, calendarType: 'BS' }
+
+// Add months (day is clamped to month max)
+addMonthsBs(date, 3);
+// { year: 2082, month: 4, day: 15, calendarType: 'BS' }
+
+addMonthsBs(date, -1);
+// { year: 2081, month: 12, day: 15, calendarType: 'BS' }
+
+// Add years (day is clamped to month max)
+addYearsBs(date, 1);
+// { year: 2083, month: 1, day: 15, calendarType: 'BS' }
+```
+
+## Month Boundaries
+
+```ts
+import { startOfMonthBs, endOfMonthBs } from '@thaparoyal/calendar-core';
+
+const date = { year: 2082, month: 1, day: 15, calendarType: 'BS' as const };
+
+startOfMonthBs(date);
+// { year: 2082, month: 1, day: 1, calendarType: 'BS' }
+
+endOfMonthBs(date);
+// { year: 2082, month: 1, day: 31, calendarType: 'BS' }
+```
+
+## Day of Week
+
+```ts
+import { getDayOfWeekBs } from '@thaparoyal/calendar-core';
+
+getDayOfWeekBs({ year: 2082, month: 1, day: 1, calendarType: 'BS' });
+// 1 (Monday) -- 0 = Sunday, 6 = Saturday
+```
+
+## Month and Year Info
+
+```ts
+import { getDaysInBsMonth, getTotalDaysInBsYear, isBsYearSupported } from '@thaparoyal/calendar-core';
+
+getDaysInBsMonth(2082, 1);     // 31
+getTotalDaysInBsYear(2082);    // 365 or 366 depending on the year
+
+isBsYearSupported(2082);       // true
+isBsYearSupported(1900);       // false
+```
+
+## Supported BS Year Range
+
+```ts
+import { BS_YEAR_RANGE } from '@thaparoyal/calendar-core';
+
+console.log(BS_YEAR_RANGE);
+// { min: 1970, max: 2100 }
+```
+
+The core data table covers **BS 1970 (1913 AD) to BS 2100 (2043 AD)**. Dates outside this range will throw an error.
+
+## Leap Year (AD)
+
+```ts
+import { isLeapYear } from '@thaparoyal/calendar-core';
+
+isLeapYear(2024);  // true
+isLeapYear(2025);  // false
+isLeapYear(2000);  // true
+isLeapYear(1900);  // false
+```
+
+## API Reference
+
+| Function | Signature | Description |
+|---|---|---|
+| `adToBs` | `(date: Date \| DateComponents) => CalendarDate` | Convert AD to BS |
+| `bsToAd` | `(date: CalendarDate \| DateComponents) => CalendarDate` | Convert BS to AD |
+| `bsToJsDate` | `(date: CalendarDate \| DateComponents) => Date` | BS to JS Date |
+| `jsDateToBs` | `(date: Date) => CalendarDate` | JS Date to BS |
+| `isValidBsDate` | `(year, month, day) => boolean` | Validate BS date |
+| `isValidAdDate` | `(year, month, day) => boolean` | Validate AD date |
+| `getTodayBs` | `() => CalendarDate` | Today in BS |
+| `getTodayAd` | `() => CalendarDate` | Today in AD |
+| `compareDates` | `(a, b) => -1 \| 0 \| 1` | Compare two dates |
+| `isSameDate` | `(a, b) => boolean` | Check date equality |
+| `isSameMonth` | `(a, b) => boolean` | Check same month |
+| `addDaysBs` | `(date, days) => CalendarDate` | Add days to BS date |
+| `addMonthsBs` | `(date, months) => CalendarDate` | Add months to BS date |
+| `addYearsBs` | `(date, years) => CalendarDate` | Add years to BS date |
+| `startOfMonthBs` | `(date) => CalendarDate` | First day of BS month |
+| `endOfMonthBs` | `(date) => CalendarDate` | Last day of BS month |
+| `getDayOfWeekBs` | `(date) => number` | Day of week (0-6) |
+| `isLeapYear` | `(year) => boolean` | Check AD leap year |
+| `getDaysInBsMonth` | `(year, month) => number` | Days in a BS month |
+| `getDaysInAdMonth` | `(year, month) => number` | Days in an AD month |

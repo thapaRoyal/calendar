@@ -1,0 +1,243 @@
+---
+title: Themes
+description: Calendar themes and customization
+---
+
+# Themes
+
+`@thaparoyal/calendar-core` ships a single CSS file that provides 12 ready-made color themes, each with a light and dark variant. The same themes work across React, Vue, Svelte, and Vanilla JS.
+
+## Importing the CSS
+
+### In a bundler (ESM)
+
+```ts
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+### In CSS
+
+```css
+@import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+### Via CDN
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-core/themes/themes.css" />
+```
+
+## Applying a Theme
+
+Set the `data-theme` attribute on the calendar wrapper element:
+
+```html
+<div data-theme="ocean">
+  <!-- calendar content -->
+</div>
+```
+
+In Vanilla JS, pass the `theme` option:
+
+```js
+import { render } from '@thaparoyal/calendar-vanilla';
+
+render('#calendar', {
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'ocean',
+});
+```
+
+In React, Vue, and Svelte, wrap the calendar in a container with `data-theme`:
+
+```html
+<div class="trc-calendar" data-theme="ocean">
+  <!-- framework calendar components -->
+</div>
+```
+
+## Available Themes
+
+| Theme | Description | Dark Variant |
+|---|---|---|
+| `default` | Indigo primary on white | `dark` |
+| `ocean` | Blue tones, sea-inspired | `ocean-dark` |
+| `forest` | Green tones, nature-inspired | `forest-dark` |
+| `sunset` | Warm orange and amber | `sunset-dark` |
+| `lavender` | Soft purple tones | `lavender-dark` |
+| `midnight` | Deep blue-gray | `midnight-dark` |
+| `rose` | Pink and rose tones | `rose-dark` |
+| `mint` | Fresh green-teal | `mint-dark` |
+| `amber` | Golden amber tones | `amber-dark` |
+| `slate` | Neutral gray | `slate-dark` |
+| `coral` | Warm coral-red | `coral-dark` |
+| `indigo` | Deep indigo-violet | `indigo-dark` |
+
+## Light and Dark Variants
+
+Every theme has a light (default) and dark variant. Add `-dark` to the theme name:
+
+```html
+<!-- Light -->
+<div data-theme="ocean">...</div>
+
+<!-- Dark -->
+<div data-theme="ocean-dark">...</div>
+```
+
+The base `dark` theme is the dark variant of the default theme:
+
+```html
+<div data-theme="dark">...</div>
+```
+
+### System Preference Toggle
+
+Switch themes based on `prefers-color-scheme`:
+
+```js
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const theme = prefersDark ? 'ocean-dark' : 'ocean';
+
+render('#calendar', {
+  config: { calendarType: 'BS', locale: 'en' },
+  theme,
+});
+```
+
+## CSS Custom Properties
+
+All themes are built on CSS custom properties with the `--trc-` prefix. Override these to customize any theme.
+
+### Color Properties
+
+| Property | Description |
+|---|---|
+| `--trc-primary` | Primary accent color (selected state, active) |
+| `--trc-primary-hover` | Primary color on hover |
+| `--trc-primary-foreground` | Text color on primary background |
+| `--trc-primary-muted` | Subtle primary tint (selection range) |
+| `--trc-background` | Main background |
+| `--trc-background-secondary` | Secondary background (hover states) |
+| `--trc-background-tertiary` | Tertiary background (subtle areas) |
+| `--trc-background-elevated` | Elevated surface (popups, dropdowns) |
+| `--trc-foreground` | Primary text |
+| `--trc-foreground-secondary` | Secondary text |
+| `--trc-foreground-muted` | Muted / disabled text |
+| `--trc-border` | Default border |
+| `--trc-border-hover` | Border on hover |
+| `--trc-ring` | Focus ring color |
+
+### Layout Properties
+
+| Property | Description |
+|---|---|
+| `--trc-radius-sm` | Small border radius (6px) |
+| `--trc-radius` | Default border radius (8px) |
+| `--trc-radius-lg` | Large border radius (12px) |
+| `--trc-radius-xl` | Extra large border radius (16px) |
+| `--trc-shadow-sm` | Small shadow |
+| `--trc-shadow` | Default shadow |
+| `--trc-shadow-lg` | Large shadow |
+| `--trc-shadow-xl` | Extra large shadow |
+| `--trc-transition-fast` | Fast transition (150ms) |
+| `--trc-transition` | Default transition (200ms) |
+| `--trc-transition-slow` | Slow transition (300ms) |
+
+## Creating a Custom Theme
+
+Define a new `[data-theme]` block that overrides the CSS custom properties:
+
+```css
+[data-theme="my-brand"] {
+  --trc-primary: #e11d48;
+  --trc-primary-hover: #be123c;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(225, 29, 72, 0.12);
+
+  --trc-background: #fff1f2;
+  --trc-background-secondary: #ffe4e6;
+  --trc-background-tertiary: #fecdd3;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #1c1917;
+  --trc-foreground-secondary: #44403c;
+  --trc-foreground-muted: #a8a29e;
+
+  --trc-border: #fda4af;
+  --trc-border-hover: #fb7185;
+
+  --trc-ring: rgba(225, 29, 72, 0.4);
+}
+
+/* Dark variant */
+[data-theme="my-brand-dark"] {
+  --trc-primary: #fb7185;
+  --trc-primary-hover: #fda4af;
+  --trc-primary-foreground: #1c1917;
+  --trc-primary-muted: rgba(251, 113, 133, 0.15);
+
+  --trc-background: #0c0a09;
+  --trc-background-secondary: #1c1917;
+  --trc-background-tertiary: #292524;
+  --trc-background-elevated: #44403c;
+
+  --trc-foreground: #fafaf9;
+  --trc-foreground-secondary: #d6d3d1;
+  --trc-foreground-muted: #78716c;
+
+  --trc-border: #44403c;
+  --trc-border-hover: #57534e;
+
+  --trc-ring: rgba(251, 113, 133, 0.4);
+}
+```
+
+Then apply it:
+
+```html
+<div data-theme="my-brand">...</div>
+```
+
+## CSS Classes
+
+The calendar components use `trc-*` prefixed classes that map to the custom properties. The main classes are:
+
+| Class | Element |
+|---|---|
+| `trc-calendar` | Root container |
+| `trc-calendar-header` | Header (nav + title) |
+| `trc-calendar-nav-button` | Prev/next navigation buttons |
+| `trc-calendar-title` | Month/year title |
+| `trc-calendar-grid` | Day grid table |
+| `trc-calendar-grid-head` | Weekday header row |
+| `trc-calendar-weekday` | Individual weekday label |
+| `trc-calendar-week` | Table row of days |
+| `trc-calendar-cell` | Day cell |
+| `trc-calendar-cell-today` | Today indicator |
+| `trc-calendar-cell-selected` | Selected date |
+| `trc-calendar-cell-disabled` | Disabled date |
+| `trc-calendar-cell-outside` | Day outside current month |
+| `trc-calendar-cell-range-start` | Range start |
+| `trc-calendar-cell-range-end` | Range end |
+| `trc-calendar-cell-range-middle` | Date within range |
+| `trc-calendar-day` | Day button inside cell |
+
+## Runtime Theme Switching
+
+### Vanilla JS
+
+```js
+const cal = render('#calendar', { theme: 'default', /* ... */ });
+cal.setTheme('ocean-dark');
+```
+
+### React / Vue / Svelte
+
+Update the `data-theme` attribute on the wrapper element dynamically. For example in Vue:
+
+```vue
+<template>
+  <div class="trc-calendar" :data-theme="currentTheme">...</div>
+</template>
+```

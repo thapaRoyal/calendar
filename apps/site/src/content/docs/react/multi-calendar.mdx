@@ -1,0 +1,110 @@
+---
+title: MultiCalendar
+description: Display multiple calendar months side by side
+---
+
+# MultiCalendar
+
+The MultiCalendar component displays multiple months side by side with synchronized navigation.
+
+## Basic Usage
+
+```tsx
+import { MultiCalendar } from '@thaparoyal/calendar-react';
+import type { DateRangeValue } from '@thaparoyal/calendar-react';
+
+function MyMultiCalendar() {
+  const [range, setRange] = useState<DateRangeValue | null>(null);
+
+  return (
+    <MultiCalendar.Root
+      numberOfMonths={2}
+      mode="range"
+      config={{ calendarType: 'BS', locale: 'en' }}
+      value={range}
+      onValueChange={setRange}
+    >
+      <MultiCalendar.Header>
+        <MultiCalendar.PrevButton />
+        <MultiCalendar.Title />
+        <MultiCalendar.NextButton />
+      </MultiCalendar.Header>
+      <MultiCalendar.Calendars />
+    </MultiCalendar.Root>
+  );
+}
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `numberOfMonths` | `number` | `2` | Number of months to display |
+| `mode` | `'single' \| 'range' \| 'multiple'` | `'range'` | Selection mode |
+| `config` | `Partial<CalendarConfig>` | — | Calendar configuration |
+| `pagedNavigation` | `boolean` | `false` | Navigate by numberOfMonths at once |
+| `value` | `CalendarDate \| CalendarDate[] \| DateRangeValue \| null` | — | Controlled value |
+| `defaultValue` | same as value | — | Initial value |
+| `onValueChange` | `(value) => void` | — | Selection callback |
+| `disabledDates` | `CalendarDate[]` | — | Non-selectable dates |
+
+## Three Months
+
+```tsx
+<MultiCalendar.Root numberOfMonths={3}>
+  ...
+</MultiCalendar.Root>
+```
+
+## Selection Modes
+
+### Single Selection
+
+```tsx
+const [date, setDate] = useState<CalendarDate | null>(null);
+
+<MultiCalendar.Root mode="single" value={date} onValueChange={setDate}>
+  ...
+</MultiCalendar.Root>
+```
+
+### Range Selection
+
+```tsx
+const [range, setRange] = useState<DateRangeValue | null>(null);
+
+<MultiCalendar.Root mode="range" value={range} onValueChange={setRange}>
+  ...
+</MultiCalendar.Root>
+```
+
+### Multiple Selection
+
+```tsx
+const [dates, setDates] = useState<CalendarDate[]>([]);
+
+<MultiCalendar.Root mode="multiple" value={dates} onValueChange={setDates}>
+  ...
+</MultiCalendar.Root>
+```
+
+## Paged Navigation
+
+When `pagedNavigation` is true, navigation jumps by `numberOfMonths` instead of 1:
+
+```tsx
+<MultiCalendar.Root pagedNavigation numberOfMonths={2}>
+  ...
+</MultiCalendar.Root>
+```
+
+## Sub-components
+
+| Component | Description |
+|-----------|-------------|
+| `MultiCalendar.Root` | Root provider |
+| `MultiCalendar.Header` | Navigation header |
+| `MultiCalendar.Title` | Combined title for all months |
+| `MultiCalendar.PrevButton` | Navigate backward |
+| `MultiCalendar.NextButton` | Navigate forward |
+| `MultiCalendar.Calendars` | Renders all month grids |

@@ -1,0 +1,215 @@
+---
+title: Multi-Calendar (useMultiCalendar)
+description: Display multiple months side by side with synchronized navigation
+---
+
+# Multi-Calendar (useMultiCalendar)
+
+The `useMultiCalendar` composable displays multiple months simultaneously with unified selection and synchronized navigation. It supports all selection modes: single, range, and multiple.
+
+## Import
+
+```ts
+import { useMultiCalendar } from '@thaparoyal/calendar-vue';
+import type { CalendarDate, DateRangeValue, MultiCalendarMonth } from '@thaparoyal/calendar-vue';
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+## Options
+
+```ts
+interface UseMultiCalendarOptions {
+  numberOfMonths?: number;         // Default: 2
+  mode?: 'single' | 'range' | 'multiple';
+  config?: Partial<CalendarConfig>;
+  pagedNavigation?: boolean;       // Jump by numberOfMonths instead of 1
+  defaultValue?: CalendarDate | CalendarDate[] | DateRangeValue | null;
+  modelValue?: Ref<CalendarDate | CalendarDate[] | DateRangeValue | null>;
+  onValueChange?: (value: CalendarDate | CalendarDate[] | DateRangeValue | null) => void;
+  disabledDates?: CalendarDate[];
+}
+```
+
+## Return Values
+
+| Property | Type | Description |
+|---|---|---|
+| `months` | `ComputedRef<MultiCalendarMonth[]>` | Array of `{ year, month, title, weeks }` |
+| `weekdayNames` | `ComputedRef<string[]>` | Weekday labels (same for all months) |
+| `value` | `ComputedRef` | Current selection value |
+| `isComplete` | `ComputedRef<boolean>` | Whether selection is made |
+| `isPrevDisabled` | `ComputedRef<boolean>` | Prev navigation constraint |
+| `isNextDisabled` | `ComputedRef<boolean>` | Next navigation constraint |
+| `actions` | Object | `select`, `toggle`, `hover`, `clear`, `nextMonth`, `prevMonth`, ... |
+| `formatDayNumber` | `(day: number) => string` | Locale-aware formatter |
+
+Each item in the `months` array provides:
+
+```ts
+interface MultiCalendarMonth {
+  year: number;
+  month: number;
+  title: string;   // e.g. "Magh 2081"
+  weeks: Week[];   // Enhanced with selection flags
+}
+```
+
+## Two Months (Single Selection)
+
+```vue
+<script setup lang="ts">
+import { useMultiCalendar, type CalendarDate } from '@thaparoyal/calendar-vue';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+const mc = useMultiCalendar({
+  numberOfMonths: 2,
+  mode: 'single',
+  config: { calendarType: 'BS', locale: 'en' },
+  onValueChange: (val) => console.log('Selected:', val),
+});
+</script>
+
+<template>
+  <div data-theme="amber">
+    <div class="trc-calendar-header">
+      <button class="trc-calendar-nav-button" @click="mc.actions.prevMonth()" :disabled="mc.isPrevDisabled">&lsaquo;</button>
+      <span class="trc-calendar-title">
+        {{ mc.months[0]?.title }} &mdash; {{ mc.months[mc.months.length - 1]?.title }}
+      </span>
+      <button class="trc-calendar-nav-button" @click="mc.actions.nextMonth()" :disabled="mc.isNextDisabled">&rsaquo;</button>
+    </div>
+
+    <div class="trc-multi-calendar">
+      <div v-for="m in mc.months" :key="`${m.year}-${m.month}`" class="trc-multi-calendar-month">
+        <div style="text-align: center; font-weight: 600; margin-bottom: 0.5rem;">{{ m.title }}</div>
+        <table class="trc-calendar-grid">
+          <thead class="trc-calendar-grid-head">
+            <tr>
+              <th v-for="d in mc.weekdayNames" :key="d" class="trc-calendar-weekday">{{ d }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(week, wi) in m.weeks" :key="wi" class="trc-calendar-week">
+              <td
+                v-for="day in week"
+                :key="`${day.date.year}-${day.date.month}-${day.date.day}`"
+                class="trc-calendar-cell"
+                :class="{
+                  'trc-calendar-cell-today': day.isToday,
+                  'trc-calendar-cell-selected': day.isSelected,
+                  'trc-calendar-cell-outside': day.isOutsideMonth,
+                  'trc-calendar-cell-disabled': day.isDisabled,
+                }"
+              >
+                <button
+                  class="trc-calendar-day"
+                  :disabled="day.isDisabled || day.isOutsideMonth"
+                  @click="mc.actions.select(day.date)"
+                >{{ mc.formatDayNumber(day.date.day) }}</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+## Three Months
+
+```ts
+const mc = useMultiCalendar({
+  numberOfMonths: 3,
+  mode: 'single',
+  config: { calendarType: 'BS', locale: 'en' },
+});
+```
+
+The template is identical -- `mc.months` will contain 3 items.
+
+## Range Selection Across Months
+
+Multi-calendar is especially useful for range selection because users can see the start and end months at once:
+
+```vue
+<script setup lang="ts">
+import { useMultiCalendar, type DateRangeValue } from '@thaparoyal/calendar-vue';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+const mc = useMultiCalendar({
+  numberOfMonths: 2,
+  mode: 'range',
+  config: { calendarType: 'BS', locale: 'en' },
+});
+</script>
+
+<template>
+  <div data-theme="coral">
+    <!-- Same header as above -->
+
+    <div class="trc-multi-calendar">
+      <div v-for="m in mc.months" :key="`${m.year}-${m.month}`" class="trc-multi-calendar-month">
+        <div style="text-align: center; font-weight: 600; margin-bottom: 0.5rem;">{{ m.title }}</div>
+        <table class="trc-calendar-grid">
+          <thead class="trc-calendar-grid-head">
+            <tr>
+              <th v-for="d in mc.weekdayNames" :key="d" class="trc-calendar-weekday">{{ d }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(week, wi) in m.weeks" :key="wi" class="trc-calendar-week">
+              <td
+                v-for="day in week"
+                :key="`${day.date.year}-${day.date.month}-${day.date.day}`"
+                class="trc-calendar-cell"
+                :class="{
+                  'trc-calendar-cell-today': day.isToday,
+                  'trc-calendar-cell-outside': day.isOutsideMonth,
+                  'trc-calendar-cell-disabled': day.isDisabled,
+                  'trc-calendar-cell-range-start': day.isRangeStart,
+                  'trc-calendar-cell-range-end': day.isRangeEnd,
+                  'trc-calendar-cell-range-middle': day.isInRange,
+                  'trc-calendar-cell-range-hover': day.isRangeHover,
+                }"
+              >
+                <button
+                  class="trc-calendar-day"
+                  :disabled="day.isDisabled || day.isOutsideMonth"
+                  @click="mc.actions.select(day.date)"
+                  @mouseenter="mc.actions.hover(day.date)"
+                >{{ mc.formatDayNumber(day.date.day) }}</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+## Paged Navigation
+
+By default, navigation moves one month at a time. Set `pagedNavigation: true` to jump by the number of displayed months:
+
+```ts
+const mc = useMultiCalendar({
+  numberOfMonths: 2,
+  pagedNavigation: true,
+  // prev/next will jump 2 months instead of 1
+});
+```
+
+## Responsive Layout
+
+The core CSS includes a media query that stacks months vertically on small screens:
+
+```css
+/* Already included in themes.css */
+@media (max-width: 640px) {
+  .trc-multi-calendar {
+    flex-direction: column;
+  }
+}
+```

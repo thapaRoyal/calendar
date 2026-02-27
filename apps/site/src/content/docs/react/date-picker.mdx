@@ -1,0 +1,89 @@
+---
+title: DatePicker
+description: Date picker with input field and calendar dropdown
+---
+
+# DatePicker
+
+The DatePicker component combines an input field with a calendar dropdown for date selection.
+
+## Basic Usage
+
+```tsx
+import { DatePicker } from '@thaparoyal/calendar-react';
+
+function MyDatePicker() {
+  const [date, setDate] = useState(null);
+
+  return (
+    <DatePicker.Root
+      config={{ calendarType: 'BS', locale: 'en' }}
+      value={date}
+      onValueChange={setDate}
+    >
+      <DatePicker.Input placeholder="Select date..." />
+      <DatePicker.Trigger />
+      <DatePicker.Content>
+        <DatePicker.Calendar />
+      </DatePicker.Content>
+    </DatePicker.Root>
+  );
+}
+```
+
+## With Clear Button
+
+```tsx
+<DatePicker.Root value={date} onValueChange={setDate}>
+  <DatePicker.Input placeholder="Select date..." />
+  <DatePicker.ClearButton />
+  <DatePicker.Trigger />
+  <DatePicker.Content>
+    <DatePicker.Calendar />
+  </DatePicker.Content>
+</DatePicker.Root>
+```
+
+## Custom Format
+
+```tsx
+<DatePicker.Root format="YYYY/MM/DD">
+  ...
+</DatePicker.Root>
+```
+
+## Min/Max Date Constraints
+
+```tsx
+<DatePicker.Root
+  config={{
+    calendarType: 'BS',
+    minDate: { year: 2080, month: 1, day: 1, calendarType: 'BS' },
+    maxDate: { year: 2080, month: 12, day: 30, calendarType: 'BS' },
+  }}
+>
+  ...
+</DatePicker.Root>
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `config` | `Partial<CalendarConfig>` | Calendar configuration |
+| `value` | `CalendarDate \| null` | Controlled selected date |
+| `defaultValue` | `CalendarDate` | Initial date |
+| `onValueChange` | `(date: CalendarDate \| null) => void` | Selection callback |
+| `disabledDates` | `CalendarDate[]` | Non-selectable dates |
+| `format` | `string` | Date format string (e.g., `'YYYY/MM/DD'`) |
+
+## Sub-components
+
+| Component | Description |
+|-----------|-------------|
+| `DatePicker.Root` | Root provider |
+| `DatePicker.Input` | Text input showing formatted date |
+| `DatePicker.Trigger` | Button to open/close calendar |
+| `DatePicker.Content` | Dropdown container |
+| `DatePicker.Calendar` | Calendar grid inside dropdown |
+| `DatePicker.ClearButton` | Clear selection button |

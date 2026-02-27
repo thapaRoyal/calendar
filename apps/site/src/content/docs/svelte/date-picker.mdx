@@ -1,0 +1,220 @@
+---
+title: Date Picker (createDatePicker)
+description: Calendar dropdown with input field using the createDatePicker store
+---
+
+# Date Picker (createDatePicker)
+
+The `createDatePicker` store creator combines calendar selection with an input field and popup management. It tracks open/close state, formats the input value, and auto-closes after selection.
+
+## Import
+
+```ts
+import { createDatePicker } from '@thaparoyal/calendar-svelte';
+import type { CalendarDate } from '@thaparoyal/calendar-svelte';
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+## Options
+
+```ts
+interface CreateDatePickerOptions {
+  config?: Partial<CalendarConfig>;
+  defaultValue?: CalendarDate;
+  format?: string;          // Default: 'YYYY-MM-DD'
+  disabledDates?: CalendarDate[];
+}
+```
+
+## Return Values
+
+| Property | Type | Description |
+|---|---|---|
+| `isOpen` | `Readable<boolean>` | Whether the popup is visible |
+| `inputValue` | `Readable<string>` | Current text in the input |
+| `selectedDate` | `Writable<CalendarDate \| null>` | Selected date (two-way binding) |
+| `formattedValue` | `Readable<string>` | Date formatted with `format` string |
+| `weeks` | `Readable<Week[]>` | Calendar grid |
+| `title` | `Readable<string>` | Month/year title |
+| `weekdayNames` | `Readable<string[]>` | Weekday labels |
+| `locale` | `Readable<Locale>` | Current locale |
+| `isPrevMonthDisabled` | `Readable<boolean>` | Nav constraint |
+| `isNextMonthDisabled` | `Readable<boolean>` | Nav constraint |
+| `formatDayNumber` | `(day: number) => string` | Locale-aware formatter (not a store) |
+| `open` | `() => void` | Open the dropdown |
+| `close` | `() => void` | Close the dropdown |
+| `toggle` | `() => void` | Toggle open/close |
+| `selectDate` | `(date) => void` | Select a date and auto-close |
+| `clear` | `() => void` | Clear the selection and input |
+| `nextMonth` | `() => void` | Navigate to previous month |
+| `prevMonth` | `() => void` | Navigate to next month |
+| `goToToday` | `() => void` | Jump to today's date |
+| `setViewMode` | `(mode) => void` | Switch between `'day'`, `'month'`, `'year'` |
+
+## Basic Usage
+
+```svelte
+<script>
+  import { onMount, onDestroy } from 'svelte';
+  import { createDatePicker } from '@thaparoyal/calendar-svelte';
+  import '@thaparoyal/calendar-core/themes/themes.css';
+
+  const {
+    isOpen, inputValue, selectedDate, weeks, title, weekdayNames,
+    formatDayNumber, isPrevMonthDisabled, isNextMonthDisabled,
+    open, close, toggle, selectDate, clear, prevMonth, nextMonth, goToToday,
+  } = createDatePicker({
+    config: { calendarType: 'BS', locale: 'en' },
+  });
+
+  let pickerEl;
+
+  function handleClickOutside(e) {
+    if (pickerEl && !pickerEl.contains(e.target) && $isOpen) {
+      close();
+    }
+  }
+
+  onMount(() => document.addEventListener('click', handleClickOutside));
+  onDestroy(() => document.removeEventListener('click', handleClickOutside));
+</script>
+
+<div bind:this={pickerEl} class="trc-date-picker" data-theme="indigo" style="display: block;">
+  <!-- Input -->
+  <div class="trc-date-picker-input-wrapper">
+    <input
+      class="trc-date-picker-input"
+      type="text"
+      placeholder="Select date..."
+      value={$inputValue}
+      readonly
+      on:click={toggle}
+    />
+    {#if $selectedDate}
+      <button class="trc-date-picker-clear" on:click={clear}>&times;</button>
+    {/if}
+    <button class="trc-date-picker-trigger" on:click={toggle}>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M5 1v2M11 1v2M1 6h14M3 3h10a2 2 0 012 2v8a2 2 0 01-2 2H3a2 2 0 01-2-2V5a2 2 0 012-2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Dropdown -->
+  {#if $isOpen}
+    <div class="trc-date-picker-content">
+      <div class="trc-date-picker-calendar">
+        <div class="trc-calendar-header">
+          <button class="trc-calendar-nav-button" on:click={prevMonth} disabled={$isPrevMonthDisabled}>&lsaquo;</button>
+          <span class="trc-calendar-title">{$title}</span>
+          <button class="trc-calendar-nav-button" on:click={nextMonth} disabled={$isNextMonthDisabled}>&rsaquo;</button>
+        </div>
+        <table class="trc-calendar-grid">
+          <thead class="trc-calendar-grid-head">
+            <tr>
+              {#each $weekdayNames as d}
+                <th class="trc-calendar-weekday">{d}</th>
+              {/each}
+            </tr>
+          </thead>
+          <tbody>
+            {#each $weeks as week}
+              <tr class="trc-calendar-week">
+                {#each week as day}
+                  <td
+                    class="trc-calendar-cell"
+                    class:trc-calendar-cell-today={day.isToday}
+                    class:trc-calendar-cell-selected={day.isSelected}
+                    class:trc-calendar-cell-outside={day.isOutsideMonth}
+                    class:trc-calendar-cell-disabled={day.isDisabled}
+                  >
+                    <button
+                      class="trc-calendar-day"
+                      disabled={day.isDisabled || day.isOutsideMonth}
+                      on:click={() => selectDate(day.date)}
+                    >{formatDayNumber(day.date.day)}</button>
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+      <div class="trc-date-picker-footer">
+        <button class="trc-date-picker-today-button" on:click={goToToday}>Today</button>
+        <button class="trc-date-picker-clear-button" on:click={clear}>Clear</button>
+      </div>
+    </div>
+  {/if}
+</div>
+
+<p>Selected: {$selectedDate ? `${$selectedDate.year}-${$selectedDate.month}-${$selectedDate.day}` : 'None'}</p>
+```
+
+## Click Outside to Close
+
+The example above includes a click-outside handler using `onMount` and `onDestroy`. This pattern is idiomatic in Svelte:
+
+```svelte
+<script>
+  import { onMount, onDestroy } from 'svelte';
+
+  const { isOpen, close, ...rest } = createDatePicker({ ... });
+  let pickerEl;
+
+  function handleClickOutside(e) {
+    if (pickerEl && !pickerEl.contains(e.target) && $isOpen) {
+      close();
+    }
+  }
+
+  onMount(() => document.addEventListener('click', handleClickOutside));
+  onDestroy(() => document.removeEventListener('click', handleClickOutside));
+</script>
+
+<div bind:this={pickerEl} class="trc-date-picker">
+  <!-- ... -->
+</div>
+```
+
+## Custom Format
+
+```ts
+const { formattedValue, inputValue, ...rest } = createDatePicker({
+  config: { calendarType: 'BS', locale: 'en' },
+  format: 'YYYY/MM/DD',
+});
+```
+
+The `$formattedValue` and `$inputValue` stores will use the provided format string.
+
+## With Min/Max Constraints
+
+```ts
+const { weeks, title, ...rest } = createDatePicker({
+  config: {
+    calendarType: 'BS',
+    locale: 'en',
+    minDate: { year: 2081, month: 1, day: 1, calendarType: 'BS' },
+    maxDate: { year: 2081, month: 12, day: 30, calendarType: 'BS' },
+  },
+});
+```
+
+## Actions Reference
+
+| Action | Description |
+|---|---|
+| `open()` | Open the dropdown |
+| `close()` | Close the dropdown |
+| `toggle()` | Toggle open/close |
+| `selectDate(date)` | Select a date and auto-close |
+| `clear()` | Clear the selection and input |
+| `onInputChange(value)` | Handle manual input text changes |
+| `onInputBlur()` | Handle input blur (validates input) |
+| `prevMonth()` | Navigate to previous month |
+| `nextMonth()` | Navigate to next month |
+| `prevYear()` | Navigate to previous year |
+| `nextYear()` | Navigate to next year |
+| `goToToday()` | Jump to today's date |
+| `setViewMode(mode)` | Switch between `'day'`, `'month'`, `'year'` |

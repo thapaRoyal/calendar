@@ -1,0 +1,115 @@
+---
+title: Svelte Guide
+description: Getting started with @thaparoyal/calendar-svelte
+---
+
+# Svelte Guide
+
+`@thaparoyal/calendar-svelte` provides **headless store creators** for building calendar UIs in Svelte. Instead of pre-built components, you get reactive Svelte stores and plain action functions -- you bring your own template and styling.
+
+## Installation
+
+```bash
+npm install @thaparoyal/calendar-svelte @thaparoyal/calendar-core
+```
+
+Import the theme CSS in your component or app entry:
+
+```ts
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+## Store Creators
+
+| Store Creator | Purpose |
+|---|---|
+| [`createCalendar`](/docs/svelte/calendar/) | Single calendar with month/year pickers |
+| [`createSelection`](/docs/svelte/range-selection/) | Unified selection: single, range, or multiple |
+| [`createDatePicker`](/docs/svelte/date-picker/) | Calendar inside a popup with input field |
+| [`createMultiCalendar`](/docs/svelte/multi-calendar/) | Multiple months displayed side by side |
+
+## Headless Store Pattern
+
+Every store creator returns **Svelte readable stores** (accessed with `$` prefix in templates) and **plain action functions**. You wire them into your own markup:
+
+```svelte
+<script>
+  import { createCalendar } from '@thaparoyal/calendar-svelte';
+  import '@thaparoyal/calendar-core/themes/themes.css';
+
+  const {
+    weeks, title, weekdayNames, formatDayNumber,
+    isPrevMonthDisabled, isNextMonthDisabled,
+    selectDate, prevMonth, nextMonth,
+  } = createCalendar({
+    config: { calendarType: 'BS', locale: 'en' },
+  });
+</script>
+
+<div class="trc-calendar" data-theme="default">
+  <div class="trc-calendar-header">
+    <button class="trc-calendar-nav-button" on:click={prevMonth} disabled={$isPrevMonthDisabled}>&#8249;</button>
+    <span class="trc-calendar-title">{$title}</span>
+    <button class="trc-calendar-nav-button" on:click={nextMonth} disabled={$isNextMonthDisabled}>&#8250;</button>
+  </div>
+  <table class="trc-calendar-grid">
+    <thead class="trc-calendar-grid-head">
+      <tr>
+        {#each $weekdayNames as day}
+          <th class="trc-calendar-weekday">{day}</th>
+        {/each}
+      </tr>
+    </thead>
+    <tbody>
+      {#each $weeks as week}
+        <tr class="trc-calendar-week">
+          {#each week as day}
+            <td
+              class="trc-calendar-cell"
+              class:trc-calendar-cell-today={day.isToday}
+              class:trc-calendar-cell-selected={day.isSelected}
+              class:trc-calendar-cell-outside={day.isOutsideMonth}
+              class:trc-calendar-cell-disabled={day.isDisabled}
+            >
+              <button
+                class="trc-calendar-day"
+                disabled={day.isDisabled || day.isOutsideMonth}
+                on:click={() => selectDate(day.date)}
+              >{formatDayNumber(day.date.day)}</button>
+            </td>
+          {/each}
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+</div>
+```
+
+Key Svelte patterns:
+- **Destructure** the return value of `createCalendar()` to get individual store references and action functions
+- **Readable stores** are accessed with the `$` prefix on the destructured variable: `$title`, `$weeks`, `$isPrevMonthDisabled`
+- **Actions** are plain functions called directly: `selectDate(date)`, `nextMonth()`
+- **`formatDayNumber`** is a regular function (not a store), so call it without `$`
+- **Class directives** use `class:trc-calendar-cell-today={day.isToday}` syntax
+
+The `trc-*` CSS classes come from the core theme stylesheet, so your calendar automatically picks up whichever theme you set via `data-theme`.
+
+## Themes
+
+Apply any of the 12 built-in themes with the `data-theme` attribute:
+
+`default` | `ocean` | `forest` | `sunset` | `lavender` | `midnight` | `rose` | `mint` | `amber` | `slate` | `coral` | `indigo`
+
+```html
+<div class="trc-calendar" data-theme="ocean">
+  <!-- calendar content -->
+</div>
+```
+
+## Next Steps
+
+- [Calendar (createCalendar)](/docs/svelte/calendar/) -- BS/AD, month picker, year picker, Nepali locale
+- [Range Selection (createSelection)](/docs/svelte/range-selection/) -- date range and multi-date selection
+- [Multi-Calendar (createMultiCalendar)](/docs/svelte/multi-calendar/) -- side-by-side months
+- [Date Picker (createDatePicker)](/docs/svelte/date-picker/) -- input + dropdown calendar
+- [All Examples](/docs/svelte/examples/) -- interactive demo of every feature

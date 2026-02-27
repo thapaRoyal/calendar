@@ -1,0 +1,104 @@
+---
+title: Vue Guide
+description: Getting started with @thaparoyal/calendar-vue
+---
+
+# Vue Guide
+
+`@thaparoyal/calendar-vue` provides **headless composables** for building calendar UIs in Vue 3. Instead of pre-built components, you get reactive state and actions -- you bring your own template and styling.
+
+## Installation
+
+```bash
+npm install @thaparoyal/calendar-vue @thaparoyal/calendar-core
+```
+
+Import the theme CSS in your app entry or component:
+
+```ts
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+## Composables
+
+| Composable | Purpose |
+|---|---|
+| [`useCalendar`](/docs/vue/calendar/) | Single calendar with month/year pickers |
+| [`useSelection`](/docs/vue/range-selection/) | Unified selection: single, range, or multiple |
+| [`useDatePicker`](/docs/vue/date-picker/) | Calendar inside a popup with input field |
+| [`useMultiCalendar`](/docs/vue/multi-calendar/) | Multiple months displayed side by side |
+
+## Headless Pattern
+
+Every composable returns **reactive computed refs** and an **actions** object. You wire them into your own `<template>`:
+
+```vue
+<script setup lang="ts">
+import { useCalendar } from '@thaparoyal/calendar-vue';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+const { weeks, title, weekdayNames, actions, formatDayNumber, isPrevMonthDisabled, isNextMonthDisabled } = useCalendar({
+  config: { calendarType: 'BS', locale: 'en' },
+});
+</script>
+
+<template>
+  <div class="trc-calendar" data-theme="default">
+    <div class="trc-calendar-header">
+      <button class="trc-calendar-nav-button" @click="actions.prevMonth()" :disabled="isPrevMonthDisabled">&#8249;</button>
+      <span class="trc-calendar-title">{{ title }}</span>
+      <button class="trc-calendar-nav-button" @click="actions.nextMonth()" :disabled="isNextMonthDisabled">&#8250;</button>
+    </div>
+    <table class="trc-calendar-grid">
+      <thead class="trc-calendar-grid-head">
+        <tr>
+          <th v-for="day in weekdayNames" :key="day" class="trc-calendar-weekday">{{ day }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(week, wi) in weeks" :key="wi" class="trc-calendar-week">
+          <td
+            v-for="d in week"
+            :key="`${d.date.year}-${d.date.month}-${d.date.day}`"
+            class="trc-calendar-cell"
+            :class="{
+              'trc-calendar-cell-today': d.isToday,
+              'trc-calendar-cell-selected': d.isSelected,
+              'trc-calendar-cell-outside': d.isOutsideMonth,
+              'trc-calendar-cell-disabled': d.isDisabled,
+            }"
+          >
+            <button
+              class="trc-calendar-day"
+              :disabled="d.isDisabled || d.isOutsideMonth"
+              @click="actions.selectDate(d.date)"
+            >{{ formatDayNumber(d.date.day) }}</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+```
+
+The `trc-*` CSS classes come from the core theme stylesheet, so your calendar automatically picks up whichever theme you set via `data-theme`.
+
+## Themes
+
+Apply any of the 12 built-in themes with the `data-theme` attribute:
+
+`default` | `ocean` | `forest` | `sunset` | `lavender` | `midnight` | `rose` | `mint` | `amber` | `slate` | `coral` | `indigo`
+
+```html
+<div class="trc-calendar" data-theme="ocean">
+  <!-- calendar content -->
+</div>
+```
+
+## Next Steps
+
+- [Calendar (useCalendar)](/docs/vue/calendar/) -- BS/AD, month picker, year picker, Nepali locale
+- [Range Selection (useSelection)](/docs/vue/range-selection/) -- date range and multi-date selection
+- [Multi-Calendar (useMultiCalendar)](/docs/vue/multi-calendar/) -- side-by-side months
+- [Date Picker (useDatePicker)](/docs/vue/date-picker/) -- input + dropdown calendar
+- [All Examples](/docs/vue/examples/) -- interactive demo of every feature

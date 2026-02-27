@@ -1,0 +1,207 @@
+---
+title: Range & Multi Selection (useSelection)
+description: Date range and multi-date selection with the useSelection composable
+---
+
+# Range & Multi Selection (useSelection)
+
+The `useSelection` composable provides unified selection logic for **single**, **range**, and **multiple** date modes. It enhances each `WeekDay` with selection-specific flags (`isRangeStart`, `isRangeEnd`, `isInRange`, `isRangeHover`, `isMultiSelected`).
+
+## Import
+
+```ts
+import { useSelection } from '@thaparoyal/calendar-vue';
+import type { CalendarDate, DateRangeValue } from '@thaparoyal/calendar-vue';
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+## Options
+
+```ts
+interface UseSelectionOptions {
+  mode?: 'single' | 'range' | 'multiple';
+  config?: Partial<CalendarConfig>;
+  defaultValue?: CalendarDate | CalendarDate[] | DateRangeValue | null;
+  modelValue?: Ref<CalendarDate | CalendarDate[] | DateRangeValue | null>;
+  onValueChange?: (value: CalendarDate | CalendarDate[] | DateRangeValue | null) => void;
+  disabledDates?: CalendarDate[];
+}
+```
+
+## Return Values
+
+| Property | Type | Description |
+|---|---|---|
+| `state` | `Ref<SelectionState>` | Internal state |
+| `actions` | Object | `select`, `toggle`, `hover`, `clear`, `clearAll`, `nextMonth`, `prevMonth`, `setViewMode`, ... |
+| `dispatch` | Function | Low-level event dispatcher |
+| `weeks` | `ComputedRef<Week[]>` | Grid with selection-enhanced `WeekDay` objects |
+| `title` | `ComputedRef<string>` | Month/year title |
+| `weekdayNames` | `ComputedRef<string[]>` | Weekday labels |
+| `value` | `ComputedRef` | Current selection value (shape depends on mode) |
+| `isComplete` | `ComputedRef<boolean>` | Whether a selection has been made |
+| `isPrevMonthDisabled` | `ComputedRef<boolean>` | Nav constraint |
+| `isNextMonthDisabled` | `ComputedRef<boolean>` | Nav constraint |
+| `formatDayNumber` | `(day: number) => string` | Locale-aware formatter |
+
+## Range Selection
+
+For range mode, use `actions.select(date)` on click and `actions.hover(date)` on mouseover to show the hover preview. The first click sets the start date, the second click sets the end date.
+
+```vue
+<script setup lang="ts">
+import { useSelection, type DateRangeValue, type CalendarDate } from '@thaparoyal/calendar-vue';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+const range = useSelection({
+  mode: 'range',
+  config: { calendarType: 'BS', locale: 'en' },
+  onValueChange: (val) => {
+    console.log('Range changed:', val);
+  },
+});
+</script>
+
+<template>
+  <div class="trc-calendar" data-theme="rose">
+    <div class="trc-calendar-header">
+      <button class="trc-calendar-nav-button" @click="range.actions.prevMonth()" :disabled="range.isPrevMonthDisabled">&lsaquo;</button>
+      <span class="trc-calendar-title">{{ range.title }}</span>
+      <button class="trc-calendar-nav-button" @click="range.actions.nextMonth()" :disabled="range.isNextMonthDisabled">&rsaquo;</button>
+    </div>
+    <table class="trc-calendar-grid">
+      <thead class="trc-calendar-grid-head">
+        <tr>
+          <th v-for="d in range.weekdayNames" :key="d" class="trc-calendar-weekday">{{ d }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(week, wi) in range.weeks" :key="wi" class="trc-calendar-week">
+          <td
+            v-for="day in week"
+            :key="`${day.date.year}-${day.date.month}-${day.date.day}`"
+            class="trc-calendar-cell"
+            :class="{
+              'trc-calendar-cell-today': day.isToday,
+              'trc-calendar-cell-selected': day.isSelected,
+              'trc-calendar-cell-outside': day.isOutsideMonth,
+              'trc-calendar-cell-disabled': day.isDisabled,
+              'trc-calendar-cell-range-start': day.isRangeStart,
+              'trc-calendar-cell-range-end': day.isRangeEnd,
+              'trc-calendar-cell-range-middle': day.isInRange,
+              'trc-calendar-cell-range-hover': day.isRangeHover,
+            }"
+          >
+            <button
+              class="trc-calendar-day"
+              :disabled="day.isDisabled || day.isOutsideMonth"
+              @click="range.actions.select(day.date)"
+              @mouseenter="range.actions.hover(day.date)"
+            >{{ range.formatDayNumber(day.date.day) }}</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p v-if="range.value">
+    Start: {{ (range.value as DateRangeValue)?.start?.year }}-{{ (range.value as DateRangeValue)?.start?.month }}-{{ (range.value as DateRangeValue)?.start?.day }}
+    | End: {{ (range.value as DateRangeValue)?.end?.year }}-{{ (range.value as DateRangeValue)?.end?.month }}-{{ (range.value as DateRangeValue)?.end?.day }}
+  </p>
+</template>
+```
+
+### How Range Selection Works
+
+1. **First click** -- sets the start date. The calendar enters "selecting end" mode.
+2. **Mouse hover** -- shows a preview highlight between start and the hovered date.
+3. **Second click** -- sets the end date. The range is complete.
+4. **Third click** -- resets and starts a new range.
+
+### Range CSS Classes
+
+| Class | Applied when |
+|---|---|
+| `trc-calendar-cell-range-start` | Cell is the range start date |
+| `trc-calendar-cell-range-end` | Cell is the range end date |
+| `trc-calendar-cell-range-middle` | Cell is between start and end (`isInRange`) |
+| `trc-calendar-cell-range-hover` | Cell is in the hover preview |
+
+## Multi-Date Selection
+
+For multiple date selection, use `actions.toggle(date)` to add or remove dates:
+
+```vue
+<script setup lang="ts">
+import { useSelection, type CalendarDate } from '@thaparoyal/calendar-vue';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+const multi = useSelection({
+  mode: 'multiple',
+  config: { calendarType: 'BS', locale: 'en' },
+});
+</script>
+
+<template>
+  <div class="trc-calendar" data-theme="mint">
+    <div class="trc-calendar-header">
+      <button class="trc-calendar-nav-button" @click="multi.actions.prevMonth()" :disabled="multi.isPrevMonthDisabled">&lsaquo;</button>
+      <span class="trc-calendar-title">{{ multi.title }}</span>
+      <button class="trc-calendar-nav-button" @click="multi.actions.nextMonth()" :disabled="multi.isNextMonthDisabled">&rsaquo;</button>
+    </div>
+    <table class="trc-calendar-grid">
+      <thead class="trc-calendar-grid-head">
+        <tr>
+          <th v-for="d in multi.weekdayNames" :key="d" class="trc-calendar-weekday">{{ d }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(week, wi) in multi.weeks" :key="wi" class="trc-calendar-week">
+          <td
+            v-for="day in week"
+            :key="`${day.date.year}-${day.date.month}-${day.date.day}`"
+            class="trc-calendar-cell"
+            :class="{
+              'trc-calendar-cell-today': day.isToday,
+              'trc-calendar-cell-outside': day.isOutsideMonth,
+              'trc-calendar-cell-disabled': day.isDisabled,
+              'trc-calendar-cell-multi-selected': day.isMultiSelected,
+            }"
+          >
+            <button
+              class="trc-calendar-day"
+              :disabled="day.isDisabled || day.isOutsideMonth"
+              @click="multi.actions.toggle(day.date)"
+            >{{ multi.formatDayNumber(day.date.day) }}</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Selected {{ (multi.value as CalendarDate[])?.length || 0 }} dates</p>
+</template>
+```
+
+## Single Selection with useSelection
+
+You can also use `useSelection` for single-date mode. It works the same as `useCalendar` but goes through the unified selection machine:
+
+```ts
+const single = useSelection({
+  mode: 'single',
+  config: { calendarType: 'BS', locale: 'en' },
+});
+
+// Use actions.select(date) for single mode
+```
+
+## Clearing Selection
+
+```ts
+// Clear current selection
+range.actions.clear();
+
+// Clear all (resets everything)
+range.actions.clearAll();
+```

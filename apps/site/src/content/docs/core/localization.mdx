@@ -1,0 +1,306 @@
+---
+title: Localization
+description: Nepali numerals, locale support, and i18n
+---
+
+# Localization
+
+`@thaparoyal/calendar-core` provides full support for English and Nepali (Devanagari) display, including month names, weekday names, numerals, and date formatting.
+
+## Locale Option
+
+The `locale` config option controls the display language across all frameworks:
+
+```ts
+type Locale = 'en' | 'ne';
+```
+
+| Locale | Numerals | Month Names | Weekday Names |
+|---|---|---|---|
+| `'en'` | 1, 2, 3 ... | Baisakh, Jestha ... | Sun, Mon ... |
+| `'ne'` | &#x0967;, &#x0968;, &#x0969; ... | &#x092C;&#x0948;&#x0936;&#x093E;&#x0916;, &#x091C;&#x0947;&#x0920; ... | &#x0906;&#x0907;&#x0924;, &#x0938;&#x094B;&#x092E; ... |
+
+### Using in Config
+
+The locale is part of `CalendarConfig` and works across all frameworks:
+
+```ts
+// Vanilla JS
+render('#cal', {
+  config: { calendarType: 'BS', locale: 'ne' },
+});
+
+// React
+<Calendar.Root config={{ calendarType: 'BS', locale: 'ne' }}>
+
+// Vue
+const { weeks } = useCalendar({
+  config: { calendarType: 'BS', locale: 'ne' },
+});
+
+// Svelte
+const { weeks } = createCalendar({
+  config: { calendarType: 'BS', locale: 'ne' },
+});
+```
+
+When using `locale: 'ne'`, add `data-locale="ne"` on the calendar wrapper to enable the Devanagari font styling:
+
+```html
+<div class="trc-calendar" data-theme="default" data-locale="ne">
+```
+
+## Nepali Numerals
+
+Convert between Arabic (0-9) and Devanagari numerals:
+
+```ts
+import { toNepaliNumeral, fromNepaliNumeral, NEPALI_DIGITS } from '@thaparoyal/calendar-core';
+
+toNepaliNumeral(2082);    // '२०८२'
+toNepaliNumeral(15);      // '१५'
+
+fromNepaliNumeral('२०८२'); // 2082
+fromNepaliNumeral('१५');   // 15
+
+// Individual digit mapping
+NEPALI_DIGITS;
+// ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९']
+```
+
+## Month Names
+
+### BS Month Names
+
+```ts
+import {
+  BS_MONTHS_EN,
+  BS_MONTHS_NP,
+  BS_MONTHS_SHORT_EN,
+  BS_MONTHS_SHORT_NP,
+  getMonthName,
+  getMonthShortName,
+  getMonthNames,
+} from '@thaparoyal/calendar-core';
+
+// Full arrays
+BS_MONTHS_EN;
+// ['Baisakh', 'Jestha', 'Ashadh', 'Shrawan', 'Bhadra', 'Ashwin',
+//  'Kartik', 'Mangsir', 'Poush', 'Magh', 'Falgun', 'Chaitra']
+
+BS_MONTHS_NP;
+// ['बैशाख', 'जेठ', 'असार', 'श्रावण', 'भाद्र', 'आश्विन',
+//  'कार्तिक', 'मंसिर', 'पौष', 'माघ', 'फाल्गुन', 'चैत्र']
+
+BS_MONTHS_SHORT_EN;
+// ['Bai', 'Jes', 'Ash', 'Shr', 'Bhd', 'Asw',
+//  'Kar', 'Man', 'Pou', 'Mag', 'Fal', 'Cha']
+
+// Get by index (1-based month number)
+getMonthName(1, 'BS', 'en');      // 'Baisakh'
+getMonthName(1, 'BS', 'ne');      // 'बैशाख'
+getMonthName(1, 'AD', 'en');      // 'January'
+
+getMonthShortName(1, 'BS', 'en'); // 'Bai'
+
+// Get all month names for a calendar type
+getMonthNames('BS', 'en');        // ['Baisakh', 'Jestha', ...]
+getMonthNames('AD', 'en');        // ['January', 'February', ...]
+```
+
+## Weekday Names
+
+```ts
+import {
+  WEEKDAYS_EN,
+  WEEKDAYS_NP,
+  WEEKDAYS_SHORT_EN,
+  WEEKDAYS_SHORT_NP,
+  WEEKDAYS_MIN_EN,
+  WEEKDAYS_MIN_NP,
+  getWeekdayName,
+  getWeekdayShortName,
+  getWeekdayMinName,
+  getWeekdayNames,
+  getWeekdayShortNames,
+  getWeekdayMinNames,
+} from '@thaparoyal/calendar-core';
+
+// Full names (index 0 = Sunday)
+WEEKDAYS_EN;     // ['Sunday', 'Monday', 'Tuesday', ...]
+WEEKDAYS_NP;     // ['आइतबार', 'सोमबार', 'मंगलबार', ...]
+
+// Short names
+WEEKDAYS_SHORT_EN;  // ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+WEEKDAYS_SHORT_NP;  // ['आइत', 'सोम', 'मंगल', 'बुध', 'बिही', 'शुक्र', 'शनि']
+
+// Minimal names (calendar grid headers)
+WEEKDAYS_MIN_EN;    // ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+WEEKDAYS_MIN_NP;    // ['आ', 'सो', 'मं', 'बु', 'बि', 'शु', 'श']
+
+// By index (0 = Sunday)
+getWeekdayName(0, 'en');      // 'Sunday'
+getWeekdayName(0, 'ne');      // 'आइतबार'
+getWeekdayShortName(1, 'en'); // 'Mon'
+getWeekdayMinName(2, 'ne');   // 'मं'
+
+// Get all names for a locale
+getWeekdayNames('en');        // ['Sunday', 'Monday', ...]
+getWeekdayShortNames('ne');   // ['आइत', 'सोम', ...]
+getWeekdayMinNames('en');     // ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+```
+
+## Date Formatting
+
+### formatDate
+
+Format a `CalendarDate` using token-based patterns:
+
+```ts
+import { formatDate } from '@thaparoyal/calendar-core';
+
+const date = { year: 2082, month: 11, day: 14, calendarType: 'BS' as const };
+
+formatDate(date, 'YYYY-MM-DD');         // '2082-11-14'
+formatDate(date, 'YYYY-MM-DD', 'ne');   // '२०८२-११-१४'
+formatDate(date, 'MMMM DD, YYYY');      // 'Falgun 14, 2082'
+formatDate(date, 'MMMM DD, YYYY', 'ne'); // 'फाल्गुन १४, २०८२'
+formatDate(date, 'MMM D');              // 'Fal 14'
+formatDate(date, 'dddd, MMMM D, YYYY'); // 'Friday, Falgun 14, 2082'
+```
+
+### Format Tokens
+
+| Token | Output | Example |
+|---|---|---|
+| `YYYY` | 4-digit year | `2082` |
+| `YY` | 2-digit year | `82` |
+| `MMMM` | Full month name | `Falgun` |
+| `MMM` | Short month name | `Fal` |
+| `MM` | 2-digit month | `11` |
+| `M` | Month number | `11` |
+| `DD` | 2-digit day | `14` |
+| `D` | Day number | `14` |
+| `dddd` | Full weekday name | `Friday` |
+| `ddd` | Short weekday name | `Fri` |
+| `d` | Day of week (0-6) | `5` |
+
+All tokens are locale-aware. With `locale: 'ne'`, numeric tokens output Nepali numerals and name tokens output Nepali text.
+
+### parseDate
+
+Parse a date string into a `CalendarDate`:
+
+```ts
+import { parseDate } from '@thaparoyal/calendar-core';
+
+parseDate('2082-11-14', 'BS');
+// { year: 2082, month: 11, day: 14, calendarType: 'BS' }
+
+parseDate('2026/02/27', 'AD');
+// { year: 2026, month: 2, day: 27, calendarType: 'AD' }
+
+parseDate('invalid', 'BS');
+// null
+```
+
+Supported input formats: `YYYY-MM-DD` and `YYYY/MM/DD`.
+
+### formatMonthYear
+
+Convenience function for calendar titles:
+
+```ts
+import { formatMonthYear } from '@thaparoyal/calendar-core';
+
+formatMonthYear(2082, 11, 'BS', 'en');  // 'Falgun 2082'
+formatMonthYear(2082, 11, 'BS', 'ne');  // 'फाल्गुन २०८२'
+formatMonthYear(2026, 2, 'AD', 'en');   // 'February 2026'
+```
+
+### formatDateRange
+
+Format a date range:
+
+```ts
+import { formatDateRange } from '@thaparoyal/calendar-core';
+
+const start = { year: 2082, month: 11, day: 1, calendarType: 'BS' as const };
+const end = { year: 2082, month: 11, day: 15, calendarType: 'BS' as const };
+
+formatDateRange(start, end, 'YYYY-MM-DD');
+// '2082-11-01 - 2082-11-15'
+
+formatDateRange(start, end, 'MMM D', 'ne');
+// 'फा १ - फा १५'
+```
+
+## Day and Year Formatting
+
+Locale-aware formatting for individual numbers:
+
+```ts
+import { formatDay, formatYear } from '@thaparoyal/calendar-core';
+
+formatDay(15, 'en');    // '15'
+formatDay(15, 'ne');    // '१५'
+
+formatYear(2082, 'en'); // '2082'
+formatYear(2082, 'ne'); // '२०८२'
+```
+
+## UI Text Translations
+
+Pre-defined translations for common UI strings:
+
+```ts
+import { TODAY_TEXT, CLEAR_TEXT, SELECT_DATE_TEXT, PREV_MONTH_TEXT, NEXT_MONTH_TEXT } from '@thaparoyal/calendar-core';
+
+TODAY_TEXT.en;         // 'Today'
+TODAY_TEXT.ne;         // 'आज'
+
+CLEAR_TEXT.en;         // 'Clear'
+CLEAR_TEXT.ne;         // 'मेटाउनुहोस्'
+
+SELECT_DATE_TEXT.en;   // 'Select date'
+SELECT_DATE_TEXT.ne;   // 'मिति छान्नुहोस्'
+
+PREV_MONTH_TEXT.en;    // 'Previous month'
+PREV_MONTH_TEXT.ne;    // 'अघिल्लो महिना'
+
+NEXT_MONTH_TEXT.en;    // 'Next month'
+NEXT_MONTH_TEXT.ne;    // 'अर्को महिना'
+```
+
+## API Reference
+
+| Function / Constant | Description |
+|---|---|
+| `toNepaliNumeral(num)` | Convert number to Nepali digits |
+| `fromNepaliNumeral(str)` | Convert Nepali digit string to number |
+| `NEPALI_DIGITS` | Array of 10 Nepali digits |
+| `getMonthName(month, type, locale)` | Full month name |
+| `getMonthShortName(month, type, locale)` | Short month name |
+| `getMonthNames(type, locale)` | All month names |
+| `getWeekdayName(dayOfWeek, locale)` | Full weekday name |
+| `getWeekdayShortName(dayOfWeek, locale)` | Short weekday name |
+| `getWeekdayMinName(dayOfWeek, locale)` | Minimal weekday label |
+| `getWeekdayNames(locale)` | All weekday names |
+| `getWeekdayShortNames(locale)` | All short weekday names |
+| `getWeekdayMinNames(locale)` | All minimal weekday names |
+| `formatDate(date, format, locale)` | Token-based date formatting |
+| `parseDate(str, calendarType)` | Parse date string |
+| `formatMonthYear(year, month, type, locale)` | Month + year string |
+| `formatDateRange(start, end, format, locale)` | Formatted range |
+| `formatDay(day, locale)` | Locale-aware day number |
+| `formatYear(year, locale)` | Locale-aware year number |
+| `BS_MONTHS_EN` | BS month names in English |
+| `BS_MONTHS_NP` | BS month names in Nepali |
+| `BS_MONTHS_SHORT_EN` | Short BS month names (English) |
+| `BS_MONTHS_SHORT_NP` | Short BS month names (Nepali) |
+| `WEEKDAYS_EN` | Full weekday names (English) |
+| `WEEKDAYS_NP` | Full weekday names (Nepali) |
+| `WEEKDAYS_SHORT_EN` | Short weekday names (English) |
+| `WEEKDAYS_SHORT_NP` | Short weekday names (Nepali) |
+| `WEEKDAYS_MIN_EN` | Minimal weekday names (English) |
+| `WEEKDAYS_MIN_NP` | Minimal weekday names (Nepali) |

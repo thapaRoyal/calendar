@@ -1,0 +1,224 @@
+---
+title: Range & Multi Selection (createSelection)
+description: Date range and multi-date selection with the createSelection store
+---
+
+# Range & Multi Selection (createSelection)
+
+The `createSelection` store creator provides unified selection logic for **single**, **range**, and **multiple** date modes. It enhances each `WeekDay` with selection-specific flags (`isRangeStart`, `isRangeEnd`, `isInRange`, `isRangeHover`, `isMultiSelected`).
+
+## Import
+
+```ts
+import { createSelection } from '@thaparoyal/calendar-svelte';
+import type { CalendarDate, DateRangeValue } from '@thaparoyal/calendar-svelte';
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+## Options
+
+```ts
+interface CreateSelectionOptions {
+  mode?: 'single' | 'range' | 'multiple';
+  config?: Partial<SelectionConfig>;
+  defaultValue?: CalendarDate | CalendarDate[] | DateRangeValue | null;
+  disabledDates?: CalendarDate[];
+}
+```
+
+## Return Values
+
+| Property | Type | Description |
+|---|---|---|
+| `state` | `Readable<SelectionState>` | Internal state |
+| `weeks` | `Readable<Week[]>` | Grid with selection-enhanced `WeekDay` objects |
+| `title` | `Readable<string>` | Month/year title |
+| `weekdayNames` | `Readable<string[]>` | Weekday labels |
+| `value` | `Readable` | Current selection value (shape depends on mode) |
+| `isComplete` | `Readable<boolean>` | Whether a selection has been made |
+| `isPrevMonthDisabled` | `Readable<boolean>` | Nav constraint |
+| `isNextMonthDisabled` | `Readable<boolean>` | Nav constraint |
+| `locale` | `Readable<Locale>` | Current locale |
+| `formatDayNumber` | `(day: number) => string` | Locale-aware formatter (not a store) |
+| `select` | `(date) => void` | Select a date (for single/range mode) |
+| `toggle` | `(date) => void` | Toggle a date (for multiple mode) |
+| `hover` | `(date) => void` | Set hover preview (for range mode) |
+| `clear` | `() => void` | Clear current selection |
+| `clearAll` | `() => void` | Reset everything |
+| `nextMonth` | `() => void` | Navigate forward |
+| `prevMonth` | `() => void` | Navigate back |
+| `setViewMode` | `(mode) => void` | Switch view |
+
+## Range Selection
+
+For range mode, use `select` on click and `hover` on mouseover to show the hover preview. The first click sets the start date, the second click sets the end date.
+
+```svelte
+<script>
+  import { createSelection } from '@thaparoyal/calendar-svelte';
+  import '@thaparoyal/calendar-core/themes/themes.css';
+
+  const {
+    weeks, title, weekdayNames, value, formatDayNumber,
+    isPrevMonthDisabled, isNextMonthDisabled,
+    select, hover, prevMonth, nextMonth,
+  } = createSelection({
+    mode: 'range',
+    config: { calendarType: 'BS', locale: 'en' },
+  });
+
+  $: rangeVal = ($value && typeof $value === 'object' && 'start' in $value) ? $value : null;
+</script>
+
+<div class="trc-calendar" data-theme="rose">
+  <div class="trc-calendar-header">
+    <button class="trc-calendar-nav-button" on:click={prevMonth} disabled={$isPrevMonthDisabled}>&lsaquo;</button>
+    <span class="trc-calendar-title">{$title}</span>
+    <button class="trc-calendar-nav-button" on:click={nextMonth} disabled={$isNextMonthDisabled}>&rsaquo;</button>
+  </div>
+  <table class="trc-calendar-grid">
+    <thead class="trc-calendar-grid-head">
+      <tr>
+        {#each $weekdayNames as d}
+          <th class="trc-calendar-weekday">{d}</th>
+        {/each}
+      </tr>
+    </thead>
+    <tbody>
+      {#each $weeks as week}
+        <tr class="trc-calendar-week">
+          {#each week as day}
+            <td
+              class="trc-calendar-cell"
+              class:trc-calendar-cell-today={day.isToday}
+              class:trc-calendar-cell-outside={day.isOutsideMonth}
+              class:trc-calendar-cell-disabled={day.isDisabled}
+              class:trc-calendar-cell-range-start={day.isRangeStart}
+              class:trc-calendar-cell-range-end={day.isRangeEnd}
+              class:trc-calendar-cell-range-middle={day.isInRange}
+              class:trc-calendar-cell-range-hover={day.isRangeHover}
+            >
+              <button
+                class="trc-calendar-day"
+                disabled={day.isDisabled || day.isOutsideMonth}
+                on:click={() => select(day.date)}
+                on:mouseenter={() => hover(day.date)}
+              >{formatDayNumber(day.date.day)}</button>
+            </td>
+          {/each}
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+</div>
+
+{#if rangeVal}
+  <p>
+    Start: {rangeVal.start?.year}-{rangeVal.start?.month}-{rangeVal.start?.day}
+    | End: {rangeVal.end?.year}-{rangeVal.end?.month}-{rangeVal.end?.day}
+  </p>
+{/if}
+```
+
+### How Range Selection Works
+
+1. **First click** -- sets the start date. The calendar enters "selecting end" mode.
+2. **Mouse hover** -- shows a preview highlight between start and the hovered date.
+3. **Second click** -- sets the end date. The range is complete.
+4. **Third click** -- resets and starts a new range.
+
+### Range CSS Classes
+
+| Class | Applied when |
+|---|---|
+| `trc-calendar-cell-range-start` | Cell is the range start date |
+| `trc-calendar-cell-range-end` | Cell is the range end date |
+| `trc-calendar-cell-range-middle` | Cell is between start and end (`isInRange`) |
+| `trc-calendar-cell-range-hover` | Cell is in the hover preview |
+
+## Multi-Date Selection
+
+For multiple date selection, use `toggle` to add or remove dates:
+
+```svelte
+<script>
+  import { createSelection } from '@thaparoyal/calendar-svelte';
+  import '@thaparoyal/calendar-core/themes/themes.css';
+
+  const {
+    weeks, title, weekdayNames, value, formatDayNumber,
+    isPrevMonthDisabled, isNextMonthDisabled,
+    toggle, prevMonth, nextMonth,
+  } = createSelection({
+    mode: 'multiple',
+    config: { calendarType: 'BS', locale: 'en' },
+  });
+
+  $: multiVal = Array.isArray($value) ? $value : [];
+</script>
+
+<div class="trc-calendar" data-theme="mint">
+  <div class="trc-calendar-header">
+    <button class="trc-calendar-nav-button" on:click={prevMonth} disabled={$isPrevMonthDisabled}>&lsaquo;</button>
+    <span class="trc-calendar-title">{$title}</span>
+    <button class="trc-calendar-nav-button" on:click={nextMonth} disabled={$isNextMonthDisabled}>&rsaquo;</button>
+  </div>
+  <table class="trc-calendar-grid">
+    <thead class="trc-calendar-grid-head">
+      <tr>
+        {#each $weekdayNames as d}
+          <th class="trc-calendar-weekday">{d}</th>
+        {/each}
+      </tr>
+    </thead>
+    <tbody>
+      {#each $weeks as week}
+        <tr class="trc-calendar-week">
+          {#each week as day}
+            <td
+              class="trc-calendar-cell"
+              class:trc-calendar-cell-today={day.isToday}
+              class:trc-calendar-cell-outside={day.isOutsideMonth}
+              class:trc-calendar-cell-disabled={day.isDisabled}
+              class:trc-calendar-cell-multi-selected={day.isMultiSelected}
+            >
+              <button
+                class="trc-calendar-day"
+                disabled={day.isDisabled || day.isOutsideMonth}
+                on:click={() => toggle(day.date)}
+              >{formatDayNumber(day.date.day)}</button>
+            </td>
+          {/each}
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+</div>
+
+<p>Selected {multiVal.length} dates</p>
+```
+
+## Single Selection with createSelection
+
+You can also use `createSelection` for single-date mode. It works like `createCalendar` but goes through the unified selection state machine:
+
+```ts
+const single = createSelection({
+  mode: 'single',
+  config: { calendarType: 'BS', locale: 'en' },
+});
+
+// Use single.select(date) for single mode
+```
+
+## Clearing Selection
+
+```ts
+const { clear, clearAll } = createSelection({ mode: 'range', ... });
+
+// Clear current selection
+clear();
+
+// Clear all (resets everything)
+clearAll();
+```

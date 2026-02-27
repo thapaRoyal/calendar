@@ -1,0 +1,193 @@
+---
+title: CDN Usage
+description: Use @thaparoyal/calendar via CDN script tag
+---
+
+# CDN Usage
+
+Use `@thaparoyal/calendar-vanilla` directly in any HTML page -- no bundler, no npm, no build step. The CDN build bundles the core package into a single IIFE file exposed as the `TRCalendar` global.
+
+## CDN URLs
+
+### jsDelivr
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-core/themes/themes.css" />
+<script src="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-vanilla/dist/cdn/index.global.js"></script>
+```
+
+### unpkg
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/@thaparoyal/calendar-core/themes/themes.css" />
+<script src="https://unpkg.com/@thaparoyal/calendar-vanilla/dist/cdn/index.global.js"></script>
+```
+
+Pin a specific version to avoid unexpected changes:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-vanilla@0.1.0/dist/cdn/index.global.js"></script>
+```
+
+## Global API
+
+After loading the script, `window.TRCalendar` provides:
+
+- `TRCalendar.render(selector, options)` -- convenience function
+- `TRCalendar.Calendar` -- class constructor
+
+## Complete HTML Page
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BS Calendar</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-core/themes/themes.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-vanilla/dist/cdn/index.global.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 2rem; }
+    #output { margin-top: 1rem; font-size: 0.875rem; color: #475569; }
+  </style>
+</head>
+<body>
+  <div id="calendar"></div>
+  <p id="output">No date selected</p>
+
+  <script>
+    TRCalendar.render('#calendar', {
+      config: { calendarType: 'BS', locale: 'en' },
+      theme: 'default',
+      selectionMode: 'single',
+      onValueChange: function (date) {
+        var el = document.getElementById('output');
+        if (date) {
+          el.textContent = 'Selected: ' + date.year + '-' + date.month + '-' + date.day;
+        } else {
+          el.textContent = 'No date selected';
+        }
+      },
+    });
+  </script>
+</body>
+</html>
+```
+
+## Multiple Calendars on One Page
+
+```html
+<div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+  <div id="bs-calendar"></div>
+  <div id="ad-calendar"></div>
+</div>
+
+<script>
+  // BS calendar with ocean theme
+  TRCalendar.render('#bs-calendar', {
+    config: { calendarType: 'BS', locale: 'en' },
+    theme: 'ocean',
+    selectionMode: 'single',
+  });
+
+  // AD calendar with forest theme
+  TRCalendar.render('#ad-calendar', {
+    config: { calendarType: 'AD', locale: 'en' },
+    theme: 'forest',
+    selectionMode: 'single',
+  });
+</script>
+```
+
+## Theme Switching
+
+```html
+<select id="theme-select">
+  <option value="default">Default</option>
+  <option value="ocean">Ocean</option>
+  <option value="forest">Forest</option>
+  <option value="sunset">Sunset</option>
+  <option value="lavender">Lavender</option>
+  <option value="midnight">Midnight</option>
+  <option value="rose">Rose</option>
+  <option value="mint">Mint</option>
+  <option value="amber">Amber</option>
+  <option value="slate">Slate</option>
+  <option value="coral">Coral</option>
+  <option value="indigo">Indigo</option>
+</select>
+
+<div id="themed-calendar"></div>
+
+<script>
+  var cal = TRCalendar.render('#themed-calendar', {
+    config: { calendarType: 'BS', locale: 'en' },
+    theme: 'default',
+  });
+
+  document.getElementById('theme-select').addEventListener('change', function (e) {
+    cal.setTheme(e.target.value);
+  });
+</script>
+```
+
+## Event Handling
+
+```html
+<div id="event-calendar"></div>
+<ul id="event-log"></ul>
+
+<script>
+  var log = document.getElementById('event-log');
+
+  TRCalendar.render('#event-calendar', {
+    config: { calendarType: 'BS', locale: 'en' },
+    theme: 'sunset',
+    selectionMode: 'range',
+    onValueChange: function (range) {
+      var li = document.createElement('li');
+      if (range && range.start && range.end) {
+        li.textContent =
+          'Range: ' +
+          range.start.year + '-' + range.start.month + '-' + range.start.day +
+          ' to ' +
+          range.end.year + '-' + range.end.month + '-' + range.end.day;
+      } else if (range && range.start) {
+        li.textContent = 'Start: ' + range.start.year + '-' + range.start.month + '-' + range.start.day;
+      }
+      log.appendChild(li);
+    },
+  });
+</script>
+```
+
+## Programmatic Control
+
+```html
+<button id="prev-btn">Prev Month</button>
+<button id="next-btn">Next Month</button>
+<button id="get-value-btn">Get Value</button>
+<div id="ctrl-calendar"></div>
+
+<script>
+  var cal = TRCalendar.render('#ctrl-calendar', {
+    config: { calendarType: 'BS', locale: 'en' },
+    theme: 'lavender',
+    selectionMode: 'single',
+  });
+
+  document.getElementById('prev-btn').onclick = function () { cal.prevMonth(); };
+  document.getElementById('next-btn').onclick = function () { cal.nextMonth(); };
+  document.getElementById('get-value-btn').onclick = function () {
+    var val = cal.getValue();
+    alert(val ? val.year + '-' + val.month + '-' + val.day : 'Nothing selected');
+  };
+</script>
+```
+
+## Notes
+
+- The IIFE build bundles `@thaparoyal/calendar-core` so you only need one script tag for JS functionality.
+- You still need the separate CSS link for themes.
+- Everything available via ESM imports is also available on the `TRCalendar` global.

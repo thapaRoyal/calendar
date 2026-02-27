@@ -6,12 +6,18 @@ import {
   formatMonthYear,
   getWeekdayMinNames,
   formatDay,
+  getMonthGrid,
+  getYearGrid,
+  getDecadeRange,
   type CalendarState,
   type CalendarEvent,
   type CalendarConfig,
   type CalendarDate,
   type Week,
   type Locale,
+  type MonthPickerItem,
+  type YearPickerItem,
+  type DecadeRange,
 } from '@thaparoyal/calendar-core';
 
 /**
@@ -35,6 +41,10 @@ export interface CalendarStore {
   isNextMonthDisabled: Readable<boolean>;
   selectedDate: Writable<CalendarDate | null>;
   locale: Readable<Locale>;
+  monthPickerItems: Readable<MonthPickerItem[]>;
+  yearPickerItems: Readable<YearPickerItem[]>;
+  decadeRange: Readable<DecadeRange>;
+  viewMode: Readable<'day' | 'month' | 'year'>;
   formatDayNumber: (day: number) => string;
   selectDate: (date: CalendarDate) => void;
   focusDate: (date: CalendarDate) => void;
@@ -127,6 +137,33 @@ export function createCalendar(options: CreateCalendarOptions = {}): CalendarSto
     );
   });
 
+  const monthPickerItems = derived(internalState, ($state) =>
+    getMonthGrid(
+      $state.focusedDate.year,
+      $state.config.calendarType,
+      $state.config.locale,
+      $state.focusedDate.month,
+      $state.config.minDate,
+      $state.config.maxDate
+    )
+  );
+
+  const yearPickerItems = derived(internalState, ($state) =>
+    getYearGrid(
+      $state.focusedDate.year,
+      $state.config.calendarType,
+      12,
+      $state.config.minDate,
+      $state.config.maxDate
+    )
+  );
+
+  const decadeRangeStore = derived(internalState, ($state) =>
+    getDecadeRange($state.focusedDate.year)
+  );
+
+  const viewMode = derived(internalState, ($state) => $state.viewMode);
+
   // Actions
   const selectDate = (date: CalendarDate) => {
     dispatch({ type: 'SELECT_DATE', date });
@@ -157,6 +194,10 @@ export function createCalendar(options: CreateCalendarOptions = {}): CalendarSto
     isNextMonthDisabled,
     selectedDate,
     locale,
+    monthPickerItems,
+    yearPickerItems,
+    decadeRange: decadeRangeStore,
+    viewMode,
     formatDayNumber,
     selectDate,
     focusDate,

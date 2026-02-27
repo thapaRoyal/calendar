@@ -1,0 +1,87 @@
+---
+title: RangeCalendar
+description: Calendar component for selecting date ranges
+---
+
+# RangeCalendar
+
+The RangeCalendar component allows users to select a date range with start and end dates.
+
+## Basic Usage
+
+```tsx
+import { RangeCalendar } from '@thaparoyal/calendar-react';
+import type { DateRangeValue } from '@thaparoyal/calendar-react';
+
+function MyRangeCalendar() {
+  const [range, setRange] = useState<DateRangeValue | null>(null);
+
+  return (
+    <RangeCalendar.Root
+      config={{ calendarType: 'BS', locale: 'en' }}
+      value={range}
+      onValueChange={setRange}
+    >
+      <RangeCalendar.Header>
+        <RangeCalendar.PrevButton />
+        <RangeCalendar.Title />
+        <RangeCalendar.NextButton />
+      </RangeCalendar.Header>
+      <RangeCalendar.Grid>
+        <RangeCalendar.GridHead />
+        <RangeCalendar.GridBody />
+      </RangeCalendar.Grid>
+    </RangeCalendar.Root>
+  );
+}
+```
+
+## How It Works
+
+1. Click a date to set the **start date**
+2. Hover over other dates to see the **preview range**
+3. Click another date to set the **end date**
+4. Click again to reset and start a new selection
+
+## Value Type
+
+```typescript
+interface DateRangeValue {
+  start: CalendarDate | null;
+  end: CalendarDate | null;
+}
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `config` | `Partial<CalendarConfig>` | Calendar configuration |
+| `value` | `DateRangeValue \| null` | Controlled range value |
+| `defaultValue` | `DateRangeValue` | Initial range |
+| `onValueChange` | `(value: DateRangeValue \| null) => void` | Selection callback |
+| `disabledDates` | `CalendarDate[]` | Non-selectable dates |
+
+## Styling Range States
+
+The component applies these CSS classes:
+
+| Class | Description |
+|-------|-------------|
+| `.trc-calendar-cell-range-start` | First date in range |
+| `.trc-calendar-cell-range-end` | Last date in range |
+| `.trc-calendar-cell-range-middle` | Dates between start and end |
+| `.trc-calendar-cell-range-hover` | Hover preview when selecting |
+
+## Sub-components
+
+| Component | Description |
+|-----------|-------------|
+| `RangeCalendar.Root` | Root provider |
+| `RangeCalendar.Header` | Navigation header |
+| `RangeCalendar.Title` | Month/year title |
+| `RangeCalendar.PrevButton` | Previous month |
+| `RangeCalendar.NextButton` | Next month |
+| `RangeCalendar.Grid` | Calendar grid container |
+| `RangeCalendar.GridHead` | Weekday headers |
+| `RangeCalendar.GridBody` | Day cells with range styling |

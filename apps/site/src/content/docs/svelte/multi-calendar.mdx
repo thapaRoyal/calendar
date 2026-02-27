@@ -1,0 +1,229 @@
+---
+title: Multi-Calendar (createMultiCalendar)
+description: Display multiple months side by side with synchronized navigation
+---
+
+# Multi-Calendar (createMultiCalendar)
+
+The `createMultiCalendar` store creator displays multiple months simultaneously with unified selection and synchronized navigation. It supports all selection modes: single, range, and multiple.
+
+## Import
+
+```ts
+import { createMultiCalendar } from '@thaparoyal/calendar-svelte';
+import type { CalendarDate, DateRangeValue, MultiCalendarMonth } from '@thaparoyal/calendar-svelte';
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+## Options
+
+```ts
+interface CreateMultiCalendarOptions {
+  numberOfMonths?: number;         // Default: 2
+  mode?: 'single' | 'range' | 'multiple';
+  config?: Partial<SelectionConfig>;
+  pagedNavigation?: boolean;       // Jump by numberOfMonths instead of 1
+  defaultValue?: CalendarDate | CalendarDate[] | DateRangeValue | null;
+  disabledDates?: CalendarDate[];
+}
+```
+
+## Return Values
+
+| Property | Type | Description |
+|---|---|---|
+| `months` | `Readable<MultiCalendarMonth[]>` | Array of `{ year, month, title, weeks }` |
+| `weekdayNames` | `Readable<string[]>` | Weekday labels (same for all months) |
+| `value` | `Readable` | Current selection value |
+| `isComplete` | `Readable<boolean>` | Whether selection is made |
+| `isPrevDisabled` | `Readable<boolean>` | Prev navigation constraint |
+| `isNextDisabled` | `Readable<boolean>` | Next navigation constraint |
+| `locale` | `Readable<Locale>` | Current locale |
+| `formatDayNumber` | `(day: number) => string` | Locale-aware formatter (not a store) |
+| `select` | `(date) => void` | Select a date |
+| `hover` | `(date) => void` | Set hover for range preview |
+| `clear` | `() => void` | Clear selection |
+| `nextMonth` | `() => void` | Navigate forward |
+| `prevMonth` | `() => void` | Navigate back |
+
+Each item in the `months` array provides:
+
+```ts
+interface MultiCalendarMonth {
+  year: number;
+  month: number;
+  title: string;   // e.g. "Magh 2081"
+  weeks: Week[];   // Enhanced with selection flags
+}
+```
+
+## Two Months (Single Selection)
+
+```svelte
+<script>
+  import { createMultiCalendar } from '@thaparoyal/calendar-svelte';
+  import '@thaparoyal/calendar-core/themes/themes.css';
+
+  const {
+    months, weekdayNames, formatDayNumber,
+    isPrevDisabled, isNextDisabled,
+    select, prevMonth, nextMonth,
+  } = createMultiCalendar({
+    numberOfMonths: 2,
+    mode: 'single',
+    config: { calendarType: 'BS', locale: 'en' },
+  });
+</script>
+
+<div data-theme="amber">
+  <div class="trc-calendar-header">
+    <button class="trc-calendar-nav-button" on:click={prevMonth} disabled={$isPrevDisabled}>&lsaquo;</button>
+    <span class="trc-calendar-title">
+      {$months[0]?.title} &mdash; {$months[$months.length - 1]?.title}
+    </span>
+    <button class="trc-calendar-nav-button" on:click={nextMonth} disabled={$isNextDisabled}>&rsaquo;</button>
+  </div>
+
+  <div class="trc-multi-calendar">
+    {#each $months as m}
+      <div class="trc-multi-calendar-month">
+        <div style="text-align: center; font-weight: 600; margin-bottom: 0.5rem;">{m.title}</div>
+        <table class="trc-calendar-grid">
+          <thead class="trc-calendar-grid-head">
+            <tr>
+              {#each $weekdayNames as d}
+                <th class="trc-calendar-weekday">{d}</th>
+              {/each}
+            </tr>
+          </thead>
+          <tbody>
+            {#each m.weeks as week}
+              <tr class="trc-calendar-week">
+                {#each week as day}
+                  <td
+                    class="trc-calendar-cell"
+                    class:trc-calendar-cell-today={day.isToday}
+                    class:trc-calendar-cell-selected={day.isSelected}
+                    class:trc-calendar-cell-outside={day.isOutsideMonth}
+                    class:trc-calendar-cell-disabled={day.isDisabled}
+                  >
+                    <button
+                      class="trc-calendar-day"
+                      disabled={day.isDisabled || day.isOutsideMonth}
+                      on:click={() => select(day.date)}
+                    >{formatDayNumber(day.date.day)}</button>
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/each}
+  </div>
+</div>
+```
+
+## Three Months
+
+```ts
+const { months, weekdayNames, ...rest } = createMultiCalendar({
+  numberOfMonths: 3,
+  mode: 'single',
+  config: { calendarType: 'BS', locale: 'en' },
+});
+```
+
+The template is identical -- `$months` will contain 3 items.
+
+## Range Selection Across Months
+
+Multi-calendar is especially useful for range selection because users can see the start and end months at once:
+
+```svelte
+<script>
+  import { createMultiCalendar } from '@thaparoyal/calendar-svelte';
+  import '@thaparoyal/calendar-core/themes/themes.css';
+
+  const {
+    months, weekdayNames, formatDayNumber,
+    isPrevDisabled, isNextDisabled,
+    select, hover, prevMonth, nextMonth,
+  } = createMultiCalendar({
+    numberOfMonths: 2,
+    mode: 'range',
+    config: { calendarType: 'BS', locale: 'en' },
+  });
+</script>
+
+<div data-theme="coral">
+  <!-- Same header as above -->
+
+  <div class="trc-multi-calendar">
+    {#each $months as m}
+      <div class="trc-multi-calendar-month">
+        <div style="text-align: center; font-weight: 600; margin-bottom: 0.5rem;">{m.title}</div>
+        <table class="trc-calendar-grid">
+          <thead class="trc-calendar-grid-head">
+            <tr>
+              {#each $weekdayNames as d}
+                <th class="trc-calendar-weekday">{d}</th>
+              {/each}
+            </tr>
+          </thead>
+          <tbody>
+            {#each m.weeks as week}
+              <tr class="trc-calendar-week">
+                {#each week as day}
+                  <td
+                    class="trc-calendar-cell"
+                    class:trc-calendar-cell-today={day.isToday}
+                    class:trc-calendar-cell-outside={day.isOutsideMonth}
+                    class:trc-calendar-cell-disabled={day.isDisabled}
+                    class:trc-calendar-cell-range-start={day.isRangeStart}
+                    class:trc-calendar-cell-range-end={day.isRangeEnd}
+                    class:trc-calendar-cell-range-middle={day.isInRange}
+                    class:trc-calendar-cell-range-hover={day.isRangeHover}
+                  >
+                    <button
+                      class="trc-calendar-day"
+                      disabled={day.isDisabled || day.isOutsideMonth}
+                      on:click={() => select(day.date)}
+                      on:mouseenter={() => hover(day.date)}
+                    >{formatDayNumber(day.date.day)}</button>
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/each}
+  </div>
+</div>
+```
+
+## Paged Navigation
+
+By default, navigation moves one month at a time. Set `pagedNavigation: true` to jump by the number of displayed months:
+
+```ts
+const mc = createMultiCalendar({
+  numberOfMonths: 2,
+  pagedNavigation: true,
+  // prev/next will jump 2 months instead of 1
+});
+```
+
+## Responsive Layout
+
+The core CSS includes a media query that stacks months vertically on small screens:
+
+```css
+/* Already included in themes.css */
+@media (max-width: 640px) {
+  .trc-multi-calendar {
+    flex-direction: column;
+  }
+}
+```

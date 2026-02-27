@@ -7,12 +7,18 @@ import {
   formatMonthYear,
   getWeekdayMinNames,
   formatDay,
+  getMonthGrid,
+  getYearGrid,
+  getDecadeRange,
   type CalendarState,
   type CalendarEvent,
   type CalendarConfig,
   type CalendarDate,
   type Week,
   type Locale,
+  type MonthPickerItem,
+  type YearPickerItem,
+  type DecadeRange,
 } from '@thaparoyal/calendar-core';
 
 /**
@@ -99,6 +105,37 @@ export function useCalendar(options: UseCalendarOptions = {}) {
     );
   });
 
+  // Computed: month picker items
+  const monthPickerItems = computed<MonthPickerItem[]>(() =>
+    getMonthGrid(
+      state.value.focusedDate.year,
+      state.value.config.calendarType,
+      state.value.config.locale,
+      state.value.focusedDate.month,
+      state.value.config.minDate,
+      state.value.config.maxDate
+    )
+  );
+
+  // Computed: year picker items
+  const yearPickerItems = computed<YearPickerItem[]>(() =>
+    getYearGrid(
+      state.value.focusedDate.year,
+      state.value.config.calendarType,
+      12,
+      state.value.config.minDate,
+      state.value.config.maxDate
+    )
+  );
+
+  // Computed: decade range for year picker navigation
+  const decadeRange = computed<DecadeRange>(() =>
+    getDecadeRange(state.value.focusedDate.year)
+  );
+
+  // Computed: current view mode
+  const viewMode = computed(() => state.value.viewMode);
+
   // Select date with emit
   const selectDate = (date: CalendarDate) => {
     actions.selectDate(date);
@@ -120,5 +157,9 @@ export function useCalendar(options: UseCalendarOptions = {}) {
     isNextMonthDisabled,
     locale,
     formatDayNumber,
+    monthPickerItems,
+    yearPickerItems,
+    decadeRange,
+    viewMode,
   };
 }

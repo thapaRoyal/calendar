@@ -1,0 +1,262 @@
+---
+title: Calendar (useCalendar)
+description: Full calendar composable for Vue with BS/AD, month picker, year picker, and themes
+---
+
+# Calendar (useCalendar)
+
+The `useCalendar` composable provides everything you need to render a single-month calendar with date selection, month/year pickers, and theme support.
+
+## Import
+
+```ts
+import { useCalendar } from '@thaparoyal/calendar-vue';
+import type { CalendarDate } from '@thaparoyal/calendar-vue';
+import '@thaparoyal/calendar-core/themes/themes.css';
+```
+
+## Options
+
+```ts
+interface UseCalendarOptions {
+  config?: Partial<CalendarConfig>;
+  defaultValue?: CalendarDate;
+  modelValue?: Ref<CalendarDate | null>;
+  disabledDates?: CalendarDate[];
+}
+```
+
+| Option | Type | Description |
+|---|---|---|
+| `config.calendarType` | `'AD' \| 'BS'` | Gregorian or Bikram Sambat |
+| `config.locale` | `'en' \| 'ne'` | English or Nepali (Devanagari numerals) |
+| `config.weekStartsOn` | `0 \| 1` | `0` = Sunday, `1` = Monday |
+| `config.minDate` | `CalendarDate` | Earliest navigable date |
+| `config.maxDate` | `CalendarDate` | Latest navigable date |
+| `defaultValue` | `CalendarDate` | Initial selected date |
+| `modelValue` | `Ref<CalendarDate \| null>` | Two-way binding ref |
+| `disabledDates` | `CalendarDate[]` | Dates that cannot be selected |
+
+## Return Values
+
+| Property | Type | Description |
+|---|---|---|
+| `state` | `Ref<CalendarState>` | Raw internal state |
+| `actions` | Object | `selectDate`, `prevMonth`, `nextMonth`, `prevYear`, `nextYear`, `setViewMode`, `goToToday` |
+| `weeks` | `ComputedRef<Week[]>` | 2D grid of `WeekDay` objects |
+| `title` | `ComputedRef<string>` | Formatted month/year title |
+| `weekdayNames` | `ComputedRef<string[]>` | Short weekday labels |
+| `isPrevMonthDisabled` | `ComputedRef<boolean>` | Whether prev nav is at min boundary |
+| `isNextMonthDisabled` | `ComputedRef<boolean>` | Whether next nav is at max boundary |
+| `formatDayNumber` | `(day: number) => string` | Locale-aware day formatter |
+| `viewMode` | `ComputedRef<'day' \| 'month' \| 'year'>` | Current picker view |
+| `monthPickerItems` | `ComputedRef<MonthPickerItem[]>` | Data for month picker grid |
+| `yearPickerItems` | `ComputedRef<YearPickerItem[]>` | Data for year picker grid |
+| `decadeRange` | `ComputedRef<{ start: number; end: number }>` | Current decade boundaries |
+
+## Basic BS Calendar
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useCalendar, type CalendarDate } from '@thaparoyal/calendar-vue';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+const selected = ref<CalendarDate | null>(null);
+const { weeks, title, weekdayNames, actions, formatDayNumber, isPrevMonthDisabled, isNextMonthDisabled } = useCalendar({
+  config: { calendarType: 'BS', locale: 'en' },
+  modelValue: selected,
+});
+</script>
+
+<template>
+  <div class="trc-calendar" data-theme="default">
+    <div class="trc-calendar-header">
+      <button class="trc-calendar-nav-button" @click="actions.prevMonth()" :disabled="isPrevMonthDisabled">&lsaquo;</button>
+      <span class="trc-calendar-title">{{ title }}</span>
+      <button class="trc-calendar-nav-button" @click="actions.nextMonth()" :disabled="isNextMonthDisabled">&rsaquo;</button>
+    </div>
+    <table class="trc-calendar-grid">
+      <thead class="trc-calendar-grid-head">
+        <tr>
+          <th v-for="d in weekdayNames" :key="d" class="trc-calendar-weekday">{{ d }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(week, wi) in weeks" :key="wi" class="trc-calendar-week">
+          <td
+            v-for="day in week"
+            :key="`${day.date.year}-${day.date.month}-${day.date.day}`"
+            class="trc-calendar-cell"
+            :class="{
+              'trc-calendar-cell-today': day.isToday,
+              'trc-calendar-cell-selected': day.isSelected,
+              'trc-calendar-cell-outside': day.isOutsideMonth,
+              'trc-calendar-cell-disabled': day.isDisabled,
+            }"
+          >
+            <button
+              class="trc-calendar-day"
+              :disabled="day.isDisabled || day.isOutsideMonth"
+              @click="actions.selectDate(day.date)"
+            >{{ formatDayNumber(day.date.day) }}</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Selected: {{ selected ? `${selected.year}-${selected.month}-${selected.day}` : 'None' }}</p>
+</template>
+```
+
+## AD Calendar
+
+Switch to Gregorian by changing `calendarType`:
+
+```ts
+const { weeks, title, weekdayNames, actions, formatDayNumber } = useCalendar({
+  config: { calendarType: 'AD', locale: 'en' },
+});
+```
+
+## Nepali Numerals
+
+Use `locale: 'ne'` to render Devanagari numerals and Nepali month names:
+
+```ts
+const { weeks, title, weekdayNames, actions, formatDayNumber } = useCalendar({
+  config: { calendarType: 'BS', locale: 'ne' },
+});
+```
+
+Add `data-locale="ne"` to enable the Devanagari font:
+
+```html
+<div class="trc-calendar" data-theme="sunset" data-locale="ne">
+```
+
+## Month Picker
+
+Use `viewMode`, `monthPickerItems`, and `actions.setViewMode` to build a month picker overlay:
+
+```vue
+<script setup lang="ts">
+import { useCalendar } from '@thaparoyal/calendar-vue';
+
+const { viewMode, monthPickerItems, actions, title, weeks, weekdayNames, formatDayNumber, isPrevMonthDisabled, isNextMonthDisabled } = useCalendar({
+  config: { calendarType: 'BS', locale: 'en' },
+});
+</script>
+
+<template>
+  <div class="trc-calendar" data-theme="forest">
+    <div class="trc-calendar-header">
+      <button class="trc-calendar-nav-button" @click="actions.prevMonth()" :disabled="isPrevMonthDisabled">&lsaquo;</button>
+      <button class="trc-calendar-title" @click="actions.setViewMode(viewMode === 'day' ? 'month' : 'day')">
+        {{ title }}
+      </button>
+      <button class="trc-calendar-nav-button" @click="actions.nextMonth()" :disabled="isNextMonthDisabled">&rsaquo;</button>
+    </div>
+
+    <!-- Day view -->
+    <table v-if="viewMode === 'day'" class="trc-calendar-grid">
+      <thead class="trc-calendar-grid-head">
+        <tr><th v-for="d in weekdayNames" :key="d" class="trc-calendar-weekday">{{ d }}</th></tr>
+      </thead>
+      <tbody>
+        <tr v-for="(week, wi) in weeks" :key="wi" class="trc-calendar-week">
+          <td v-for="day in week" :key="`${day.date.year}-${day.date.month}-${day.date.day}`"
+            class="trc-calendar-cell"
+            :class="{ 'trc-calendar-cell-today': day.isToday, 'trc-calendar-cell-selected': day.isSelected, 'trc-calendar-cell-outside': day.isOutsideMonth }"
+          >
+            <button class="trc-calendar-day" :disabled="day.isDisabled || day.isOutsideMonth" @click="actions.selectDate(day.date)">
+              {{ formatDayNumber(day.date.day) }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Month picker view -->
+    <div v-if="viewMode === 'month'" class="trc-calendar-month-picker">
+      <button
+        v-for="m in monthPickerItems"
+        :key="m.month"
+        class="trc-calendar-month-cell"
+        :class="{
+          'trc-calendar-month-cell-current': m.isCurrentMonth,
+        }"
+        :disabled="m.disabled"
+        @click="actions.focusDate({ ...state.focusedDate, month: m.month }); actions.setViewMode('day')"
+      >{{ m.shortName }}</button>
+    </div>
+  </div>
+</template>
+```
+
+## Year Picker
+
+Click the title twice (day -> month -> year) or jump directly:
+
+```vue
+<template>
+  <!-- Inside the calendar header -->
+  <button class="trc-calendar-title" @click="actions.setViewMode(viewMode === 'day' ? 'month' : viewMode === 'month' ? 'year' : 'day')">
+    {{ viewMode === 'year' ? `${decadeRange.start} - ${decadeRange.end}` : title }}
+  </button>
+
+  <!-- Year picker grid -->
+  <div v-if="viewMode === 'year'" class="trc-calendar-year-picker">
+    <button
+      v-for="y in yearPickerItems"
+      :key="y.year"
+      class="trc-calendar-year-cell"
+      :class="{
+        'trc-calendar-year-cell-current': y.isCurrentYear,
+      }"
+      :disabled="y.disabled"
+      @click="actions.focusDate({ ...state.focusedDate, year: y.year }); actions.setViewMode('month')"
+    >{{ y.year }}</button>
+  </div>
+</template>
+```
+
+## Week Starts on Monday
+
+```ts
+const { weeks, weekdayNames } = useCalendar({
+  config: { calendarType: 'BS', locale: 'en', weekStartsOn: 1 },
+});
+```
+
+## Themes
+
+Wrap your calendar in a container with `data-theme`:
+
+```html
+<div class="trc-calendar" data-theme="lavender">
+  <!-- calendar template -->
+</div>
+```
+
+Available themes: `default`, `ocean`, `forest`, `sunset`, `lavender`, `midnight`, `rose`, `mint`, `amber`, `slate`, `coral`, `indigo`.
+
+## WeekDay Object
+
+Each cell in the `weeks` grid is a `WeekDay`:
+
+```ts
+interface WeekDay {
+  date: CalendarDate;
+  isToday: boolean;
+  isSelected: boolean;
+  isDisabled: boolean;
+  isOutsideMonth: boolean;
+  dayOfWeek: number;
+  isRangeStart?: boolean;
+  isRangeEnd?: boolean;
+  isInRange?: boolean;
+  isRangeHover?: boolean;
+  isMultiSelected?: boolean;
+}
+```

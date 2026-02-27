@@ -6,6 +6,13 @@
 
 // Composables
 export { useCalendar, type UseCalendarOptions } from './composables/use-calendar';
+export { useSelection, type UseSelectionOptions } from './composables/use-selection';
+export { useDatePicker, type UseDatePickerOptions } from './composables/use-date-picker';
+export {
+  useMultiCalendar,
+  type UseMultiCalendarOptions,
+  type MultiCalendarMonth,
+} from './composables/use-multi-calendar';
 
 // Re-export core types
 export type {
@@ -15,6 +22,12 @@ export type {
   Locale,
   WeekDay,
   Week,
+  SelectionMode,
+  DateRangeValue,
+  SelectionState,
+  MonthPickerItem,
+  YearPickerItem,
+  DatePickerState,
 } from '@thaparoyal/calendar-core';
 
 // Re-export useful core utilities

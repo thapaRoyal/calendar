@@ -1,0 +1,193 @@
+---
+interface Props {
+  title: string;
+  activeTab: 'react' | 'vue' | 'svelte' | 'vanilla';
+}
+const { title, activeTab } = Astro.props;
+
+const tabColors: Record<string, string> = {
+  react: '#667eea',
+  vue: '#42b883',
+  svelte: '#ff3e00',
+  vanilla: '#f7df1e',
+};
+const activeColor = tabColors[activeTab];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} - @thaparoyal/calendar</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0a0f;
+        color: #fff;
+        min-height: 100vh;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: rgba(10, 10, 15, 0.8);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 1px solid #222;
+      }
+      nav .brand {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+      }
+      .nav-links a {
+        color: #888;
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: #fff;
+      }
+      .playground-tabs {
+        display: flex;
+        gap: 0.5rem;
+        padding: 1rem 2rem;
+        background: #111;
+        border-bottom: 1px solid #222;
+      }
+      .playground-tabs a {
+        padding: 0.5rem 1.25rem;
+        border-radius: 0.375rem;
+        text-decoration: none;
+        color: #888;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+      .playground-tabs a:hover {
+        background: #1a1a2e;
+        color: #fff;
+      }
+      .playground-tabs a.active {
+        background: var(--active-tab-color);
+        color: #fff;
+      }
+      .playground-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      .playground-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+      .playground-card {
+        background: #111118;
+        border: 1px solid #1e1e2e;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      }
+      .playground-card:hover {
+        border-color: #333;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        transform: translateY(-2px);
+      }
+      .playground-card h3 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+        color: #ccc;
+      }
+      .theme-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .theme-selector button {
+        padding: 0.4rem 0.875rem;
+        border: 1px solid #2a2a3a;
+        border-radius: 0.375rem;
+        background: #16161e;
+        color: #888;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+      .theme-selector button:hover {
+        border-color: #444;
+        color: #ccc;
+      }
+      .theme-selector button.active {
+        background: var(--active-tab-color);
+        color: #fff;
+        border-color: var(--active-tab-color);
+      }
+      .calendar-demo {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .calendar-demo .trc-calendar {
+        width: 100%;
+      }
+      @media (max-width: 768px) {
+        .playground-grid {
+          grid-template-columns: 1fr;
+        }
+        .playground-tabs {
+          overflow-x: auto;
+          gap: 0.25rem;
+          padding: 0.75rem 1rem;
+        }
+        .playground-container {
+          padding: 1rem;
+        }
+        nav {
+          padding: 0.75rem 1rem;
+        }
+        .nav-links {
+          gap: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body style={`--active-tab-color: ${activeColor}`}>
+    <nav>
+      <a href="/" class="brand">@thaparoyal/calendar</a>
+      <div class="nav-links">
+        <a href="/docs/getting-started/introduction/">Docs</a>
+        <a href="/playground/react/" class="active">Playground</a>
+        <a href="https://github.com/thaparoyal/calendar" target="_blank">GitHub</a>
+      </div>
+    </nav>
+
+    <div class="playground-tabs">
+      <a href="/playground/react/" class={activeTab === 'react' ? 'active' : ''}>React</a>
+      <a href="/playground/vue/" class={activeTab === 'vue' ? 'active' : ''}>Vue</a>
+      <a href="/playground/svelte/" class={activeTab === 'svelte' ? 'active' : ''}>Svelte</a>
+      <a href="/playground/vanilla/" class={activeTab === 'vanilla' ? 'active' : ''}>Vanilla JS</a>
+    </div>
+
+    <slot />
+  </body>
+</html>

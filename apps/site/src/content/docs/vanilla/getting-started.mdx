@@ -1,0 +1,179 @@
+---
+title: Getting Started
+description: Use @thaparoyal/calendar with plain JavaScript
+---
+
+# Vanilla JS
+
+`@thaparoyal/calendar-vanilla` renders a fully interactive calendar into any DOM element. No framework required -- just plain JavaScript with the same themes and features available in React, Vue, and Svelte.
+
+## Installation
+
+### npm / pnpm / yarn
+
+```bash
+npm install @thaparoyal/calendar-vanilla @thaparoyal/calendar-core
+```
+
+```bash
+pnpm add @thaparoyal/calendar-vanilla @thaparoyal/calendar-core
+```
+
+```bash
+yarn add @thaparoyal/calendar-vanilla @thaparoyal/calendar-core
+```
+
+### CDN (no build step)
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-core/themes/themes.css" />
+<script src="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-vanilla/dist/cdn/index.global.js"></script>
+```
+
+The CDN build exposes a global `TRCalendar` object. See the [CDN Usage](/docs/vanilla/cdn/) guide for full details.
+
+## Basic Usage (ESM)
+
+```js
+import { Calendar, render } from '@thaparoyal/calendar-vanilla';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+// Option 1: Calendar class
+const cal = new Calendar({
+  element: '#my-calendar',
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'default',
+  selectionMode: 'single',
+  onValueChange: (value) => console.log('Selected:', value),
+});
+
+// Option 2: render() convenience function
+const cal2 = render('#another-calendar', {
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'ocean',
+  selectionMode: 'single',
+});
+```
+
+## Calendar Types
+
+### BS (Bikram Sambat)
+
+```js
+const cal = render('#cal', {
+  config: { calendarType: 'BS', locale: 'en' },
+});
+```
+
+### AD (Gregorian)
+
+```js
+const cal = render('#cal', {
+  config: { calendarType: 'AD', locale: 'en' },
+});
+```
+
+## Selection Modes
+
+### Single (default)
+
+Select one date at a time. The value is a `CalendarDate` or `null`.
+
+```js
+render('#cal', {
+  selectionMode: 'single',
+  onValueChange: (date) => {
+    // date: CalendarDate | null
+    console.log(date); // { year: 2082, month: 5, day: 15, calendarType: 'BS' }
+  },
+});
+```
+
+### Range
+
+Select a start and end date. The value is a `DateRangeValue`.
+
+```js
+render('#cal', {
+  selectionMode: 'range',
+  onValueChange: (range) => {
+    // range: { start: CalendarDate | null, end: CalendarDate | null }
+    console.log(range.start, range.end);
+  },
+});
+```
+
+### Multiple
+
+Select any number of individual dates. The value is a `CalendarDate[]`.
+
+```js
+render('#cal', {
+  selectionMode: 'multiple',
+  onValueChange: (dates) => {
+    // dates: CalendarDate[]
+    console.log(`${dates.length} dates selected`);
+  },
+});
+```
+
+## Applying Themes
+
+Set the `theme` option to use any built-in theme:
+
+```js
+render('#cal', {
+  config: { calendarType: 'BS', locale: 'en' },
+  theme: 'ocean',
+});
+```
+
+Available themes: `default`, `ocean`, `forest`, `sunset`, `lavender`, `midnight`, `rose`, `mint`, `amber`, `slate`, `coral`, `indigo`.
+
+Each theme has a dark variant (e.g., `ocean-dark`). See [Themes](/docs/core/themes/) for the full list.
+
+## Options Reference
+
+```ts
+interface CalendarOptions {
+  element: HTMLElement | string;
+  config?: Partial<CalendarConfig>;
+  theme?: string;
+  selectionMode?: 'single' | 'range' | 'multiple';
+  value?: CalendarDate | CalendarDate[] | DateRangeValue | null;
+  onValueChange?: (value) => void;
+  disabledDates?: CalendarDate[];
+}
+```
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `element` | `HTMLElement \| string` | -- | Target element or CSS selector |
+| `config.calendarType` | `'AD' \| 'BS'` | `'BS'` | Calendar system |
+| `config.locale` | `'en' \| 'ne'` | `'en'` | Language and numeral system |
+| `config.weekStartsOn` | `0 \| 1` | `0` | `0` = Sunday, `1` = Monday |
+| `config.minDate` | `CalendarDate` | -- | Earliest selectable date |
+| `config.maxDate` | `CalendarDate` | -- | Latest selectable date |
+| `theme` | `string` | `'default'` | Theme name (sets `data-theme`) |
+| `selectionMode` | `'single' \| 'range' \| 'multiple'` | `'single'` | Selection behavior |
+| `value` | varies | -- | Initial selected value |
+| `onValueChange` | `function` | -- | Callback on selection change |
+| `disabledDates` | `CalendarDate[]` | -- | Non-selectable dates |
+
+## Public API
+
+| Method | Description |
+|---|---|
+| `cal.nextMonth()` | Navigate forward one month |
+| `cal.prevMonth()` | Navigate back one month |
+| `cal.selectDate(date)` | Programmatically select a `CalendarDate` |
+| `cal.setTheme(theme)` | Change the theme at runtime |
+| `cal.getValue()` | Get the current selection value |
+| `cal.destroy()` | Remove all rendered DOM content |
+
+## Next Steps
+
+- [CDN Usage](/docs/vanilla/cdn/) -- use via script tag, no build step
+- [Examples](/docs/vanilla/examples/) -- comprehensive code samples for every feature
+- [Themes](/docs/core/themes/) -- all themes and CSS customization
+- [Date Conversion](/docs/core/date-conversion/) -- AD/BS conversion utilities

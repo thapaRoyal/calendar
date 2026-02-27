@@ -1,0 +1,160 @@
+---
+title: Calendar
+description: The base Calendar component for single date selection
+---
+
+# Calendar
+
+The Calendar component provides single date selection with support for month/year pickers.
+
+## Basic Usage
+
+```tsx
+import { Calendar } from '@thaparoyal/calendar-react';
+import '@thaparoyal/calendar-core/themes/themes.css';
+
+function MyCalendar() {
+  const [date, setDate] = useState(null);
+
+  return (
+    <Calendar.Root
+      config={{ calendarType: 'BS', locale: 'en' }}
+      value={date}
+      onValueChange={setDate}
+    >
+      <Calendar.Header>
+        <Calendar.PrevButton />
+        <Calendar.Title />
+        <Calendar.NextButton />
+      </Calendar.Header>
+      <Calendar.Grid>
+        <Calendar.GridHead />
+        <Calendar.GridBody />
+      </Calendar.Grid>
+    </Calendar.Root>
+  );
+}
+```
+
+## With Month/Year Pickers
+
+Click the title to switch between day, month, and year views:
+
+```tsx
+<Calendar.Root ...>
+  <Calendar.Header>
+    <Calendar.PrevButton />
+    <Calendar.Title />  {/* Click to cycle views */}
+    <Calendar.NextButton />
+  </Calendar.Header>
+  <Calendar.Grid>
+    <Calendar.GridHead />
+    <Calendar.GridBody />
+  </Calendar.Grid>
+  <Calendar.MonthPicker />  {/* Shows when viewMode='month' */}
+  <Calendar.YearPicker />   {/* Shows when viewMode='year' */}
+</Calendar.Root>
+```
+
+## With Dropdowns
+
+Use dropdown selects for quick month/year navigation:
+
+```tsx
+<Calendar.Root ...>
+  <Calendar.Header>
+    <Calendar.PrevButton />
+    <Calendar.MonthDropdown />
+    <Calendar.YearDropdown />
+    <Calendar.NextButton />
+  </Calendar.Header>
+  <Calendar.Grid>
+    <Calendar.GridHead />
+    <Calendar.GridBody />
+  </Calendar.Grid>
+</Calendar.Root>
+```
+
+## Nepali Numerals
+
+```tsx
+<Calendar.Root config={{ calendarType: 'BS', locale: 'ne' }}>
+  ...
+</Calendar.Root>
+```
+
+## Disabled Dates
+
+```tsx
+<Calendar.Root
+  disabledDates={[
+    { year: 2081, month: 10, day: 5, calendarType: 'BS' },
+    { year: 2081, month: 10, day: 15, calendarType: 'BS' },
+  ]}
+>
+  ...
+</Calendar.Root>
+```
+
+## Min/Max Date Constraints
+
+```tsx
+<Calendar.Root
+  config={{
+    calendarType: 'BS',
+    locale: 'en',
+    minDate: { year: 2081, month: 10, day: 1, calendarType: 'BS' },
+    maxDate: { year: 2081, month: 10, day: 28, calendarType: 'BS' },
+  }}
+>
+  ...
+</Calendar.Root>
+```
+
+## Custom Styling (shadcn-style)
+
+```tsx
+<Calendar.Root
+  classNames={{
+    root: 'my-calendar',
+    daySelected: 'bg-blue-500 text-white rounded-full',
+    dayToday: 'ring-2 ring-blue-500',
+  }}
+  components={{
+    IconLeft: () => <ChevronLeft className="h-4 w-4" />,
+    IconRight: () => <ChevronRight className="h-4 w-4" />,
+  }}
+>
+  ...
+</Calendar.Root>
+```
+
+## Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `config` | `Partial<CalendarConfig>` | Calendar type, locale, weekStartsOn, minDate, maxDate |
+| `value` | `CalendarDate \| null` | Controlled selected date |
+| `defaultValue` | `CalendarDate` | Initial selected date |
+| `onValueChange` | `(date: CalendarDate) => void` | Selection callback |
+| `disabledDates` | `CalendarDate[]` | Dates that cannot be selected |
+| `className` | `string` | Root element class |
+| `classNames` | `CalendarClassNames` | Override all element classes |
+| `components` | `CalendarComponents` | Custom render components |
+
+## Sub-components
+
+| Component | Description |
+|-----------|-------------|
+| `Calendar.Root` | Root provider |
+| `Calendar.Header` | Navigation header container |
+| `Calendar.Title` | Month/year title (click to switch views) |
+| `Calendar.PrevButton` | Previous month/year button |
+| `Calendar.NextButton` | Next month/year button |
+| `Calendar.Grid` | Calendar grid container |
+| `Calendar.GridHead` | Weekday headers |
+| `Calendar.GridBody` | Day cells |
+| `Calendar.MonthPicker` | Month selection grid |
+| `Calendar.YearPicker` | Year selection grid |
+| `Calendar.MonthDropdown` | Month dropdown select |
+| `Calendar.YearDropdown` | Year dropdown select |
