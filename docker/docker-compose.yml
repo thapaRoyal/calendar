@@ -11,7 +11,7 @@ services:
       - NODE_ENV=development
     stdin_open: true
     tty: true
-    command: pnpm --filter site dev
+    command: sh -c "pnpm build && pnpm --filter site dev"
 
   # Run tests
   test:
