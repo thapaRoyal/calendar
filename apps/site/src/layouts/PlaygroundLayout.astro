@@ -3,6 +3,7 @@ interface Props {
   title: string;
 }
 const { title } = Astro.props;
+const base = import.meta.env.BASE_URL;
 ---
 
 <!DOCTYPE html>
@@ -10,7 +11,7 @@ const { title } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title} - @thaparoyal/calendar</title>
+    <title>{title} - Patro</title>
     <style>
       * {
         margin: 0;
@@ -39,12 +40,33 @@ const { title } = Astro.props;
         z-index: 100;
         border-bottom: 1px solid #1e1e2e;
       }
-      nav .brand {
+      .brand {
         color: #fafafa;
         text-decoration: none;
         font-weight: 700;
-        font-size: 0.95rem;
-        letter-spacing: -0.01em;
+        font-size: 1.05rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .brand-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .brand-icon svg {
+        width: 16px;
+        height: 16px;
+        stroke: white;
+        stroke-width: 2;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
       }
       .nav-links {
         display: flex;
@@ -80,10 +102,15 @@ const { title } = Astro.props;
   </head>
   <body>
     <nav>
-      <a href="/" class="brand">@thaparoyal/calendar</a>
+      <a href={`${base}/`} class="brand">
+        <span class="brand-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        </span>
+        Patro
+      </a>
       <div class="nav-links">
-        <a href="/getting-started/introduction/">Docs</a>
-        <a href="/playground/react/" class="active">Playground</a>
+        <a href={`${base}/getting-started/introduction/`}>Docs</a>
+        <a href={`${base}/playground/react/`} class="active">Playground</a>
         <a href="https://github.com/thaparoyal/calendar" target="_blank">GitHub</a>
       </div>
     </nav>

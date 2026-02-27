@@ -1,6 +1,7 @@
 ---
 import { LandingDemos } from '../components/LandingDemos';
 import '@thaparoyal/calendar-core/themes/themes.css';
+const base = import.meta.env.BASE_URL;
 ---
 
 <!DOCTYPE html>
@@ -8,7 +9,7 @@ import '@thaparoyal/calendar-core/themes/themes.css';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@thaparoyal/calendar - AD & BS Calendar Components</title>
+    <title>Patro - AD & BS Calendar Components</title>
     <style>
       * {
         margin: 0;
@@ -29,29 +30,53 @@ import '@thaparoyal/calendar-core/themes/themes.css';
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem 2rem;
-        background: rgba(10, 10, 15, 0.85);
+        padding: 0 2rem;
+        height: 56px;
+        background: rgba(9, 9, 11, 0.85);
         backdrop-filter: blur(12px);
         position: sticky;
         top: 0;
         z-index: 100;
         border-bottom: 1px solid #1a1a2e;
       }
-      nav .brand {
+      .brand {
         color: #fff;
         text-decoration: none;
         font-weight: 700;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .brand-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 0.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .brand-icon svg {
+        width: 16px;
+        height: 16px;
+        stroke: white;
+        stroke-width: 2;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
       }
       .nav-links {
         display: flex;
         gap: 2rem;
       }
       .nav-links a {
-        color: #888;
+        color: #71717a;
         text-decoration: none;
-        transition: color 0.2s;
-        font-size: 0.95rem;
+        transition: color 0.15s;
+        font-size: 0.875rem;
+        font-weight: 500;
       }
       .nav-links a:hover {
         color: #fff;
@@ -60,7 +85,7 @@ import '@thaparoyal/calendar-core/themes/themes.css';
       /* ── Hero ── */
       .hero {
         text-align: center;
-        padding: 7rem 2rem 5rem;
+        padding: 6rem 2rem 5rem;
         position: relative;
         overflow: hidden;
       }
@@ -68,36 +93,63 @@ import '@thaparoyal/calendar-core/themes/themes.css';
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg, #1a1a3e 0%, #0a0a0f 40%, #0f0a1a 70%, #0a0a0f 100%);
-        background-size: 300% 300%;
-        animation: heroGradient 12s ease infinite;
+        background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(102, 126, 234, 0.12) 0%, transparent 60%),
+                    radial-gradient(ellipse 60% 50% at 30% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+                    #09090b;
         z-index: 0;
       }
       .hero > * {
         position: relative;
         z-index: 1;
       }
-      @keyframes heroGradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 1rem;
+        border-radius: 2rem;
+        background: rgba(102, 126, 234, 0.08);
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        font-size: 0.8rem;
+        color: #a5b4fc;
+        font-weight: 500;
+        margin-bottom: 2rem;
+        letter-spacing: 0.02em;
+      }
+      .hero-badge .badge-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #667eea;
+        animation: pulse-dot 2s ease-in-out infinite;
+      }
+      @keyframes pulse-dot {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
       }
       .hero h1 {
-        font-size: clamp(2.5rem, 6vw, 4.5rem);
-        margin-bottom: 1.25rem;
+        font-size: clamp(2.75rem, 7vw, 5rem);
+        margin-bottom: 0.5rem;
         font-weight: 800;
-        letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #667eea 0%, #a855f7 50%, #667eea 100%);
+        letter-spacing: -0.035em;
+        color: #fafafa;
+        line-height: 1.05;
+      }
+      .hero .hero-tagline {
+        font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #a855f7 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
       }
       .hero .subtitle {
-        font-size: clamp(1.05rem, 2vw, 1.35rem);
-        color: #8888aa;
-        max-width: 640px;
-        margin: 0 auto 2rem;
-        line-height: 1.6;
+        font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+        color: #71717a;
+        max-width: 560px;
+        margin: 0 auto 2.5rem;
+        line-height: 1.7;
       }
 
       /* npm install command box */
@@ -105,28 +157,28 @@ import '@thaparoyal/calendar-core/themes/themes.css';
         display: inline-flex;
         align-items: center;
         gap: 0.75rem;
-        background: #111118;
-        border: 1px solid #2a2a3a;
-        border-radius: 0.5rem;
+        background: rgba(17, 17, 24, 0.8);
+        border: 1px solid #1e1e2e;
+        border-radius: 0.75rem;
         padding: 0.75rem 1rem 0.75rem 1.25rem;
         margin-bottom: 2.5rem;
         font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         color: #a5b4fc;
       }
       .install-cmd .prompt {
-        color: #555;
+        color: #3f3f50;
         user-select: none;
       }
       .install-cmd .copy-btn {
         background: transparent;
-        border: 1px solid #333;
-        color: #888;
+        border: 1px solid #27272a;
+        color: #71717a;
         cursor: pointer;
         padding: 0.3rem 0.6rem;
-        border-radius: 0.25rem;
+        border-radius: 0.375rem;
         font-size: 0.75rem;
-        transition: all 0.2s;
+        transition: all 0.15s;
         display: flex;
         align-items: center;
         gap: 0.3rem;
@@ -143,7 +195,7 @@ import '@thaparoyal/calendar-core/themes/themes.css';
       /* Framework badges */
       .framework-badges {
         display: flex;
-        gap: 0.75rem;
+        gap: 0.5rem;
         justify-content: center;
         margin-bottom: 2.5rem;
         flex-wrap: wrap;
@@ -152,22 +204,22 @@ import '@thaparoyal/calendar-core/themes/themes.css';
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        padding: 0.4rem 0.85rem;
+        padding: 0.35rem 0.75rem;
         border-radius: 2rem;
-        background: #111118;
+        background: rgba(17, 17, 24, 0.6);
         border: 1px solid #1e1e2e;
-        font-size: 0.8rem;
-        color: #aaa;
+        font-size: 0.75rem;
+        color: #a1a1aa;
         font-weight: 500;
-        transition: all 0.2s;
+        transition: all 0.15s;
       }
       .framework-badge:hover {
-        border-color: #444;
+        border-color: #3f3f50;
         color: #fff;
       }
       .framework-badge .dot {
-        width: 8px;
-        height: 8px;
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
         display: inline-block;
       }
@@ -175,17 +227,17 @@ import '@thaparoyal/calendar-core/themes/themes.css';
       /* CTA buttons */
       .cta-buttons {
         display: flex;
-        gap: 1rem;
+        gap: 0.75rem;
         justify-content: center;
         flex-wrap: wrap;
       }
       .cta-btn {
-        padding: 0.9rem 2.25rem;
+        padding: 0.75rem 1.75rem;
         border-radius: 0.5rem;
         text-decoration: none;
         font-weight: 600;
-        font-size: 0.95rem;
-        transition: all 0.25s;
+        font-size: 0.875rem;
+        transition: all 0.2s;
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
@@ -193,60 +245,59 @@ import '@thaparoyal/calendar-core/themes/themes.css';
       .cta-btn.primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.25);
+        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
       }
       .cta-btn.primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.35);
       }
       .cta-btn.secondary {
         background: transparent;
-        border: 1px solid #333;
-        color: #ccc;
+        border: 1px solid #27272a;
+        color: #a1a1aa;
       }
       .cta-btn.secondary:hover {
-        transform: translateY(-2px);
-        border-color: #555;
-        background: #111118;
+        transform: translateY(-1px);
+        border-color: #3f3f50;
+        background: rgba(17, 17, 24, 0.6);
         color: #fff;
       }
 
       /* ── Features ── */
       .features {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
-        padding: 5rem 2rem;
-        max-width: 1200px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        padding: 0;
+        max-width: 1000px;
         margin: 0 auto;
+        background: #1e1e2e;
+        border: 1px solid #1e1e2e;
+        border-radius: 1rem;
+        overflow: hidden;
       }
       .feature {
         text-align: left;
         padding: 2rem;
-        background: #111118;
-        border-radius: 0.75rem;
-        border: 1px solid #1e1e2e;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: #09090b;
+        transition: background 0.2s;
       }
       .feature:hover {
-        transform: translateY(-4px);
-        border-color: #333;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        background: #111118;
       }
       .feature-icon {
-        width: 48px;
-        height: 48px;
-        margin-bottom: 1.25rem;
+        width: 40px;
+        height: 40px;
+        margin-bottom: 1rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, #1a1a3e 0%, #111118 100%);
-        border-radius: 0.75rem;
-        border: 1px solid #2a2a4a;
+        background: rgba(102, 126, 234, 0.08);
+        border-radius: 0.625rem;
       }
       .feature-icon svg {
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
         stroke: #667eea;
         stroke-width: 1.75;
         fill: none;
@@ -254,14 +305,14 @@ import '@thaparoyal/calendar-core/themes/themes.css';
         stroke-linejoin: round;
       }
       .feature h3 {
-        margin-bottom: 0.5rem;
-        font-size: 1.15rem;
-        font-weight: 650;
-        color: #e8e8f0;
+        margin-bottom: 0.35rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #e4e4e7;
       }
       .feature p {
-        color: #777;
-        font-size: 0.9rem;
+        color: #71717a;
+        font-size: 0.825rem;
         line-height: 1.55;
       }
 
@@ -464,7 +515,8 @@ import '@thaparoyal/calendar-core/themes/themes.css';
         }
         .features {
           grid-template-columns: 1fr;
-          padding: 3rem 1.5rem;
+          margin: 0 1rem;
+          border-radius: 0.75rem;
         }
         .demo-grid {
           grid-template-columns: 1fr;
@@ -473,34 +525,43 @@ import '@thaparoyal/calendar-core/themes/themes.css';
           grid-template-columns: 1fr;
         }
         nav {
-          padding: 0.75rem 1rem;
+          padding: 0 1rem;
         }
         .nav-links {
           gap: 1rem;
-          font-size: 0.85rem;
         }
         .install-cmd {
-          font-size: 0.8rem;
+          font-size: 0.78rem;
         }
       }
     </style>
   </head>
   <body>
     <nav>
-      <a href="/" class="brand">@thaparoyal/calendar</a>
+      <a href={`${base}/`} class="brand">
+        <span class="brand-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        </span>
+        Patro
+      </a>
       <div class="nav-links">
-        <a href="/getting-started/introduction/">Docs</a>
-        <a href="/playground/react/">Playground</a>
+        <a href={`${base}/getting-started/introduction/`}>Docs</a>
+        <a href={`${base}/playground/react/`}>Playground</a>
         <a href="https://github.com/thaparoyal/calendar" target="_blank">GitHub</a>
       </div>
     </nav>
 
     <!-- Hero -->
     <section class="hero">
-      <h1>@thaparoyal/calendar</h1>
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        AD & BS Calendar Components
+      </div>
+      <h1>Patro</h1>
+      <p class="hero-tagline">Calendar components for every framework</p>
       <p class="subtitle">
-        Beautiful, accessible calendar components for React, Vue, and Svelte with
-        full support for AD (Gregorian) and BS (Bikram Sambat) calendars.
+        Beautiful, accessible calendar UI for React, Vue, Svelte, and Vanilla JS
+        with full Bikram Sambat (BS) and Gregorian (AD) support.
       </p>
 
       <div class="install-cmd">
@@ -523,13 +584,13 @@ import '@thaparoyal/calendar-core/themes/themes.css';
       </div>
 
       <div class="cta-buttons">
-        <a href="/getting-started/introduction/" class="cta-btn primary">
+        <a href={`${base}/getting-started/introduction/`} class="cta-btn primary">
           Get Started
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path>
           </svg>
         </a>
-        <a href="/playground/react/" class="cta-btn secondary">Try Playground</a>
+        <a href={`${base}/playground/react/`} class="cta-btn secondary">Try Playground</a>
       </div>
     </section>
 
@@ -635,25 +696,25 @@ import '@thaparoyal/calendar-core/themes/themes.css';
       <h2>Choose Your Framework</h2>
       <p>Full support for all major UI frameworks</p>
       <div class="framework-grid">
-        <a href="/react/quick-start/" class="framework-card">
+        <a href={`${base}/react/quick-start/`} class="framework-card">
           <div class="fw-icon" style="background: rgba(97, 218, 251, 0.1); color: #61dafb;">R</div>
           <h3>React</h3>
           <p>Headless, composable calendar components with hooks for maximum flexibility.</p>
           <span class="fw-link">Get started with React &rarr;</span>
         </a>
-        <a href="/vue/guide/" class="framework-card">
+        <a href={`${base}/vue/guide/`} class="framework-card">
           <div class="fw-icon" style="background: rgba(66, 184, 131, 0.1); color: #42b883;">V</div>
           <h3>Vue</h3>
           <p>Reactive calendar components built for Vue 3 Composition API.</p>
           <span class="fw-link">Get started with Vue &rarr;</span>
         </a>
-        <a href="/svelte/guide/" class="framework-card">
+        <a href={`${base}/svelte/guide/`} class="framework-card">
           <div class="fw-icon" style="background: rgba(255, 62, 0, 0.1); color: #ff3e00;">S</div>
           <h3>Svelte</h3>
           <p>Lightweight calendar components that compile away for zero runtime overhead.</p>
           <span class="fw-link">Get started with Svelte &rarr;</span>
         </a>
-        <a href="/vanilla/getting-started/" class="framework-card">
+        <a href={`${base}/vanilla/getting-started/`} class="framework-card">
           <div class="fw-icon" style="background: rgba(247, 223, 30, 0.1); color: #f7df1e;">JS</div>
           <h3>Vanilla JS</h3>
           <p>Framework-free usage via CDN or bundler. Render calendars with a single function call.</p>
@@ -665,12 +726,12 @@ import '@thaparoyal/calendar-core/themes/themes.css';
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-links">
-        <a href="/getting-started/introduction/">Documentation</a>
-        <a href="/playground/react/">Playground</a>
+        <a href={`${base}/getting-started/introduction/`}>Documentation</a>
+        <a href={`${base}/playground/react/`}>Playground</a>
         <a href="https://github.com/thaparoyal/calendar" target="_blank">GitHub</a>
         <a href="https://www.npmjs.com/org/thaparoyal" target="_blank">npm</a>
       </div>
-      <p>Built with care. Open source under MIT license.</p>
+      <p>Patro &mdash; Open source under MIT license.</p>
     </footer>
 
     <!-- Inline scripts -->

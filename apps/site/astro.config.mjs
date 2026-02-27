@@ -4,15 +4,27 @@ import react from '@astrojs/react';
 import vue from '@astrojs/vue';
 import svelte from '@astrojs/svelte';
 
+// No-op sitemap to prevent Starlight's built-in sitemap from crashing
+// (incompatibility between astro@4.16 and @astrojs/sitemap@3.x)
+const noopSitemap = () => ({ name: '@astrojs/sitemap', hooks: {} });
+
 export default defineConfig({
+  site: 'https://thaparoyal.github.io',
+  base: '/calendar',
   server: { port: 3000, host: true },
+  redirects: {
+    '/playground/vue/': '/playground/react/',
+    '/playground/svelte/': '/playground/react/',
+    '/playground/vanilla/': '/playground/react/',
+  },
   integrations: [
+    noopSitemap(),
     react(),
     vue(),
     svelte(),
     starlight({
-      title: '@thaparoyal/calendar',
-      description: 'AD and BS (Bikram Sambat) calendar components for React, Vue, and Svelte',
+      title: 'Patro',
+      description: 'AD and BS (Bikram Sambat) calendar components for React, Vue, Svelte, and Vanilla JS',
       social: {
         github: 'https://github.com/thaparoyal/calendar',
       },

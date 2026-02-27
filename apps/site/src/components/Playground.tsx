@@ -477,6 +477,8 @@ function CodeTabs({ snippets }: { snippets: Record<Framework, string> }) {
 
 /* ─── Main Playground ─── */
 
+const BASE = import.meta.env.BASE_URL || '';
+
 export function Playground() {
   const [theme, setTheme] = useState<Theme>('dark');
   const [calendarType, setCalendarType] = useState<'BS' | 'AD'>('BS');
@@ -494,7 +496,7 @@ export function Playground() {
         Interactive Playground
       </h2>
       <p style={{ color: '#888', marginBottom: '2rem', fontSize: '0.95rem' }}>
-        Live demos powered by <code style={{ background: '#1a1a2e', padding: '0.15rem 0.4rem', borderRadius: 4, color: '#818cf8' }}>@thaparoyal/calendar</code> — toggle code tabs to see React, Vue, Svelte & Vanilla JS examples
+        Live demos powered by <code style={{ background: '#1a1a2e', padding: '0.15rem 0.4rem', borderRadius: 4, color: '#818cf8' }}>Patro</code> — toggle code tabs to see React, Vue, Svelte & Vanilla JS examples
       </p>
 
       {/* Settings Bar */}
@@ -682,10 +684,10 @@ export function Playground() {
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
           {[
-            { label: 'React', href: '/react/quick-start/', color: '#667eea' },
-            { label: 'Vue', href: '/vue/guide/', color: '#42b883' },
-            { label: 'Svelte', href: '/svelte/guide/', color: '#ff3e00' },
-            { label: 'Vanilla JS', href: '/vanilla/getting-started/', color: '#f7df1e' },
+            { label: 'React', href: `${BASE}/react/quick-start/`, color: '#667eea' },
+            { label: 'Vue', href: `${BASE}/vue/guide/`, color: '#42b883' },
+            { label: 'Svelte', href: `${BASE}/svelte/guide/`, color: '#ff3e00' },
+            { label: 'Vanilla JS', href: `${BASE}/vanilla/getting-started/`, color: '#f7df1e' },
           ].map((fw) => (
             <a
               key={fw.label}
