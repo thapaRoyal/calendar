@@ -12,89 +12,107 @@ import PlaygroundLayout from '../../layouts/PlaygroundLayout.astro';
     <div class="playground-grid">
       <div class="playground-card">
         <h3>BS Calendar (Default)</h3>
-        <div id="vanilla-bs-calendar" class="calendar-demo">
-          <div class="vanilla-placeholder">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f7df1e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            <p>BS Calendar</p>
-            <span class="vp-config">calendarType: BS</span>
-          </div>
-        </div>
+        <p class="vp-card-desc">Bikram Sambat calendar with single date selection</p>
+        <div id="vanilla-bs" class="vp-cal-container" data-theme="dark"></div>
+        <div id="vanilla-bs-value" class="vp-value">Selected: —</div>
       </div>
 
       <div class="playground-card">
-        <h3>AD Calendar (Gregorian)</h3>
-        <div id="vanilla-ad-calendar" class="calendar-demo">
-          <div class="vanilla-placeholder">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f7df1e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-              <circle cx="12" cy="16" r="1"></circle>
-            </svg>
-            <p>AD Calendar</p>
-            <span class="vp-config">calendarType: AD</span>
-          </div>
-        </div>
+        <h3>AD Calendar (Ocean)</h3>
+        <p class="vp-card-desc">Gregorian calendar with ocean theme</p>
+        <div id="vanilla-ad" class="vp-cal-container" data-theme="ocean"></div>
+        <div id="vanilla-ad-value" class="vp-value">Selected: —</div>
       </div>
 
       <div class="playground-card">
-        <h3>Nepali Locale</h3>
-        <div id="vanilla-ne-calendar" class="calendar-demo">
-          <div class="vanilla-placeholder">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f7df1e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            <p>Nepali Numerals</p>
-            <span class="vp-config">locale: ne</span>
-          </div>
-        </div>
+        <h3>Nepali Numerals</h3>
+        <p class="vp-card-desc">BS calendar with Nepali (Devanagari) numerals</p>
+        <div id="vanilla-ne" class="vp-cal-container" data-theme="sunset"></div>
+        <div id="vanilla-ne-value" class="vp-value">Selected: —</div>
       </div>
 
       <div class="playground-card">
         <h3>Range Selection</h3>
-        <div id="vanilla-range-calendar" class="calendar-demo">
-          <div class="vanilla-placeholder">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f7df1e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-              <polyline points="9 15 12 18 15 15"></polyline>
-            </svg>
-            <p>Range Selection</p>
-            <span class="vp-config">mode: range</span>
-          </div>
-        </div>
+        <p class="vp-card-desc">Select a start and end date range</p>
+        <div id="vanilla-range" class="vp-cal-container" data-theme="royal"></div>
+        <div id="vanilla-range-value" class="vp-value">Range: — → —</div>
       </div>
     </div>
 
     <div class="vp-usage-box">
       <h3 class="vp-usage-title">Usage Example</h3>
-      <pre class="vp-usage-code"><code>{`// Import via CDN
-<script src="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-vanilla/dist/cdn/index.global.js"><\/script>
+      <pre class="vp-usage-code"><code>&lt;!-- Import via CDN --&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-core/themes/themes.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-vanilla/dist/cdn/index.global.js"&gt;&lt;/script&gt;
 
-// Render a BS calendar
-TRCalendar.render('#my-calendar', {
-  config: { calendarType: 'BS', locale: 'en' },
-  theme: 'ocean',
-  onValueChange: (date) => console.log('Selected:', date)
-});`}</code></pre>
+&lt;div id="my-calendar" data-theme="ocean"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+  TRCalendar.render('#my-calendar', &#123;
+    config: &#123; calendarType: 'BS', locale: 'en' &#125;,
+    theme: 'ocean',
+    onValueChange: (date) =&gt; console.log('Selected:', date)
+  &#125;);
+&lt;/script&gt;</code></pre>
     </div>
   </div>
 
+  <script>
+    import { render } from '@thaparoyal/calendar-vanilla';
+
+    function fmtDate(d: any): string {
+      if (!d) return '—';
+      return `${d.year}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')} (${d.calendarType})`;
+    }
+
+    // BS Calendar
+    render('#vanilla-bs', {
+      config: { calendarType: 'BS', locale: 'en' },
+      selectionMode: 'single',
+      onValueChange: (val) => {
+        const el = document.getElementById('vanilla-bs-value');
+        if (el) el.textContent = `Selected: ${fmtDate(val)}`;
+      },
+    });
+
+    // AD Calendar
+    render('#vanilla-ad', {
+      config: { calendarType: 'AD', locale: 'en' },
+      selectionMode: 'single',
+      onValueChange: (val) => {
+        const el = document.getElementById('vanilla-ad-value');
+        if (el) el.textContent = `Selected: ${fmtDate(val)}`;
+      },
+    });
+
+    // Nepali Numerals
+    render('#vanilla-ne', {
+      config: { calendarType: 'BS', locale: 'ne' },
+      selectionMode: 'single',
+      onValueChange: (val) => {
+        const el = document.getElementById('vanilla-ne-value');
+        if (el) el.textContent = `Selected: ${fmtDate(val)}`;
+      },
+    });
+
+    // Range Selection
+    render('#vanilla-range', {
+      config: { calendarType: 'BS', locale: 'en' },
+      selectionMode: 'range',
+      onValueChange: (val: any) => {
+        const el = document.getElementById('vanilla-range-value');
+        if (el && val) {
+          el.textContent = `Range: ${fmtDate(val.start)} → ${fmtDate(val.end)}`;
+        }
+      },
+    });
+  </script>
+
   <style>
     .vp-heading {
-      margin-bottom: 0.5rem;
-      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+      font-size: 1.75rem;
+      font-weight: 700;
     }
     .vp-subtitle {
       color: #888;
@@ -108,30 +126,23 @@ TRCalendar.render('#my-calendar', {
       font-size: 0.85rem;
       color: #f7df1e;
     }
-    .vp-config {
+    .vp-card-desc {
       color: #666;
       font-size: 0.8rem;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      background: #1a1a2e;
-      padding: 0.2rem 0.6rem;
-      border-radius: 0.25rem;
+      margin: -0.5rem 0 1rem;
     }
-    .vanilla-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 3rem 1.5rem;
-      border: 2px dashed #2a2a3a;
-      border-radius: 0.5rem;
+    .vp-cal-container {
+      min-height: 280px;
+    }
+    .vp-value {
+      font-size: 0.8rem;
+      color: #888;
       background: #0d0d14;
-      text-align: center;
-      gap: 0.75rem;
-    }
-    .vanilla-placeholder p {
-      color: #ccc;
-      font-size: 1rem;
-      font-weight: 600;
+      border: 1px solid #1a1a2e;
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      font-family: monospace;
+      margin-top: 0.75rem;
     }
     .vp-usage-box {
       margin-top: 2.5rem;

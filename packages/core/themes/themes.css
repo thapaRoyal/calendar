@@ -320,6 +320,414 @@
 }
 
 /* ==========================================================================
+   Lavender Theme (Light Purple/Lavender)
+   ========================================================================== */
+
+[data-theme="lavender"] {
+  --trc-primary: #8b5cf6;
+  --trc-primary-hover: #7c3aed;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(139, 92, 246, 0.12);
+
+  --trc-background: #f5f3ff;
+  --trc-background-secondary: #ede9fe;
+  --trc-background-tertiary: #ddd6fe;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #4c1d95;
+  --trc-foreground-secondary: #5b21b6;
+  --trc-foreground-muted: #a78bfa;
+
+  --trc-border: #c4b5fd;
+  --trc-border-hover: #a78bfa;
+
+  --trc-ring: rgba(139, 92, 246, 0.4);
+}
+
+[data-theme="lavender-dark"] {
+  --trc-primary: #a78bfa;
+  --trc-primary-hover: #c4b5fd;
+  --trc-primary-foreground: #2e1065;
+  --trc-primary-muted: rgba(167, 139, 250, 0.15);
+
+  --trc-background: #1a1625;
+  --trc-background-secondary: #2e1065;
+  --trc-background-tertiary: #3b0764;
+  --trc-background-elevated: #4c1d95;
+
+  --trc-foreground: #f5f3ff;
+  --trc-foreground-secondary: #ddd6fe;
+  --trc-foreground-muted: #a78bfa;
+
+  --trc-border: #3b0764;
+  --trc-border-hover: #8b5cf6;
+
+  --trc-ring: rgba(167, 139, 250, 0.4);
+
+  --trc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --trc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --trc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --trc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Midnight Theme (Deep Navy Blue)
+   ========================================================================== */
+
+[data-theme="midnight"] {
+  --trc-primary: #3b82f6;
+  --trc-primary-hover: #2563eb;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(59, 130, 246, 0.12);
+
+  --trc-background: #eff6ff;
+  --trc-background-secondary: #dbeafe;
+  --trc-background-tertiary: #bfdbfe;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #1e3a5f;
+  --trc-foreground-secondary: #1e40af;
+  --trc-foreground-muted: #60a5fa;
+
+  --trc-border: #93c5fd;
+  --trc-border-hover: #60a5fa;
+
+  --trc-ring: rgba(59, 130, 246, 0.4);
+}
+
+[data-theme="midnight-dark"] {
+  --trc-primary: #60a5fa;
+  --trc-primary-hover: #93c5fd;
+  --trc-primary-foreground: #0c1a2e;
+  --trc-primary-muted: rgba(96, 165, 250, 0.15);
+
+  --trc-background: #0c1a2e;
+  --trc-background-secondary: #1e3a5f;
+  --trc-background-tertiary: #1e40af;
+  --trc-background-elevated: #2563eb;
+
+  --trc-foreground: #eff6ff;
+  --trc-foreground-secondary: #bfdbfe;
+  --trc-foreground-muted: #60a5fa;
+
+  --trc-border: #1e40af;
+  --trc-border-hover: #3b82f6;
+
+  --trc-ring: rgba(96, 165, 250, 0.4);
+
+  --trc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --trc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --trc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --trc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Rose Theme (Pink/Rose)
+   ========================================================================== */
+
+[data-theme="rose"] {
+  --trc-primary: #f43f5e;
+  --trc-primary-hover: #e11d48;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(244, 63, 94, 0.12);
+
+  --trc-background: #fff1f2;
+  --trc-background-secondary: #ffe4e6;
+  --trc-background-tertiary: #fecdd3;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #4c0519;
+  --trc-foreground-secondary: #881337;
+  --trc-foreground-muted: #fb7185;
+
+  --trc-border: #fda4af;
+  --trc-border-hover: #fb7185;
+
+  --trc-ring: rgba(244, 63, 94, 0.4);
+}
+
+[data-theme="rose-dark"] {
+  --trc-primary: #fb7185;
+  --trc-primary-hover: #fda4af;
+  --trc-primary-foreground: #2a0511;
+  --trc-primary-muted: rgba(251, 113, 133, 0.15);
+
+  --trc-background: #2a0511;
+  --trc-background-secondary: #4c0519;
+  --trc-background-tertiary: #881337;
+  --trc-background-elevated: #9f1239;
+
+  --trc-foreground: #fff1f2;
+  --trc-foreground-secondary: #fecdd3;
+  --trc-foreground-muted: #fb7185;
+
+  --trc-border: #881337;
+  --trc-border-hover: #f43f5e;
+
+  --trc-ring: rgba(251, 113, 133, 0.4);
+
+  --trc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --trc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --trc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --trc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Mint Theme (Fresh Green Mint)
+   ========================================================================== */
+
+[data-theme="mint"] {
+  --trc-primary: #14b8a6;
+  --trc-primary-hover: #0d9488;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(20, 184, 166, 0.12);
+
+  --trc-background: #f0fdfa;
+  --trc-background-secondary: #ccfbf1;
+  --trc-background-tertiary: #99f6e4;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #134e4a;
+  --trc-foreground-secondary: #115e59;
+  --trc-foreground-muted: #2dd4bf;
+
+  --trc-border: #5eead4;
+  --trc-border-hover: #2dd4bf;
+
+  --trc-ring: rgba(20, 184, 166, 0.4);
+}
+
+[data-theme="mint-dark"] {
+  --trc-primary: #2dd4bf;
+  --trc-primary-hover: #5eead4;
+  --trc-primary-foreground: #042f2e;
+  --trc-primary-muted: rgba(45, 212, 191, 0.15);
+
+  --trc-background: #042f2e;
+  --trc-background-secondary: #134e4a;
+  --trc-background-tertiary: #115e59;
+  --trc-background-elevated: #0d9488;
+
+  --trc-foreground: #f0fdfa;
+  --trc-foreground-secondary: #99f6e4;
+  --trc-foreground-muted: #2dd4bf;
+
+  --trc-border: #115e59;
+  --trc-border-hover: #14b8a6;
+
+  --trc-ring: rgba(45, 212, 191, 0.4);
+
+  --trc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --trc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --trc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --trc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Amber Theme (Warm Amber/Gold)
+   ========================================================================== */
+
+[data-theme="amber"] {
+  --trc-primary: #f59e0b;
+  --trc-primary-hover: #d97706;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(245, 158, 11, 0.12);
+
+  --trc-background: #fffbeb;
+  --trc-background-secondary: #fef3c7;
+  --trc-background-tertiary: #fde68a;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #78350f;
+  --trc-foreground-secondary: #92400e;
+  --trc-foreground-muted: #fbbf24;
+
+  --trc-border: #fcd34d;
+  --trc-border-hover: #fbbf24;
+
+  --trc-ring: rgba(245, 158, 11, 0.4);
+}
+
+[data-theme="amber-dark"] {
+  --trc-primary: #fbbf24;
+  --trc-primary-hover: #fcd34d;
+  --trc-primary-foreground: #451a03;
+  --trc-primary-muted: rgba(251, 191, 36, 0.15);
+
+  --trc-background: #451a03;
+  --trc-background-secondary: #78350f;
+  --trc-background-tertiary: #92400e;
+  --trc-background-elevated: #b45309;
+
+  --trc-foreground: #fffbeb;
+  --trc-foreground-secondary: #fde68a;
+  --trc-foreground-muted: #fbbf24;
+
+  --trc-border: #92400e;
+  --trc-border-hover: #f59e0b;
+
+  --trc-ring: rgba(251, 191, 36, 0.4);
+
+  --trc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --trc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --trc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --trc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Slate Theme (Cool Gray/Slate)
+   ========================================================================== */
+
+[data-theme="slate"] {
+  --trc-primary: #64748b;
+  --trc-primary-hover: #475569;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(100, 116, 139, 0.12);
+
+  --trc-background: #f8fafc;
+  --trc-background-secondary: #f1f5f9;
+  --trc-background-tertiary: #e2e8f0;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #0f172a;
+  --trc-foreground-secondary: #334155;
+  --trc-foreground-muted: #94a3b8;
+
+  --trc-border: #cbd5e1;
+  --trc-border-hover: #94a3b8;
+
+  --trc-ring: rgba(100, 116, 139, 0.4);
+}
+
+[data-theme="slate-dark"] {
+  --trc-primary: #94a3b8;
+  --trc-primary-hover: #cbd5e1;
+  --trc-primary-foreground: #0f172a;
+  --trc-primary-muted: rgba(148, 163, 184, 0.15);
+
+  --trc-background: #0f172a;
+  --trc-background-secondary: #1e293b;
+  --trc-background-tertiary: #334155;
+  --trc-background-elevated: #475569;
+
+  --trc-foreground: #f8fafc;
+  --trc-foreground-secondary: #e2e8f0;
+  --trc-foreground-muted: #94a3b8;
+
+  --trc-border: #334155;
+  --trc-border-hover: #64748b;
+
+  --trc-ring: rgba(148, 163, 184, 0.4);
+
+  --trc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --trc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --trc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --trc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Coral Theme (Warm Coral/Salmon)
+   ========================================================================== */
+
+[data-theme="coral"] {
+  --trc-primary: #f97171;
+  --trc-primary-hover: #ef4444;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(249, 113, 113, 0.12);
+
+  --trc-background: #fef2f2;
+  --trc-background-secondary: #fee2e2;
+  --trc-background-tertiary: #fecaca;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #450a0a;
+  --trc-foreground-secondary: #7f1d1d;
+  --trc-foreground-muted: #fca5a5;
+
+  --trc-border: #fecaca;
+  --trc-border-hover: #fca5a5;
+
+  --trc-ring: rgba(249, 113, 113, 0.4);
+}
+
+[data-theme="coral-dark"] {
+  --trc-primary: #fca5a5;
+  --trc-primary-hover: #fecaca;
+  --trc-primary-foreground: #2a0505;
+  --trc-primary-muted: rgba(252, 165, 165, 0.15);
+
+  --trc-background: #2a0505;
+  --trc-background-secondary: #450a0a;
+  --trc-background-tertiary: #7f1d1d;
+  --trc-background-elevated: #991b1b;
+
+  --trc-foreground: #fef2f2;
+  --trc-foreground-secondary: #fecaca;
+  --trc-foreground-muted: #fca5a5;
+
+  --trc-border: #7f1d1d;
+  --trc-border-hover: #f97171;
+
+  --trc-ring: rgba(252, 165, 165, 0.4);
+
+  --trc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --trc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --trc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --trc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   Indigo Theme (Deep Indigo)
+   ========================================================================== */
+
+[data-theme="indigo"] {
+  --trc-primary: #6366f1;
+  --trc-primary-hover: #4f46e5;
+  --trc-primary-foreground: #ffffff;
+  --trc-primary-muted: rgba(99, 102, 241, 0.12);
+
+  --trc-background: #eef2ff;
+  --trc-background-secondary: #e0e7ff;
+  --trc-background-tertiary: #c7d2fe;
+  --trc-background-elevated: #ffffff;
+
+  --trc-foreground: #312e81;
+  --trc-foreground-secondary: #3730a3;
+  --trc-foreground-muted: #818cf8;
+
+  --trc-border: #a5b4fc;
+  --trc-border-hover: #818cf8;
+
+  --trc-ring: rgba(99, 102, 241, 0.4);
+}
+
+[data-theme="indigo-dark"] {
+  --trc-primary: #818cf8;
+  --trc-primary-hover: #a5b4fc;
+  --trc-primary-foreground: #1e1b4b;
+  --trc-primary-muted: rgba(129, 140, 248, 0.15);
+
+  --trc-background: #1e1b4b;
+  --trc-background-secondary: #312e81;
+  --trc-background-tertiary: #3730a3;
+  --trc-background-elevated: #4338ca;
+
+  --trc-foreground: #eef2ff;
+  --trc-foreground-secondary: #c7d2fe;
+  --trc-foreground-muted: #818cf8;
+
+  --trc-border: #3730a3;
+  --trc-border-hover: #6366f1;
+
+  --trc-ring: rgba(129, 140, 248, 0.4);
+
+  --trc-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --trc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --trc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --trc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
    Calendar Component Styles
    ========================================================================== */
 

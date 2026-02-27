@@ -14,6 +14,7 @@ COPY packages/react/package.json ./packages/react/
 COPY packages/vue/package.json ./packages/vue/
 COPY packages/svelte/package.json ./packages/svelte/
 COPY packages/cli/package.json ./packages/cli/
+COPY packages/vanilla/package.json ./packages/vanilla/
 COPY apps/site/package.json ./apps/site/
 
 # Install dependencies

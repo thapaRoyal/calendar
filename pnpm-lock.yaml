@@ -53,6 +53,9 @@ importers:
       '@thaparoyal/calendar-svelte':
         specifier: workspace:*
         version: link:../../packages/svelte
+      '@thaparoyal/calendar-vanilla':
+        specifier: workspace:^
+        version: link:../../packages/vanilla
       '@thaparoyal/calendar-vue':
         specifier: workspace:*
         version: link:../../packages/vue
