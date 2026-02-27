@@ -1,4 +1,5 @@
 import { Calendar } from '@thaparoyal/calendar-react';
+import '@thaparoyal/calendar-core/themes/themes.css';
 
 export function LandingDemos() {
   return (
