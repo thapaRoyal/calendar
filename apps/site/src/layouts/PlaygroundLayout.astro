@@ -71,6 +71,10 @@ const { title } = Astro.props;
         nav {
           padding: 0 1rem;
         }
+        .playground-content {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
       }
     </style>
   </head>
@@ -84,6 +88,8 @@ const { title } = Astro.props;
       </div>
     </nav>
 
-    <slot />
+    <div class="playground-content">
+      <slot />
+    </div>
   </body>
 </html>
