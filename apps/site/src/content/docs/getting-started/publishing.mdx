@@ -1,167 +1,67 @@
 ---
 title: Publishing to npm
-description: How to version and publish @thaparoyal/calendar packages to npm
+description: Manual versioning and publishing for @thaparoyal/calendar packages
 ---
 
 # Publishing to npm
 
-Patro uses [Changesets](https://github.com/changesets/changesets) for versioning and npm publishing. All five packages are published separately under the `@thaparoyal` scope.
+Patro now uses a **manual npm release flow**. GitHub Actions no longer publishes packages.
 
 ## Packages
 
 | Package | npm | Description |
 |---------|-----|-------------|
 | `@thaparoyal/calendar-core` | [npm](https://www.npmjs.com/package/@thaparoyal/calendar-core) | Date conversion, themes, shared logic |
-| `@thaparoyal/calendar-react` | [npm](https://www.npmjs.com/package/@thaparoyal/calendar-react) | React components & hooks |
+| `@thaparoyal/calendar-react` | [npm](https://www.npmjs.com/package/@thaparoyal/calendar-react) | React components and hooks |
 | `@thaparoyal/calendar-vue` | [npm](https://www.npmjs.com/package/@thaparoyal/calendar-vue) | Vue composables |
 | `@thaparoyal/calendar-svelte` | [npm](https://www.npmjs.com/package/@thaparoyal/calendar-svelte) | Svelte stores |
-| `@thaparoyal/calendar-vanilla` | [npm](https://www.npmjs.com/package/@thaparoyal/calendar-vanilla) | Vanilla JS + CDN build |
-
-All framework packages depend on `@thaparoyal/calendar-core`. Versions are linked — when core bumps, all framework packages bump together.
-
----
-
-## Automated Publishing (CI)
-
-Every push to `main` triggers the **Publish** workflow (`.github/workflows/publish.yml`). It uses the [Changesets GitHub Action](https://github.com/changesets/action) which does one of two things:
-
-1. **If there are unreleased changesets** — opens a "Version Packages" PR that bumps versions and updates changelogs
-2. **If versions are already bumped** — publishes the new versions to npm
-
-### Prerequisites
-
-Add these secrets to your GitHub repo (**Settings > Secrets and variables > Actions**):
-
-| Secret | Where to get it |
-|--------|-----------------|
-| `NPM_TOKEN` | [npmjs.com > Access Tokens](https://www.npmjs.com/settings/~/tokens) — create a **Granular Access Token** with publish permission for the `@thaparoyal` scope |
-
-`GITHUB_TOKEN` is provided automatically by GitHub Actions.
-
-### First-Time Setup
-
-Before the first automated publish, make sure the npm organization exists:
-
-```bash
-# Log in to npm
-npm login
-
-# Verify the org scope is available
-npm org ls thaparoyal
-```
-
-If the `@thaparoyal` scope doesn't exist yet, create it at [npmjs.com/org/create](https://www.npmjs.com/org/create).
+| `@thaparoyal/calendar-vanilla` | [npm](https://www.npmjs.com/package/@thaparoyal/calendar-vanilla) | Vanilla JS and CDN build |
+| `@thaparoyal/calendar-cli` | [npm](https://www.npmjs.com/package/@thaparoyal/calendar-cli) | CLI tooling |
 
 ---
 
-## Manual Publishing
+## Manual Release Steps
 
-### 1. Create a changeset
+### 1) Create a changeset
 
 ```bash
 pnpm changeset
 ```
 
-This starts an interactive prompt where you:
-- Select which packages changed
-- Choose the bump type (patch / minor / major)
-- Write a summary of the change
+Commit the generated `.changeset/*.md` file with your code changes.
 
-A markdown file is created in `.changeset/` — commit it with your changes.
-
-### 2. Version packages
+### 2) Bump versions and changelogs
 
 ```bash
 pnpm version-packages
 ```
 
-This consumes all pending changesets, bumps `package.json` versions, and updates `CHANGELOG.md` in each package.
-
-### 3. Build and test
+### 3) Build and test
 
 ```bash
 pnpm build
 pnpm test
 ```
 
-### 4. Publish
+### 4) Publish to npm
 
 ```bash
+npm login
 pnpm release
 ```
 
-This builds all packages and runs `changeset publish`, which publishes every package with a new version to npm.
+`pnpm release` runs build + `changeset publish` and publishes updated packages.
 
-### 5. Push tags
+### 5) Push version commits and tags
 
 ```bash
 git push --follow-tags
 ```
 
-Changesets creates git tags like `@thaparoyal/calendar-core@0.2.0` for each published package.
-
 ---
 
-## Version Strategy
+## Notes
 
-The project uses **linked versions** configured in `.changeset/config.json`:
-
-```json
-{
-  "linked": [
-    [
-      "@thaparoyal/calendar-core",
-      "@thaparoyal/calendar-react",
-      "@thaparoyal/calendar-vue",
-      "@thaparoyal/calendar-svelte",
-      "@thaparoyal/calendar-vanilla"
-    ]
-  ],
-  "access": "public"
-}
-```
-
-**Linked** means all packages in the group always receive the same version bump. If you create a `minor` changeset for `calendar-react`, all five packages will get a minor bump. This keeps versions in sync and avoids confusion.
-
----
-
-## Publishing a Pre-release
-
-For testing before a stable release:
-
-```bash
-# Enter pre-release mode
-pnpm changeset pre enter next
-
-# Create changesets and version as normal
-pnpm changeset
-pnpm version-packages
-
-# Publish with a pre-release tag
-pnpm release
-
-# Exit pre-release mode when done
-pnpm changeset pre exit
-```
-
-This publishes versions like `0.2.0-next.0` under the `next` dist-tag:
-
-```bash
-npm install @thaparoyal/calendar-react@next
-```
-
----
-
-## Troubleshooting
-
-### "402 Payment Required" or "403 Forbidden"
-
-Your `NPM_TOKEN` doesn't have publish access to the `@thaparoyal` scope. Generate a new granular token with the correct scope permissions.
-
-### "You cannot publish over the previously published versions"
-
-The version in `package.json` already exists on npm. Run `pnpm changeset` to create a new bump, then `pnpm version-packages`.
-
-### Packages published but not linked
-
-Check `.changeset/config.json` — all five packages should be in the `linked` array. If you add a new package, add it there too.
+- Do not use plain `pnpm publish` from the monorepo root.
+- Packages are linked in `.changeset/config.json`, so they version together.
+- Keep repository visibility public if packages are public on npm.
