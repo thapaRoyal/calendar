@@ -4,6 +4,7 @@
   "description": "Svelte components for AD and BS (Bikram Sambat) calendars",
   "author": "Royal Thapa",
   "license": "MIT",
+  "homepage": "https://thaparoyal.github.io/calendar/",
   "type": "module",
   "svelte": "./dist/index.js",
   "main": "./dist/index.js",

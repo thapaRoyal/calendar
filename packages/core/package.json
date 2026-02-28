@@ -4,6 +4,7 @@
   "description": "Core date conversion and calendar utilities for AD and BS (Bikram Sambat) calendars",
   "author": "Royal Thapa",
   "license": "MIT",
+  "homepage": "https://thaparoyal.github.io/calendar/",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

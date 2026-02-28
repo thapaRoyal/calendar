@@ -4,6 +4,7 @@
   "description": "CLI for installing @thaparoyal/calendar components - shadcn/ui style",
   "author": "Royal Thapa",
   "license": "MIT",
+  "homepage": "https://thaparoyal.github.io/calendar/",
   "type": "module",
   "bin": {
     "trc": "./dist/index.js",
