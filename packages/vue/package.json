@@ -1,6 +1,6 @@
 {
   "name": "@thaparoyal/calendar-vue",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Vue components for AD and BS (Bikram Sambat) calendars",
   "author": "Royal Thapa",
   "license": "MIT",

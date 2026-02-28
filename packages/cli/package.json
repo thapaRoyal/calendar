@@ -1,6 +1,6 @@
 {
   "name": "@thaparoyal/calendar-cli",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "CLI for installing @thaparoyal/calendar components - shadcn/ui style",
   "author": "Royal Thapa",
   "license": "MIT",

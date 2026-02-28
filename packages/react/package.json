@@ -1,6 +1,6 @@
 {
   "name": "@thaparoyal/calendar-react",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "React components for AD and BS (Bikram Sambat) calendars",
   "author": "Royal Thapa",
   "license": "MIT",
