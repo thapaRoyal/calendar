@@ -53,6 +53,7 @@ export async function init(cwd: string) {
           { title: 'React', value: 'react' },
           { title: 'Vue', value: 'vue' },
           { title: 'Svelte', value: 'svelte' },
+          { title: 'Angular', value: 'angular' },
           { title: 'Vanilla JS', value: 'vanilla' },
         ],
         initial:
@@ -60,9 +61,11 @@ export async function init(cwd: string) {
             ? 1
             : projectInfo.framework === 'svelte'
               ? 2
-              : projectInfo.framework === 'vanilla'
+              : projectInfo.framework === 'angular'
                 ? 3
-                : 0,
+                : projectInfo.framework === 'vanilla'
+                  ? 4
+                  : 0,
       },
       {
         type: 'confirm',
