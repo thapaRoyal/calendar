@@ -367,25 +367,7 @@ pnpm typecheck
 |-------|-------------|
 | `/` | Landing page |
 | `/docs/*` | Documentation (Starlight) |
-| `/playground/react/` | React component demos |
-| `/playground/vue/` | Vue composable demos |
-| `/playground/svelte/` | Svelte store demos |
-
-### Docker
-
-```bash
-# Development (site on http://localhost:3000)
-docker-compose -f docker/docker-compose.yml up dev
-
-# Run tests
-docker-compose -f docker/docker-compose.yml up test
-
-# Build
-docker-compose -f docker/docker-compose.yml up build
-
-# Production preview (http://localhost:4321)
-docker-compose -f docker/docker-compose.yml up docs
-```
+| `/playground/react/` | Interactive demos with React/Vue/Svelte/Angular/Vanilla code tabs |
 
 ---
 

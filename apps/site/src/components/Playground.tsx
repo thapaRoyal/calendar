@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Calendar,
   DatePicker,
@@ -16,7 +16,7 @@ const THEMES = [
 ] as const;
 
 type Theme = (typeof THEMES)[number];
-type Framework = 'react' | 'vue' | 'svelte' | 'vanilla';
+type Framework = 'react' | 'vue' | 'svelte' | 'angular' | 'vanilla';
 
 function fmtDate(d: CalendarDate | null | undefined): string {
   if (!d) return '—';
@@ -204,6 +204,40 @@ function onTitleClick() {
     {/if}
   </div>
 </div>`,
+  angular: `import { Component, OnInit } from '@angular/core';
+import { CalendarService } from '@thaparoyal/calendar-angular';
+
+@Component({
+  selector: 'app-calendar',
+  providers: [CalendarService],
+  template: \`
+    <div class="trc-calendar" data-theme="dark">
+      <div class="trc-calendar-header">
+        <button class="trc-calendar-nav-button" (click)="cal.prevMonth()">&#8249;</button>
+        <button class="trc-calendar-title">{{ cal.title$ | async }}</button>
+        <button class="trc-calendar-nav-button" (click)="cal.nextMonth()">&#8250;</button>
+      </div>
+      <table class="trc-calendar-grid">
+        <tbody>
+          <tr *ngFor="let week of cal.weeks$ | async" class="trc-calendar-week">
+            <td *ngFor="let day of week" class="trc-calendar-cell">
+              <button class="trc-calendar-day" (click)="cal.selectDate(day.date)">
+                {{ cal.formatDayNumber(day.date.day) }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  \`,
+})
+export class CalendarComponent implements OnInit {
+  constructor(public cal: CalendarService) {}
+
+  ngOnInit() {
+    this.cal.initialize({ config: { calendarType: 'BS', locale: 'en' } });
+  }
+}`,
   vanilla: `import { render } from '@thaparoyal/calendar-vanilla';
 import '@thaparoyal/calendar-core/themes/themes.css';
 
@@ -261,6 +295,26 @@ const CODE_DROPDOWN: Record<Framework, string> = {
     <option value={y}>{y}</option>
   {/each}
 </select>`,
+  angular: `// Use monthPickerItems$ and yearPickerItems$ from CalendarService
+<select
+  class="trc-calendar-dropdown trc-calendar-dropdown-month"
+  [value]="(cal.focusedDate$ | async)?.month"
+  (change)="cal.focusDate({ ...(cal.focusedDate$ | async)!, month: +$any($event.target).value })"
+>
+  <option *ngFor="let m of cal.monthPickerItems$ | async" [value]="m.month" [disabled]="m.disabled">
+    {{ m.name }}
+  </option>
+</select>
+
+<select
+  class="trc-calendar-dropdown trc-calendar-dropdown-year"
+  [value]="(cal.focusedDate$ | async)?.year"
+  (change)="cal.focusDate({ ...(cal.focusedDate$ | async)!, year: +$any($event.target).value })"
+>
+  <option *ngFor="let y of cal.yearPickerItems$ | async" [value]="y.year" [disabled]="y.disabled">
+    {{ y.year }}
+  </option>
+</select>`,
   vanilla: `// Vanilla JS uses built-in dropdowns in the rendered calendar
 // You can access the calendar instance for programmatic control:
 const cal = new Calendar('#el', {
@@ -308,6 +362,41 @@ const { weeks, title, weekdayNames, value, select, hover,
 
 <!-- Add on:mouseenter={() => hover(day.date)} on:mouseleave={() => hover(null)} -->
 <!-- Use range CSS classes on day cells -->`,
+  angular: `import { SelectionService } from '@thaparoyal/calendar-angular';
+
+@Component({
+  providers: [SelectionService],
+  template: \`
+    <table class="trc-calendar-grid">
+      <tbody>
+        <tr *ngFor="let week of sel.weeks$ | async">
+          <td
+            *ngFor="let day of week"
+            class="trc-calendar-cell"
+            [class.trc-calendar-cell-range-start]="day.isRangeStart"
+            [class.trc-calendar-cell-range-end]="day.isRangeEnd"
+            [class.trc-calendar-cell-range-middle]="day.isInRange"
+          >
+            <button
+              class="trc-calendar-day"
+              (click)="sel.select(day.date)"
+              (mouseenter)="sel.hover(day.date)"
+            >
+              {{ sel.formatDayNumber(day.date.day) }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  \`,
+})
+export class RangeComponent implements OnInit {
+  constructor(public sel: SelectionService) {}
+
+  ngOnInit() {
+    this.sel.initialize({ mode: 'range', config: { calendarType: 'BS', locale: 'en' } });
+  }
+}`,
   vanilla: `render('#range-cal', {
   config: { calendarType: 'BS' },
   selectionMode: 'range',
@@ -356,6 +445,43 @@ const dp = createDatePicker({
 
 // Use $dp.isOpen, $dp.inputValue, $dp.weeks, etc.
 // dp.open(), dp.close(), dp.selectDate(date), dp.toggle()`,
+  angular: `import { DatePickerService } from '@thaparoyal/calendar-angular';
+
+@Component({
+  providers: [DatePickerService],
+  template: \`
+    <div class="trc-date-picker">
+      <input
+        class="trc-date-picker-input"
+        [value]="picker.inputValue$ | async"
+        (input)="picker.onInputChange($any($event.target).value)"
+        (blur)="picker.onInputBlur()"
+      />
+      <button class="trc-date-picker-trigger" (click)="picker.toggle()">Toggle</button>
+
+      <div *ngIf="picker.isOpen$ | async" class="trc-date-picker-content">
+        <table class="trc-calendar-grid">
+          <tbody>
+            <tr *ngFor="let week of picker.weeks$ | async">
+              <td *ngFor="let day of week">
+                <button class="trc-calendar-day" (click)="picker.selectDate(day.date)">
+                  {{ picker.formatDayNumber(day.date.day) }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  \`,
+})
+export class PickerComponent implements OnInit {
+  constructor(public picker: DatePickerService) {}
+
+  ngOnInit() {
+    this.picker.initialize({ config: { calendarType: 'BS', locale: 'en' } });
+  }
+}`,
   vanilla: `// Vanilla JS does not have a built-in DatePicker popup.
 // Use the Calendar class for the calendar portion:
 import { Calendar } from '@thaparoyal/calendar-vanilla';
@@ -406,6 +532,44 @@ const mc = createMultiCalendar({
 
 // $mc.months is an array of { year, month, title, weeks }
 // Render each month's grid side-by-side`,
+  angular: `import { MultiCalendarService } from '@thaparoyal/calendar-angular';
+
+@Component({
+  providers: [MultiCalendarService],
+  template: \`
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <div *ngFor="let month of calendar.months$ | async" class="trc-calendar">
+        <h3>{{ month.title }}</h3>
+        <table class="trc-calendar-grid">
+          <tbody>
+            <tr *ngFor="let week of month.weeks">
+              <td *ngFor="let day of week">
+                <button
+                  class="trc-calendar-day"
+                  (click)="calendar.select(day.date)"
+                  (mouseenter)="calendar.hover(day.date)"
+                >
+                  {{ calendar.formatDayNumber(day.date.day) }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  \`,
+})
+export class MultiComponent implements OnInit {
+  constructor(public calendar: MultiCalendarService) {}
+
+  ngOnInit() {
+    this.calendar.initialize({
+      numberOfMonths: 2,
+      mode: 'range',
+      config: { calendarType: 'BS', locale: 'en' },
+    });
+  }
+}`,
   vanilla: `render('#multi-cal', {
   config: { calendarType: 'BS' },
   selectionMode: 'range',
@@ -426,6 +590,7 @@ function CodeTabs({ snippets }: { snippets: Record<Framework, string> }) {
     { key: 'react', label: 'React', color: '#667eea' },
     { key: 'vue', label: 'Vue', color: '#42b883' },
     { key: 'svelte', label: 'Svelte', color: '#ff3e00' },
+    { key: 'angular', label: 'Angular', color: '#dd0031' },
     { key: 'vanilla', label: 'Vanilla', color: '#f7df1e' },
   ];
 
@@ -489,6 +654,14 @@ export function Playground() {
   const [pickerDate, setPickerDate] = useState<CalendarDate | null>(null);
 
   const config = { calendarType, locale } as const;
+  const configKey = `${calendarType}-${locale}`;
+
+  useEffect(() => {
+    setSingleDate(null);
+    setRangeValue(null);
+    setMultiRangeValue(null);
+    setPickerDate(null);
+  }, [configKey]);
 
   return (
     <div style={{ padding: '2rem', maxWidth: 1400, margin: '0 auto' }}>
@@ -496,7 +669,7 @@ export function Playground() {
         Interactive Playground
       </h2>
       <p style={{ color: '#888', marginBottom: '2rem', fontSize: '0.95rem' }}>
-        Live demos powered by <code style={{ background: '#1a1a2e', padding: '0.15rem 0.4rem', borderRadius: 4, color: '#818cf8' }}>Patro</code> — toggle code tabs to see React, Vue, Svelte & Vanilla JS examples
+        Live demos powered by <code style={{ background: '#1a1a2e', padding: '0.15rem 0.4rem', borderRadius: 4, color: '#818cf8' }}>Patro</code> — toggle code tabs to see React, Vue, Svelte, Angular, and Vanilla JS examples
       </p>
 
       {/* Settings Bar */}
@@ -566,7 +739,12 @@ export function Playground() {
         {/* 1. Single Selection with Month/Year Pickers */}
         <Card title="Single Selection" desc="Click title to switch between day / month / year views">
           <div data-theme={theme}>
-            <Calendar.Root config={config} value={singleDate} onValueChange={setSingleDate}>
+            <Calendar.Root
+              key={`single-${configKey}`}
+              config={config}
+              value={singleDate}
+              onValueChange={setSingleDate}
+            >
               <Calendar.Header>
                 <Calendar.PrevButton />
                 <Calendar.Title />
@@ -587,7 +765,7 @@ export function Playground() {
         {/* 2. With Dropdowns */}
         <Card title="Month & Year Dropdowns" desc="Quick navigation via dropdown selects">
           <div data-theme={theme}>
-            <Calendar.Root config={config}>
+            <Calendar.Root key={`dropdown-${configKey}`} config={config}>
               <Calendar.Header>
                 <Calendar.PrevButton />
                 <Calendar.MonthDropdown />
@@ -606,7 +784,12 @@ export function Playground() {
         {/* 3. Range Selection */}
         <Card title="Range Selection" desc="Click start date, hover to preview, click end date">
           <div data-theme={theme}>
-            <RangeCalendar.Root config={config} value={rangeValue} onValueChange={setRangeValue}>
+            <RangeCalendar.Root
+              key={`range-${configKey}`}
+              config={config}
+              value={rangeValue}
+              onValueChange={setRangeValue}
+            >
               <RangeCalendar.Header>
                 <RangeCalendar.PrevButton />
                 <RangeCalendar.Title />
@@ -625,7 +808,12 @@ export function Playground() {
         {/* 4. DatePicker */}
         <Card title="Date Picker" desc="Input field with calendar dropdown popup">
           <div data-theme={theme}>
-            <DatePicker.Root config={config} value={pickerDate} onValueChange={setPickerDate}>
+            <DatePicker.Root
+              key={`picker-${configKey}`}
+              config={config}
+              value={pickerDate}
+              onValueChange={setPickerDate}
+            >
               <DatePicker.Input placeholder="Select a date..." />
               <DatePicker.ClearButton />
               <DatePicker.Trigger />
@@ -652,11 +840,14 @@ export function Playground() {
           </p>
           <div data-theme={theme}>
             <MultiCalendar.Root
+              key={`multi-${configKey}`}
               numberOfMonths={2}
               mode="range"
               config={config}
               value={multiRangeValue}
-              onValueChange={(val) => setMultiRangeValue(val as DateRangeValue | null)}
+              onValueChange={(val: CalendarDate | CalendarDate[] | DateRangeValue | null) =>
+                setMultiRangeValue(val as DateRangeValue | null)
+              }
             >
               <MultiCalendar.Header>
                 <MultiCalendar.PrevButton />
@@ -687,6 +878,7 @@ export function Playground() {
             { label: 'React', href: `${BASE}/react/quick-start/`, color: '#667eea' },
             { label: 'Vue', href: `${BASE}/vue/guide/`, color: '#42b883' },
             { label: 'Svelte', href: `${BASE}/svelte/guide/`, color: '#ff3e00' },
+            { label: 'Angular', href: `${BASE}/angular/quick-start/`, color: '#dd0031' },
             { label: 'Vanilla JS', href: `${BASE}/vanilla/getting-started/`, color: '#f7df1e' },
           ].map((fw) => (
             <a

@@ -264,6 +264,42 @@
   overflow-x: auto;
 }
 
+.trc-multi-calendar-calendars {
+  align-items: flex-start;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.trc-multi-calendar-month {
+  flex: 0 0 320px;
+  min-width: 320px;
+  max-width: 320px;
+}
+
+.trc-multi-calendar .trc-calendar-grid {
+  table-layout: fixed;
+}
+
+/* Make range highlight feel continuous across cells in multi-month range mode */
+.trc-multi-calendar .trc-calendar-cell-range-middle,
+.trc-multi-calendar .trc-calendar-cell-range-hover {
+  background-color: var(--trc-primary-muted);
+}
+
+.trc-multi-calendar .trc-calendar-cell-range-middle .trc-calendar-day,
+.trc-multi-calendar .trc-calendar-cell-range-hover .trc-calendar-day {
+  border-radius: 0;
+}
+
+@media (max-width: 768px) {
+  .trc-multi-calendar-month {
+    flex-basis: 280px;
+    min-width: 280px;
+    max-width: 280px;
+  }
+}
+
 /* ==========================================================================
    Hero gradient animation
    ========================================================================== */

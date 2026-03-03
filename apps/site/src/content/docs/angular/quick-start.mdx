@@ -1,0 +1,116 @@
+---
+title: Quick Start
+description: Get started with @thaparoyal/calendar-angular
+---
+
+# Angular Quick Start
+
+`@thaparoyal/calendar-angular` provides **injectable Angular services** (not prebuilt UI components).  
+You bind each service's `Observable` state into your own template using the `async` pipe.
+
+## Installation
+
+```bash
+npm install @thaparoyal/calendar-angular @thaparoyal/calendar-core
+```
+
+Peer dependencies:
+
+- `@angular/core >= 14`
+- `rxjs >= 7`
+
+## Import Theme CSS
+
+Add the core theme stylesheet in `angular.json`:
+
+```json
+{
+  "styles": [
+    "src/styles.css",
+    "node_modules/@thaparoyal/calendar-core/themes/themes.css"
+  ]
+}
+```
+
+## Services
+
+| Service | Purpose |
+|---|---|
+| [`CalendarService`](/angular/calendar-service/) | Single-date calendar navigation and selection |
+| [`SelectionService`](/angular/selection-service/) | Single/range/multiple selection state |
+| [`DatePickerService`](/angular/date-picker-service/) | Input + popup calendar logic |
+| [`MultiCalendarService`](/angular/multi-calendar-service/) | Side-by-side multi-month calendars |
+
+## Common Lifecycle Pattern
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { CalendarService } from '@thaparoyal/calendar-angular';
+
+@Component({
+  selector: 'app-calendar',
+  providers: [CalendarService],
+  template: `<p>{{ cal.title$ | async }}</p>`,
+})
+export class CalendarComponent implements OnInit {
+  constructor(public cal: CalendarService) {}
+
+  ngOnInit() {
+    this.cal.initialize({
+      config: { calendarType: 'BS', locale: 'en' },
+    });
+  }
+}
+```
+
+## Basic Calendar Template
+
+```html
+<div class="trc-calendar" data-theme="ocean">
+  <div class="trc-calendar-header">
+    <button class="trc-calendar-nav-button" (click)="cal.prevMonth()" [disabled]="cal.isPrevMonthDisabled$ | async">&#8249;</button>
+    <button class="trc-calendar-title">{{ cal.title$ | async }}</button>
+    <button class="trc-calendar-nav-button" (click)="cal.nextMonth()" [disabled]="cal.isNextMonthDisabled$ | async">&#8250;</button>
+  </div>
+
+  <table class="trc-calendar-grid">
+    <thead class="trc-calendar-grid-head">
+      <tr>
+        <th *ngFor="let name of cal.weekdayNames$ | async" class="trc-calendar-weekday">{{ name }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let week of cal.weeks$ | async" class="trc-calendar-week">
+        <td
+          *ngFor="let day of week"
+          class="trc-calendar-cell"
+          [class.trc-calendar-cell-selected]="day.isSelected"
+          [class.trc-calendar-cell-today]="day.isToday"
+          [class.trc-calendar-cell-outside]="day.isOutsideMonth"
+          [class.trc-calendar-cell-disabled]="day.isDisabled"
+        >
+          <button class="trc-calendar-day" [disabled]="day.isDisabled" (click)="cal.selectDate(day.date)">
+            {{ cal.formatDayNumber(day.date.day) }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```
+
+## Locale and Calendar Type
+
+```ts
+this.cal.initialize({ config: { calendarType: 'BS', locale: 'en' } }); // Bikram Sambat
+this.cal.initialize({ config: { calendarType: 'AD', locale: 'en' } }); // Gregorian
+this.cal.initialize({ config: { calendarType: 'BS', locale: 'ne' } }); // Nepali numerals
+```
+
+## Next Steps
+
+- [CalendarService](/angular/calendar-service/)
+- [SelectionService](/angular/selection-service/)
+- [DatePickerService](/angular/date-picker-service/)
+- [MultiCalendarService](/angular/multi-calendar-service/)
+- [All Examples](/angular/examples/)

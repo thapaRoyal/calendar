@@ -15,8 +15,8 @@ The Patro documentation site is built with [Astro](https://astro.build) + [Starl
 
 The deployment is handled by `.github/workflows/docs.yml`:
 
-1. **Trigger** — runs on push to `main` when files change in `apps/site/`, `packages/`, or the workflow itself
-2. **Build** — installs dependencies, builds all packages (core + framework packages), then builds the Astro site
+1. **Trigger** — runs on push to `main` when files change in `apps/site/` or the workflow itself
+2. **Build** — installs dependencies and builds the Astro site
 3. **Deploy** — uploads `apps/site/dist` to GitHub Pages using the official `actions/deploy-pages` action
 
 ```yaml
@@ -27,7 +27,6 @@ on:
     branches: [main]
     paths:
       - 'apps/site/**'
-      - 'packages/**'
       - '.github/workflows/docs.yml'
   workflow_dispatch:
 
@@ -49,7 +48,7 @@ jobs:
           node-version: 20
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      - run: pnpm --filter site build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/site/dist
@@ -132,11 +131,8 @@ Starlight handles the base path automatically for its own docs pages and sidebar
 To preview the production build locally:
 
 ```bash
-# Build everything (packages + site)
-pnpm build
-
-# Or just the site (if packages are already built)
-pnpm build:site
+# Build only the site
+pnpm --filter site build
 
 # Preview the built site
 cd apps/site && pnpm preview
@@ -152,7 +148,7 @@ If you need to deploy without CI:
 
 ```bash
 # Build
-pnpm build
+pnpm --filter site build
 
 # The static site is in apps/site/dist/
 ls apps/site/dist/
@@ -184,11 +180,11 @@ export default defineConfig({
 
 ### Build fails with "Cannot find module '@thaparoyal/calendar-core'"
 
-The site imports from the local packages. Make sure `pnpm build` builds all packages before the site:
+The site consumes published npm packages. Ensure dependencies are installed before building:
 
 ```bash
-# This builds packages first, then site (configured in turbo.json)
-pnpm build
+pnpm install
+pnpm --filter site build
 ```
 
 ### Pages deploy shows 404

@@ -1,0 +1,104 @@
+---
+title: SelectionService
+description: Unified single/range/multiple selection service for Angular
+---
+
+# SelectionService
+
+`SelectionService` is the unified selection API for `single`, `range`, and `multiple` modes.
+
+## Import
+
+```ts
+import { SelectionService } from '@thaparoyal/calendar-angular';
+```
+
+## Initialize
+
+```ts
+this.sel.initialize({
+  mode: 'range',
+  config: { calendarType: 'BS', locale: 'en' },
+});
+```
+
+## Options
+
+```ts
+interface SelectionServiceOptions {
+  mode?: 'single' | 'range' | 'multiple';
+  config?: Partial<SelectionConfig>;
+  defaultValue?: CalendarDate | CalendarDate[] | DateRangeValue | null;
+  disabledDates?: CalendarDate[];
+}
+```
+
+## Actions
+
+```ts
+sel.select(date)
+sel.toggle(date)
+sel.hover(date)
+sel.clear()
+sel.nextMonth()
+sel.prevMonth()
+sel.nextYear()
+sel.prevYear()
+sel.setViewMode('day' | 'month' | 'year')
+sel.goToToday()
+```
+
+## Helper Methods
+
+```ts
+sel.isMultiSelected(date)
+sel.isInRange(date)
+sel.isRangeStart(date)
+sel.isRangeEnd(date)
+sel.isRangeMiddle(date)
+```
+
+## Observable State
+
+`state$`, `value$`, `selectionMode$`, `isComplete$`, `title$`, `weekdayNames$`, `weeks$`, `locale$`, `monthPickerItems$`, `yearPickerItems$`, `decadeRange$`, `isPrevMonthDisabled$`, `isNextMonthDisabled$`
+
+## Range Template Example
+
+```html
+<div class="trc-calendar" data-theme="rose">
+  <div class="trc-calendar-header">
+    <button class="trc-calendar-nav-button" (click)="sel.prevMonth()">&#8249;</button>
+    <button class="trc-calendar-title">{{ sel.title$ | async }}</button>
+    <button class="trc-calendar-nav-button" (click)="sel.nextMonth()">&#8250;</button>
+  </div>
+
+  <table class="trc-calendar-grid">
+    <thead>
+      <tr>
+        <th *ngFor="let name of sel.weekdayNames$ | async" class="trc-calendar-weekday">{{ name }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let week of sel.weeks$ | async">
+        <td
+          *ngFor="let day of week"
+          class="trc-calendar-cell"
+          [class.trc-calendar-cell-range-start]="day.isRangeStart"
+          [class.trc-calendar-cell-range-end]="day.isRangeEnd"
+          [class.trc-calendar-cell-range-middle]="day.isInRange"
+          [class.trc-calendar-cell-range-hover]="day.isRangeHover"
+        >
+          <button
+            class="trc-calendar-day"
+            [disabled]="day.isDisabled"
+            (click)="sel.select(day.date)"
+            (mouseenter)="sel.hover(day.date)"
+          >
+            {{ sel.formatDayNumber(day.date.day) }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```

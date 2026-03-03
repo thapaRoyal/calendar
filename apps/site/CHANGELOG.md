@@ -1,5 +1,16 @@
 # site
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies
+  - @thaparoyal/calendar-core@2.0.0
+  - @thaparoyal/calendar-react@2.0.0
+  - @thaparoyal/calendar-svelte@2.0.0
+  - @thaparoyal/calendar-vanilla@2.0.0
+  - @thaparoyal/calendar-vue@2.0.0
+
 ## 0.0.3
 
 ### Patch Changes

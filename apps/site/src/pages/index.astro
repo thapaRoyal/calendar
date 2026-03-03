@@ -560,7 +560,7 @@ const base = import.meta.env.BASE_URL;
       <h1>Patro</h1>
       <p class="hero-tagline">Calendar components for every framework</p>
       <p class="subtitle">
-        Beautiful, accessible calendar UI for React, Vue, Svelte, and Vanilla JS
+        Beautiful, accessible calendar UI for React, Vue, Svelte, Angular, and Vanilla JS
         with full Bikram Sambat (BS) and Gregorian (AD) support.
       </p>
 
@@ -580,6 +580,7 @@ const base = import.meta.env.BASE_URL;
         <span class="framework-badge"><span class="dot" style="background: #61dafb;"></span> React</span>
         <span class="framework-badge"><span class="dot" style="background: #42b883;"></span> Vue</span>
         <span class="framework-badge"><span class="dot" style="background: #ff3e00;"></span> Svelte</span>
+        <span class="framework-badge"><span class="dot" style="background: #dd0031;"></span> Angular</span>
         <span class="framework-badge"><span class="dot" style="background: #f7df1e;"></span> Vanilla JS</span>
       </div>
 
@@ -626,7 +627,7 @@ const base = import.meta.env.BASE_URL;
           </svg>
         </div>
         <h3>Multi-Framework</h3>
-        <p>First-class support for React, Vue 3, Svelte, and Vanilla JS with framework-specific components.</p>
+        <p>First-class support for React, Vue 3, Svelte, Angular, and Vanilla JS with framework-specific APIs.</p>
       </div>
       <div class="feature">
         <div class="feature-icon">
@@ -713,6 +714,12 @@ const base = import.meta.env.BASE_URL;
           <h3>Svelte</h3>
           <p>Lightweight calendar components that compile away for zero runtime overhead.</p>
           <span class="fw-link">Get started with Svelte &rarr;</span>
+        </a>
+        <a href={`${base}/angular/quick-start/`} class="framework-card">
+          <div class="fw-icon" style="background: rgba(221, 0, 49, 0.1); color: #dd0031;">A</div>
+          <h3>Angular</h3>
+          <p>Injectable services with RxJS Observables for building Angular calendar UIs.</p>
+          <span class="fw-link">Get started with Angular &rarr;</span>
         </a>
         <a href={`${base}/vanilla/getting-started/`} class="framework-card">
           <div class="fw-icon" style="background: rgba(247, 223, 30, 0.1); color: #f7df1e;">JS</div>

@@ -16,6 +16,7 @@ export default defineConfig({
     '/playground/vue/': '/playground/react/',
     '/playground/svelte/': '/playground/react/',
     '/playground/vanilla/': '/playground/react/',
+    '/playground/angular/': '/playground/react/',
   },
   integrations: [
     noopSitemap(),
@@ -24,7 +25,7 @@ export default defineConfig({
     svelte(),
     starlight({
       title: 'Patro',
-      description: 'AD and BS (Bikram Sambat) calendar components for React, Vue, Svelte, and Vanilla JS',
+      description: 'AD and BS (Bikram Sambat) calendar components for React, Vue, Svelte, Angular, and Vanilla JS',
       social: {
         github: 'https://github.com/thaparoyal/calendar',
       },
@@ -57,6 +58,17 @@ export default defineConfig({
             { label: 'RangeCalendar', link: '/react/range-calendar/' },
             { label: 'MultiCalendar', link: '/react/multi-calendar/' },
             { label: 'All Examples', link: '/react/examples/' },
+          ],
+        },
+        {
+          label: 'Angular',
+          items: [
+            { label: 'Quick Start', link: '/angular/quick-start/' },
+            { label: 'CalendarService', link: '/angular/calendar-service/' },
+            { label: 'SelectionService', link: '/angular/selection-service/' },
+            { label: 'DatePickerService', link: '/angular/date-picker-service/' },
+            { label: 'MultiCalendarService', link: '/angular/multi-calendar-service/' },
+            { label: 'All Examples', link: '/angular/examples/' },
           ],
         },
         {

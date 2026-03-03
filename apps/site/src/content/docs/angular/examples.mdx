@@ -1,0 +1,179 @@
+---
+title: All Examples
+description: Practical Angular examples for CalendarService, SelectionService, DatePickerService, and MultiCalendarService
+---
+
+# Angular Examples
+
+Use these snippets as starting points for real Angular components.
+
+## 1. Single Date Calendar
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { CalendarService } from '@thaparoyal/calendar-angular';
+
+@Component({
+  selector: 'app-single-calendar',
+  providers: [CalendarService],
+  template: `
+    <div class="trc-calendar" data-theme="default">
+      <div class="trc-calendar-header">
+        <button class="trc-calendar-nav-button" (click)="cal.prevMonth()">&#8249;</button>
+        <button class="trc-calendar-title">{{ cal.title$ | async }}</button>
+        <button class="trc-calendar-nav-button" (click)="cal.nextMonth()">&#8250;</button>
+      </div>
+      <table class="trc-calendar-grid">
+        <tbody>
+          <tr *ngFor="let week of cal.weeks$ | async">
+            <td *ngFor="let day of week" class="trc-calendar-cell">
+              <button class="trc-calendar-day" (click)="cal.selectDate(day.date)">
+                {{ cal.formatDayNumber(day.date.day) }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `,
+})
+export class SingleCalendarComponent implements OnInit {
+  constructor(public cal: CalendarService) {}
+
+  ngOnInit() {
+    this.cal.initialize({ config: { calendarType: 'BS', locale: 'en' } });
+  }
+}
+```
+
+## 2. Range Selection
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { SelectionService } from '@thaparoyal/calendar-angular';
+
+@Component({
+  selector: 'app-range-calendar',
+  providers: [SelectionService],
+  template: `
+    <div class="trc-calendar" data-theme="rose">
+      <table class="trc-calendar-grid">
+        <tbody>
+          <tr *ngFor="let week of sel.weeks$ | async">
+            <td *ngFor="let day of week" class="trc-calendar-cell">
+              <button
+                class="trc-calendar-day"
+                (click)="sel.select(day.date)"
+                (mouseenter)="sel.hover(day.date)"
+              >
+                {{ sel.formatDayNumber(day.date.day) }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <pre>{{ sel.value$ | async | json }}</pre>
+    </div>
+  `,
+})
+export class RangeCalendarComponent implements OnInit {
+  constructor(public sel: SelectionService) {}
+
+  ngOnInit() {
+    this.sel.initialize({ mode: 'range', config: { calendarType: 'BS', locale: 'en' } });
+  }
+}
+```
+
+## 3. Date Picker with Input
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { DatePickerService } from '@thaparoyal/calendar-angular';
+
+@Component({
+  selector: 'app-date-picker',
+  providers: [DatePickerService],
+  template: `
+    <div class="trc-date-picker" data-theme="indigo">
+      <div class="trc-date-picker-input-wrapper">
+        <input
+          class="trc-date-picker-input"
+          [value]="picker.inputValue$ | async"
+          (input)="picker.onInputChange($any($event.target).value)"
+          (blur)="picker.onInputBlur()"
+        />
+        <button class="trc-date-picker-trigger" (click)="picker.toggle()">Toggle</button>
+      </div>
+      <div *ngIf="picker.isOpen$ | async" class="trc-date-picker-content">
+        <table class="trc-calendar-grid">
+          <tbody>
+            <tr *ngFor="let week of picker.weeks$ | async">
+              <td *ngFor="let day of week">
+                <button class="trc-calendar-day" (click)="picker.selectDate(day.date)">
+                  {{ picker.formatDayNumber(day.date.day) }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `,
+})
+export class DatePickerComponent implements OnInit {
+  constructor(public picker: DatePickerService) {}
+
+  ngOnInit() {
+    this.picker.initialize({ config: { calendarType: 'BS', locale: 'en' } });
+  }
+}
+```
+
+## 4. Multi-Month Range Picker
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { MultiCalendarService } from '@thaparoyal/calendar-angular';
+
+@Component({
+  selector: 'app-multi-calendar',
+  providers: [MultiCalendarService],
+  template: `
+    <div data-theme="amber">
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+        <div *ngFor="let month of calendar.months$ | async" class="trc-calendar">
+          <h3>{{ month.title }}</h3>
+          <table class="trc-calendar-grid">
+            <tbody>
+              <tr *ngFor="let week of month.weeks">
+                <td *ngFor="let day of week">
+                  <button
+                    class="trc-calendar-day"
+                    (click)="calendar.select(day.date)"
+                    (mouseenter)="calendar.hover(day.date)"
+                  >
+                    {{ calendar.formatDayNumber(day.date.day) }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <pre>{{ calendar.value$ | async | json }}</pre>
+    </div>
+  `,
+})
+export class MultiCalendarComponent implements OnInit {
+  constructor(public calendar: MultiCalendarService) {}
+
+  ngOnInit() {
+    this.calendar.initialize({
+      numberOfMonths: 2,
+      mode: 'range',
+      config: { calendarType: 'BS', locale: 'en' },
+    });
+  }
+}
+```

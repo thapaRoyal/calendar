@@ -1,5 +1,16 @@
 # @thaparoyal/calendar-react
 
+## 2.0.0
+
+### Major Changes
+
+- Updated some packages
+
+### Patch Changes
+
+- Updated dependencies
+  - @thaparoyal/calendar-core@2.0.0
+
 ## 1.0.0
 
 ### Major Changes

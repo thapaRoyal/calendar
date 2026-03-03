@@ -1,6 +1,6 @@
 ---
 title: Framework Usage
-description: How to use the library in React, Vue, and Svelte projects
+description: How to use the library in React, Vue, Svelte, Angular, and Vanilla JS projects
 ---
 
 # Framework Usage
@@ -9,8 +9,7 @@ Use the site app for examples and demos:
 
 - Home: `/`
 - React playground: `/playground/react/`
-- Vue playground: `/playground/vue/`
-- Svelte playground: `/playground/svelte/`
+- Angular snippets are included in the same playground code tabs.
 
 ## React (Prebuilt Components)
 
@@ -39,7 +38,7 @@ import { useCalendar } from '@thaparoyal/calendar-vue';
 const calendar = useCalendar({ config: { calendarType: 'BS', locale: 'en' } });
 ```
 
-The Vue playground demonstrates rendering a custom calendar UI using that composable: `/playground/vue/`.
+The playground includes Vue snippets for each feature in the code tabs: `/playground/react/`.
 
 ## Svelte (Store-first)
 
@@ -51,7 +50,32 @@ import { createCalendar } from '@thaparoyal/calendar-svelte';
 const calendar = createCalendar({ config: { calendarType: 'BS', locale: 'en' } });
 ```
 
-The Svelte playground demonstrates rendering a custom calendar UI using the store: `/playground/svelte/`.
+The playground includes Svelte snippets for each feature in the code tabs: `/playground/react/`.
+
+## Angular (Service-first)
+
+Angular exposes injectable services built on top of the same core state machines:
+
+```ts
+import { CalendarService } from '@thaparoyal/calendar-angular';
+
+@Component({ providers: [CalendarService] })
+export class MyCalendarComponent implements OnInit {
+  constructor(public cal: CalendarService) {}
+
+  ngOnInit() {
+    this.cal.initialize({ config: { calendarType: 'BS', locale: 'en' } });
+  }
+}
+```
+
+Use the Angular documentation for service-specific patterns:
+
+- `/angular/quick-start/`
+- `/angular/calendar-service/`
+- `/angular/selection-service/`
+- `/angular/date-picker-service/`
+- `/angular/multi-calendar-service/`
 
 ## Core Utilities (All Frameworks)
 
@@ -65,11 +89,12 @@ Use `@thaparoyal/calendar-core` for:
 import { adToBs, bsToAd } from '@thaparoyal/calendar-core';
 ```
 
-## Feature Status Summary
+## Feature Summary
 
-| Feature | React | Vue | Svelte |
-|---|---|---|---|
-| Single calendar demo | Yes | Yes (custom UI via composable) | Yes (custom UI via store) |
-| Date range UI component | Yes | Not yet (core logic available) | Not yet (core logic available) |
-| Multi-calendar UI component | Yes | Not yet (core logic available) | Not yet (core logic available) |
-| Month/year picker UI | Yes | Custom implementation needed | Custom implementation needed |
+| Framework | API Style | Current Docs |
+|---|---|---|
+| React | Prebuilt compound components + hooks | `/react/*` |
+| Vue | Headless composables | `/vue/*` |
+| Svelte | Headless store creators | `/svelte/*` |
+| Angular | Injectable RxJS services | `/angular/*` |
+| Vanilla JS | Plain JS class/render API | `/vanilla/*` |

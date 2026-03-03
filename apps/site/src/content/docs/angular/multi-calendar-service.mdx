@@ -1,0 +1,110 @@
+---
+title: MultiCalendarService
+description: Side-by-side multi-month calendar service for Angular
+---
+
+# MultiCalendarService
+
+`MultiCalendarService` renders multiple visible months with shared selection and navigation.
+
+## Import
+
+```ts
+import { MultiCalendarService } from '@thaparoyal/calendar-angular';
+```
+
+## Initialize
+
+```ts
+this.calendar.initialize({
+  numberOfMonths: 2,
+  mode: 'range',
+  config: { calendarType: 'BS', locale: 'en' },
+  pagedNavigation: false,
+});
+```
+
+## Options
+
+```ts
+interface MultiCalendarServiceOptions {
+  numberOfMonths?: number; // default: 2
+  mode?: 'single' | 'range' | 'multiple';
+  config?: Partial<SelectionConfig>;
+  pagedNavigation?: boolean;
+  defaultValue?: CalendarDate | CalendarDate[] | DateRangeValue | null;
+  disabledDates?: CalendarDate[];
+}
+```
+
+## Actions
+
+```ts
+calendar.select(date)
+calendar.toggle(date)
+calendar.hover(date)
+calendar.clear()
+calendar.nextMonth()
+calendar.prevMonth()
+calendar.goToToday()
+```
+
+## Observable State
+
+`state$`, `value$`, `isComplete$`, `months$`, `weekdayNames$`, `locale$`, `isPrevDisabled$`, `isNextDisabled$`
+
+## `months$` Shape
+
+```ts
+interface MultiCalendarMonth {
+  year: number;
+  month: number;
+  title: string;
+  weeks: Week[];
+}
+```
+
+## Template Example
+
+```html
+<div class="trc-multi-calendar" data-theme="amber">
+  <div class="trc-calendar-header">
+    <button class="trc-calendar-nav-button" (click)="calendar.prevMonth()" [disabled]="calendar.isPrevDisabled$ | async">&#8249;</button>
+    <button class="trc-calendar-nav-button" (click)="calendar.nextMonth()" [disabled]="calendar.isNextDisabled$ | async">&#8250;</button>
+  </div>
+
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+    <div *ngFor="let month of calendar.months$ | async" class="trc-calendar" style="min-width:300px;">
+      <h3 class="trc-calendar-title">{{ month.title }}</h3>
+
+      <table class="trc-calendar-grid">
+        <thead>
+          <tr>
+            <th *ngFor="let name of calendar.weekdayNames$ | async" class="trc-calendar-weekday">{{ name }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let week of month.weeks">
+            <td
+              *ngFor="let day of week"
+              class="trc-calendar-cell"
+              [class.trc-calendar-cell-range-start]="day.isRangeStart"
+              [class.trc-calendar-cell-range-end]="day.isRangeEnd"
+              [class.trc-calendar-cell-range-middle]="day.isInRange"
+            >
+              <button
+                class="trc-calendar-day"
+                [disabled]="day.isDisabled"
+                (click)="calendar.select(day.date)"
+                (mouseenter)="calendar.hover(day.date)"
+              >
+                {{ calendar.formatDayNumber(day.date.day) }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+```

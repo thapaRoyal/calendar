@@ -1,0 +1,96 @@
+---
+title: DatePickerService
+description: Angular date picker service with input masking and popup state
+---
+
+# DatePickerService
+
+`DatePickerService` combines calendar state, input state, and popup open/close state.
+
+## Import
+
+```ts
+import { DatePickerService } from '@thaparoyal/calendar-angular';
+```
+
+## Initialize
+
+```ts
+this.picker.initialize({
+  config: { calendarType: 'BS', locale: 'en' },
+  format: 'YYYY-MM-DD',
+});
+```
+
+## Options
+
+```ts
+interface DatePickerServiceOptions {
+  config?: Partial<CalendarConfig>;
+  defaultValue?: CalendarDate;
+  format?: string; // default: 'YYYY-MM-DD'
+  disabled?: boolean;
+  disabledDates?: CalendarDate[];
+}
+```
+
+## Actions
+
+```ts
+picker.open()
+picker.close()
+picker.toggle()
+picker.onInputChange(value) // live mask
+picker.onInputBlur()        // parse + normalize
+picker.selectDate(date)
+picker.clear()
+picker.setValue(dateOrNull) // programmatic value
+picker.setDisabled(boolean)
+```
+
+## Observable State
+
+`state$`, `isOpen$`, `inputValue$`, `selectedDate$`, `formattedValue$`, `title$`, `weekdayNames$`, `weeks$`, `monthPickerItems$`, `yearPickerItems$`, `decadeRange$`, `locale$`, `isPrevMonthDisabled$`, `isNextMonthDisabled$`
+
+## Template Example
+
+```html
+<div class="trc-date-picker" data-theme="indigo" (document:mousedown)="onOutsideClick($event)">
+  <div class="trc-date-picker-input-wrapper">
+    <input
+      class="trc-date-picker-input"
+      [value]="picker.inputValue$ | async"
+      (input)="picker.onInputChange($any($event.target).value)"
+      (blur)="picker.onInputBlur()"
+      placeholder="YYYY-MM-DD"
+    />
+    <button class="trc-date-picker-trigger" (click)="picker.toggle()">Toggle</button>
+    <button class="trc-date-picker-clear" (click)="picker.clear()">Clear</button>
+  </div>
+
+  <div *ngIf="picker.isOpen$ | async" class="trc-date-picker-content">
+    <div class="trc-calendar-header">
+      <button class="trc-calendar-nav-button" (click)="picker.prevMonth()">&#8249;</button>
+      <button class="trc-calendar-title">{{ picker.title$ | async }}</button>
+      <button class="trc-calendar-nav-button" (click)="picker.nextMonth()">&#8250;</button>
+    </div>
+
+    <table class="trc-calendar-grid">
+      <thead>
+        <tr>
+          <th *ngFor="let name of picker.weekdayNames$ | async" class="trc-calendar-weekday">{{ name }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let week of picker.weeks$ | async">
+          <td *ngFor="let day of week" class="trc-calendar-cell">
+            <button class="trc-calendar-day" [disabled]="day.isDisabled" (click)="picker.selectDate(day.date)">
+              {{ picker.formatDayNumber(day.date.day) }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+```

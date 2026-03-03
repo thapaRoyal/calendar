@@ -1,5 +1,16 @@
 # @thaparoyal/calendar-angular
 
+## 2.0.0
+
+### Major Changes
+
+- Updated some packages
+
+### Patch Changes
+
+- Updated dependencies
+  - @thaparoyal/calendar-core@2.0.0
+
 ## 1.0.0
 
 ### Major Changes
@@ -7,7 +18,6 @@
 - Initial release of Angular services for AD and BS (Bikram Sambat) calendars.
 
   Includes 4 injectable services built on RxJS `BehaviorSubject`:
-
   - `CalendarService` — single-date calendar with month/year/decade navigation
   - `SelectionService` — unified single / range / multiple date selection
   - `DatePickerService` — calendar + typed text input with live masking + popup toggle

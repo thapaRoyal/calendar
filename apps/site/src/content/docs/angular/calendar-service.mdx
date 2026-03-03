@@ -1,0 +1,113 @@
+---
+title: CalendarService
+description: Single-date calendar state service for Angular
+---
+
+# CalendarService
+
+`CalendarService` wraps the core calendar machine and exposes all state as RxJS `Observable`s for template binding.
+
+## Import
+
+```ts
+import { CalendarService } from '@thaparoyal/calendar-angular';
+```
+
+## Initialize
+
+```ts
+ngOnInit() {
+  this.cal.initialize({
+    config: { calendarType: 'BS', locale: 'en' },
+    defaultValue: { year: 2082, month: 1, day: 1, calendarType: 'BS' },
+  });
+}
+```
+
+## Actions
+
+```ts
+cal.selectDate(date)
+cal.focusDate(date)
+cal.nextMonth()
+cal.prevMonth()
+cal.nextYear()
+cal.prevYear()
+cal.setViewMode('day' | 'month' | 'year')
+cal.goToToday()
+cal.setDisabledDates(dates)
+```
+
+## Observable State
+
+| Observable | Type |
+|---|---|
+| `state$` | `Observable<CalendarState>` |
+| `selectedDate$` | `Observable<CalendarDate \| null>` |
+| `focusedDate$` | `Observable<CalendarDate>` |
+| `viewMode$` | `Observable<'day' \| 'month' \| 'year'>` |
+| `title$` | `Observable<string>` |
+| `weekdayNames$` | `Observable<string[]>` |
+| `weeks$` | `Observable<Week[]>` |
+| `monthPickerItems$` | `Observable<MonthPickerItem[]>` |
+| `yearPickerItems$` | `Observable<YearPickerItem[]>` |
+| `decadeRange$` | `Observable<DecadeRange>` |
+| `isPrevMonthDisabled$` | `Observable<boolean>` |
+| `isNextMonthDisabled$` | `Observable<boolean>` |
+
+## Config
+
+```ts
+interface CalendarServiceOptions {
+  config?: Partial<CalendarConfig>;
+  defaultValue?: CalendarDate;
+  disabledDates?: CalendarDate[];
+}
+```
+
+## Example Component
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { CalendarService } from '@thaparoyal/calendar-angular';
+
+@Component({
+  selector: 'app-calendar',
+  providers: [CalendarService],
+  templateUrl: './calendar.component.html',
+})
+export class CalendarComponent implements OnInit {
+  constructor(public cal: CalendarService) {}
+
+  ngOnInit() {
+    this.cal.initialize({ config: { calendarType: 'BS', locale: 'en' } });
+  }
+}
+```
+
+```html
+<div class="trc-calendar" data-theme="default">
+  <div class="trc-calendar-header">
+    <button class="trc-calendar-nav-button" (click)="cal.prevMonth()" [disabled]="cal.isPrevMonthDisabled$ | async">&#8249;</button>
+    <button class="trc-calendar-title">{{ cal.title$ | async }}</button>
+    <button class="trc-calendar-nav-button" (click)="cal.nextMonth()" [disabled]="cal.isNextMonthDisabled$ | async">&#8250;</button>
+  </div>
+
+  <table class="trc-calendar-grid">
+    <thead class="trc-calendar-grid-head">
+      <tr>
+        <th *ngFor="let name of cal.weekdayNames$ | async" class="trc-calendar-weekday">{{ name }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let week of cal.weeks$ | async" class="trc-calendar-week">
+        <td *ngFor="let day of week" class="trc-calendar-cell" [class.trc-calendar-cell-selected]="day.isSelected">
+          <button class="trc-calendar-day" [disabled]="day.isDisabled" (click)="cal.selectDate(day.date)">
+            {{ cal.formatDayNumber(day.date.day) }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+```

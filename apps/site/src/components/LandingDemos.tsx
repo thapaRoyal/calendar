@@ -35,6 +35,7 @@ const calendars: CalendarConfig[] = [
 export function LandingDemos() {
   const [globalTheme, setGlobalTheme] = useState<ThemeName | null>(null);
   const [calType, setCalType] = useState<'BS' | 'AD' | null>(null);
+  const [locale, setLocale] = useState<'en' | 'ne' | null>(null);
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -112,6 +113,42 @@ export function LandingDemos() {
             </button>
           ))}
         </div>
+
+        {/* Locale toggle */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.375rem',
+            marginLeft: '0.5rem',
+          }}
+        >
+          <span style={{ color: '#666', fontSize: '0.8rem', fontWeight: 600, marginRight: '0.25rem' }}>
+            Locale:
+          </span>
+          {([
+            ['en', 'English'],
+            ['ne', 'नेपाली'],
+          ] as const).map(([value, label]) => (
+            <button
+              key={value}
+              onClick={() => setLocale(locale === value ? null : value)}
+              style={{
+                padding: '0.3rem 0.75rem',
+                borderRadius: '0.25rem',
+                border: `1px solid ${locale === value ? '#10b981' : '#2a2a3a'}`,
+                background: locale === value ? '#10b981' : '#16161e',
+                color: locale === value ? '#fff' : '#888',
+                cursor: 'pointer',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                transition: 'all 0.15s',
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Calendar grid */}
@@ -119,6 +156,8 @@ export function LandingDemos() {
         {calendars.map((cal, i) => {
           const activeTheme = globalTheme ?? cal.defaultTheme;
           const activeCalType = calType ?? cal.calendarType;
+          const activeLocale = locale ?? cal.locale;
+          const calendarKey = `${activeCalType}-${activeLocale}-${i}`;
           return (
             <div className="demo-card" data-theme={activeTheme} key={i}>
               <h3>
@@ -132,10 +171,10 @@ export function LandingDemos() {
                     textTransform: 'capitalize',
                   }}
                 >
-                  {activeTheme} / {activeCalType}
+                  {activeTheme} / {activeCalType} / {activeLocale}
                 </span>
               </h3>
-              <Calendar.Root config={{ calendarType: activeCalType, locale: cal.locale }}>
+              <Calendar.Root key={calendarKey} config={{ calendarType: activeCalType, locale: activeLocale }}>
                 <Calendar.Header>
                   <Calendar.PrevButton />
                   <Calendar.Title />
