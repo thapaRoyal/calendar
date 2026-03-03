@@ -72,3 +72,19 @@ export {
   getWeekdayMinName,
   getWeekdayMinNames,
 } from '@thaparoyal/calendar-core';
+
+// Re-export holiday utilities and relative date formatting
+export type { NepaliHoliday, FormatRelativeOptions } from '@thaparoyal/calendar-core';
+export {
+  FIXED_HOLIDAYS,
+  VARIABLE_HOLIDAYS,
+  getHolidaysForYear,
+  isHoliday,
+  getHolidayInfo,
+  getHolidayName,
+  getHolidaysInMonth,
+  fetchHolidays,
+  setHolidayCache,
+  clearHolidayCache,
+  formatRelative,
+} from '@thaparoyal/calendar-core';

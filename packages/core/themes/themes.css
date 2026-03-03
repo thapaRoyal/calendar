@@ -1572,3 +1572,42 @@
   outline: none;
   box-shadow: 0 0 0 2px var(--trc-ring);
 }
+
+/* ==========================================================================
+   Holiday Markers
+   ========================================================================== */
+
+/* Holiday dot — a small coloured dot rendered beneath the day number */
+.trc-calendar-holiday-dot {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--trc-accent);
+  margin: 1px auto 0;
+  flex-shrink: 0;
+}
+
+/* On selected days, invert the dot so it stays visible */
+.trc-calendar-cell-selected .trc-calendar-holiday-dot {
+  background-color: var(--trc-primary-foreground, #fff);
+  opacity: 0.8;
+}
+
+/* On outside-month days, dim the dot */
+.trc-calendar-cell-outside .trc-calendar-holiday-dot {
+  opacity: 0.3;
+}
+
+/* On disabled days, hide the dot */
+.trc-calendar-cell-disabled .trc-calendar-holiday-dot {
+  display: none;
+}
+
+/* The day button needs flex-col to stack number + dot */
+.trc-calendar-cell-holiday .trc-calendar-day {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

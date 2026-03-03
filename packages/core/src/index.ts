@@ -163,6 +163,25 @@ export {
   type DateRangeActions,
 } from './machines';
 
+// Holiday data
+export type { NepaliHoliday } from './data/holidays';
+export {
+  FIXED_HOLIDAYS,
+  VARIABLE_HOLIDAYS,
+  getHolidaysForYear,
+  isHoliday,
+  getHolidayInfo,
+  getHolidayName,
+  getHolidaysInMonth,
+  fetchHolidays,
+  setHolidayCache,
+  clearHolidayCache,
+} from './data/holidays';
+
+// Relative date formatting
+export type { FormatRelativeOptions } from './utils/relative';
+export { formatRelative } from './utils/relative';
+
 // Selection machine (unified)
 export {
   selectionReducer,

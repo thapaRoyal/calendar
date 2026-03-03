@@ -3,7 +3,7 @@ import { useCalendarContext } from '../context/calendar-context';
 import { useCalendarCustomization } from '../context/customization-context';
 import { useCalendarInternal } from './calendar-root';
 import { cn } from '../utils/cn';
-import type { WeekDay, CalendarDate } from '@thaparoyal/calendar-core';
+import type { WeekDay, CalendarDate, NepaliHoliday } from '@thaparoyal/calendar-core';
 import type { CalendarClassNames, CalendarComponents } from '../types';
 
 /**
@@ -98,7 +98,7 @@ export interface CalendarGridBodyProps {
  */
 export const CalendarGridBody = React.forwardRef<HTMLTableSectionElement, CalendarGridBodyProps>(
   ({ className, renderDay }, ref) => {
-    const { weeks, formatDayNumber } = useCalendarInternal();
+    const { weeks, formatDayNumber, holidays } = useCalendarInternal();
     const { actions } = useCalendarContext();
     const { classNames, components } = useCalendarCustomization();
 
@@ -123,6 +123,7 @@ export const CalendarGridBody = React.forwardRef<HTMLTableSectionElement, Calend
                   formatDayNumber={formatDayNumber}
                   classNames={classNames}
                   components={components}
+                  holidays={holidays}
                 />
               );
             })}
@@ -144,13 +145,19 @@ interface CalendarCellProps {
   formatDayNumber: (day: number) => string;
   classNames: CalendarClassNames;
   components: CalendarComponents;
+  holidays: NepaliHoliday[];
 }
 
 /**
  * Individual calendar day cell
  */
-function CalendarCell({ day, onSelect, formatDayNumber, classNames, components }: CalendarCellProps) {
+function CalendarCell({ day, onSelect, formatDayNumber, classNames, components, holidays }: CalendarCellProps) {
   const formattedDay = formatDayNumber(day.date.day);
+
+  const holiday = React.useMemo(
+    () => holidays.find((h) => h.month === day.date.month && h.day === day.date.day),
+    [holidays, day.date.month, day.date.day]
+  );
 
   const handleClick = () => {
     if (!day.isDisabled) {
@@ -178,11 +185,13 @@ function CalendarCell({ day, onSelect, formatDayNumber, classNames, components }
           day.isToday && cn('trc-calendar-cell-today', classNames.dayToday),
           day.isSelected && cn('trc-calendar-cell-selected', classNames.daySelected),
           day.isDisabled && cn('trc-calendar-cell-disabled', classNames.dayDisabled),
-          day.isOutsideMonth && cn('trc-calendar-cell-outside', classNames.dayOutside)
+          day.isOutsideMonth && cn('trc-calendar-cell-outside', classNames.dayOutside),
+          holiday && 'trc-calendar-cell-holiday'
         )}
         role="gridcell"
         aria-selected={day.isSelected}
         aria-disabled={day.isDisabled}
+        title={holiday ? holiday.nameEn : undefined}
       >
         <DayComponent
           day={day}
@@ -202,11 +211,13 @@ function CalendarCell({ day, onSelect, formatDayNumber, classNames, components }
         day.isToday && cn('trc-calendar-cell-today', classNames.dayToday),
         day.isSelected && cn('trc-calendar-cell-selected', classNames.daySelected),
         day.isDisabled && cn('trc-calendar-cell-disabled', classNames.dayDisabled),
-        day.isOutsideMonth && cn('trc-calendar-cell-outside', classNames.dayOutside)
+        day.isOutsideMonth && cn('trc-calendar-cell-outside', classNames.dayOutside),
+        holiday && 'trc-calendar-cell-holiday'
       )}
       role="gridcell"
       aria-selected={day.isSelected}
       aria-disabled={day.isDisabled}
+      title={holiday ? holiday.nameEn : undefined}
     >
       <button
         type="button"
@@ -215,12 +226,15 @@ function CalendarCell({ day, onSelect, formatDayNumber, classNames, components }
         onKeyDown={handleKeyDown}
         disabled={day.isDisabled}
         tabIndex={day.isDisabled ? -1 : 0}
-        aria-label={`${day.date.day}`}
+        aria-label={holiday ? `${day.date.day} - ${holiday.nameEn}` : `${day.date.day}`}
       >
         {DayContentComponent ? (
           <DayContentComponent day={day} formattedDay={formattedDay} />
         ) : (
-          formattedDay
+          <>
+            {formattedDay}
+            {holiday && <span className="trc-calendar-holiday-dot" aria-hidden="true" />}
+          </>
         )}
       </button>
     </td>

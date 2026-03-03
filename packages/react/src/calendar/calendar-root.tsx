@@ -3,7 +3,7 @@ import { useCalendar, type UseCalendarOptions } from '../hooks/use-calendar';
 import { CalendarProvider } from '../context/calendar-context';
 import { CalendarCustomizationProvider } from '../context/customization-context';
 import { cn } from '../utils/cn';
-import type { Locale } from '@thaparoyal/calendar-core';
+import type { Locale, NepaliHoliday } from '@thaparoyal/calendar-core';
 import type { CalendarClassNames, CalendarComponents } from '../types';
 import { CalendarMonthPicker } from './calendar-month-picker';
 import { CalendarYearPicker } from './calendar-year-picker';
@@ -43,6 +43,21 @@ export interface CalendarRootProps extends UseCalendarOptions {
    * ```
    */
   components?: CalendarComponents;
+  /**
+   * Holidays to display as dot markers on the calendar.
+   * Accepts a static array or a function that receives the BS year and returns holidays.
+   *
+   * @example
+   * ```tsx
+   * // Static list
+   * import { getHolidaysForYear } from '@thaparoyal/calendar-core';
+   * <Calendar.Root holidays={getHolidaysForYear(2082)} />
+   *
+   * // Dynamic (per-year)
+   * <Calendar.Root holidays={(year) => getHolidaysForYear(year)} />
+   * ```
+   */
+  holidays?: NepaliHoliday[] | ((bsYear: number) => NepaliHoliday[]);
 }
 
 /**
@@ -56,6 +71,7 @@ interface CalendarInternalContextValue {
   isNextMonthDisabled: boolean;
   locale: Locale;
   formatDayNumber: (day: number) => string;
+  holidays: NepaliHoliday[];
 }
 
 export const CalendarInternalContext = React.createContext<CalendarInternalContextValue | null>(
@@ -91,7 +107,7 @@ export function useCalendarInternal() {
  * ```
  */
 export const CalendarRoot = React.forwardRef<HTMLDivElement, CalendarRootProps>(
-  ({ className, children, config, defaultValue, value, onValueChange, disabledDates, classNames, components }, ref) => {
+  ({ className, children, config, defaultValue, value, onValueChange, disabledDates, classNames, components, holidays }, ref) => {
     const {
       state,
       actions,
@@ -142,6 +158,13 @@ export const CalendarRoot = React.forwardRef<HTMLDivElement, CalendarRootProps>(
       [actions]
     );
 
+    // Resolve holidays for the currently focused year
+    const resolvedHolidays = React.useMemo<NepaliHoliday[]>(() => {
+      if (!holidays) return [];
+      if (typeof holidays === 'function') return holidays(state.focusedDate.year);
+      return holidays;
+    }, [holidays, state.focusedDate.year]);
+
     const internalValue = React.useMemo(
       () => ({
         weeks,
@@ -151,8 +174,9 @@ export const CalendarRoot = React.forwardRef<HTMLDivElement, CalendarRootProps>(
         isNextMonthDisabled,
         locale,
         formatDayNumber,
+        holidays: resolvedHolidays,
       }),
-      [weeks, title, weekdayNames, isPrevMonthDisabled, isNextMonthDisabled, locale, formatDayNumber]
+      [weeks, title, weekdayNames, isPrevMonthDisabled, isNextMonthDisabled, locale, formatDayNumber, resolvedHolidays]
     );
 
     return (
