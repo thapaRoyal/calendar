@@ -5,6 +5,8 @@ import { CalendarCustomizationProvider } from '../context/customization-context'
 import { cn } from '../utils/cn';
 import type { Locale } from '@thaparoyal/calendar-core';
 import type { CalendarClassNames, CalendarComponents } from '../types';
+import { CalendarMonthPicker } from './calendar-month-picker';
+import { CalendarYearPicker } from './calendar-year-picker';
 
 /**
  * Calendar root component props
@@ -166,6 +168,9 @@ export const CalendarRoot = React.forwardRef<HTMLDivElement, CalendarRootProps>(
               data-calendar-type={state.config.calendarType}
             >
               {children}
+              {/* Auto-render month and year pickers so clicking the title works without extra setup */}
+              <CalendarMonthPicker />
+              <CalendarYearPicker />
             </div>
           </CalendarInternalContext.Provider>
         </CalendarCustomizationProvider>

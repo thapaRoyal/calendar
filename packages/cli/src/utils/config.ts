@@ -8,7 +8,7 @@ import fs from 'fs-extra';
  */
 export const configSchema = z.object({
   $schema: z.string().optional(),
-  framework: z.enum(['react', 'vue', 'svelte']).default('react'),
+  framework: z.enum(['react', 'vue', 'svelte', 'vanilla']).default('react'),
   typescript: z.boolean().default(true),
   tailwind: z.boolean().default(true),
   aliases: z.object({
@@ -84,7 +84,7 @@ export async function getProjectInfo(cwd: string): Promise<{
   hasPackageJson: boolean;
   hasTailwind: boolean;
   hasTypeScript: boolean;
-  framework: 'react' | 'vue' | 'svelte' | null;
+  framework: 'react' | 'vue' | 'svelte' | 'vanilla' | null;
 }> {
   const packageJsonPath = path.join(cwd, 'package.json');
   const tailwindConfigPath = path.join(cwd, 'tailwind.config.js');
@@ -95,7 +95,7 @@ export async function getProjectInfo(cwd: string): Promise<{
   const hasTailwind = (await fs.pathExists(tailwindConfigPath)) || (await fs.pathExists(tailwindConfigTsPath));
   const hasTypeScript = await fs.pathExists(tsconfigPath);
 
-  let framework: 'react' | 'vue' | 'svelte' | null = null;
+  let framework: 'react' | 'vue' | 'svelte' | 'vanilla' | null = null;
 
   if (hasPackageJson) {
     const packageJson = await fs.readJSON(packageJsonPath);
@@ -108,6 +108,7 @@ export async function getProjectInfo(cwd: string): Promise<{
     } else if (deps.svelte) {
       framework = 'svelte';
     }
+    // vanilla: no framework-specific dep detected, stays null - user selects manually
   }
 
   return {

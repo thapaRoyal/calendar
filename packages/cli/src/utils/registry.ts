@@ -42,16 +42,24 @@ export const REGISTRY: Record<string, RegistryItem> = {
 
 import * as React from "react";
 import {
-  useCalendar,
   type CalendarDate,
   type CalendarConfig,
+  type MonthPickerItem,
+  type YearPickerItem,
   getWeeksInMonth,
   formatMonthYear,
+  formatYear,
   getWeekdayShortNames,
+  getMonthGrid,
+  getYearGrid,
+  getDecadeRange,
+  getNextDecade,
+  getPrevDecade,
+  adToBs,
 } from "@thaparoyal/calendar-core";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+type ViewMode = "day" | "month" | "year";
 
 export interface CalendarProps {
   config?: Partial<CalendarConfig>;
@@ -70,17 +78,22 @@ export function Calendar({
   disabledDates,
   className,
 }: CalendarProps) {
-  const mergedConfig = { calendarType: "BS" as const, locale: "en" as const, weekStartsOn: 0 as const, ...config };
+  const mergedConfig = {
+    calendarType: "BS" as const,
+    locale: "en" as const,
+    weekStartsOn: 0 as const,
+    ...config,
+  };
 
-  // State management
-  const [internalValue, setInternalValue] = React.useState<CalendarDate | null>(defaultValue ?? null);
+  const [internalValue, setInternalValue] = React.useState<CalendarDate | null>(
+    defaultValue ?? null
+  );
+  const [viewMode, setViewMode] = React.useState<ViewMode>("day");
   const [focusedDate, setFocusedDate] = React.useState<CalendarDate>(() => {
     const initial = value ?? defaultValue;
     if (initial) return initial;
-    // Default to today
     const today = new Date();
     if (mergedConfig.calendarType === "BS") {
-      const { adToBs } = require("@thaparoyal/calendar-core");
       return adToBs(today);
     }
     return {
@@ -94,114 +107,208 @@ export function Calendar({
   const selectedDate = value ?? internalValue;
 
   const handleSelect = (date: CalendarDate) => {
-    if (!value) {
-      setInternalValue(date);
-    }
+    if (!value) setInternalValue(date);
     onValueChange?.(date);
   };
 
-  const weeks = React.useMemo(
-    () => getWeeksInMonth(
-      focusedDate.year,
-      focusedDate.month,
-      mergedConfig.calendarType,
-      mergedConfig,
-      selectedDate,
-      disabledDates
-    ),
-    [focusedDate, mergedConfig, selectedDate, disabledDates]
-  );
-
-  const title = formatMonthYear(
-    focusedDate.year,
-    focusedDate.month,
-    mergedConfig.calendarType,
-    mergedConfig.locale
-  );
-
-  const weekdayNames = getWeekdayShortNames(mergedConfig.locale);
-
-  const prevMonth = () => {
-    let month = focusedDate.month - 1;
-    let year = focusedDate.year;
-    if (month < 1) {
-      month = 12;
-      year--;
+  // ── Title text depends on view mode ──────────────────────────────────────
+  const titleText = React.useMemo(() => {
+    if (viewMode === "day") {
+      return formatMonthYear(focusedDate.year, focusedDate.month, mergedConfig.calendarType, mergedConfig.locale);
     }
-    setFocusedDate({ ...focusedDate, year, month, day: 1 });
+    if (viewMode === "month") {
+      return formatYear(focusedDate.year, mergedConfig.locale);
+    }
+    const decade = getDecadeRange(focusedDate.year);
+    return \`\${formatYear(decade.start, mergedConfig.locale)} – \${formatYear(decade.end, mergedConfig.locale)}\`;
+  }, [viewMode, focusedDate, mergedConfig]);
+
+  const cycleView = () => {
+    setViewMode((v) => (v === "day" ? "month" : v === "month" ? "year" : "day"));
   };
 
-  const nextMonth = () => {
-    let month = focusedDate.month + 1;
-    let year = focusedDate.year;
-    if (month > 12) {
-      month = 1;
-      year++;
+  // ── Navigation (arrows) ──────────────────────────────────────────────────
+  const handlePrev = () => {
+    if (viewMode === "day") {
+      let month = focusedDate.month - 1;
+      let year = focusedDate.year;
+      if (month < 1) { month = 12; year--; }
+      setFocusedDate({ ...focusedDate, year, month, day: 1 });
+    } else if (viewMode === "month") {
+      setFocusedDate({ ...focusedDate, year: focusedDate.year - 1, day: 1 });
+    } else {
+      const prevYear = getPrevDecade(focusedDate.year);
+      setFocusedDate({ ...focusedDate, year: prevYear, day: 1 });
     }
-    setFocusedDate({ ...focusedDate, year, month, day: 1 });
+  };
+
+  const handleNext = () => {
+    if (viewMode === "day") {
+      let month = focusedDate.month + 1;
+      let year = focusedDate.year;
+      if (month > 12) { month = 1; year++; }
+      setFocusedDate({ ...focusedDate, year, month, day: 1 });
+    } else if (viewMode === "month") {
+      setFocusedDate({ ...focusedDate, year: focusedDate.year + 1, day: 1 });
+    } else {
+      const nextYear = getNextDecade(focusedDate.year);
+      setFocusedDate({ ...focusedDate, year: nextYear, day: 1 });
+    }
+  };
+
+  // ── Day grid ─────────────────────────────────────────────────────────────
+  const weeks = React.useMemo(
+    () => getWeeksInMonth(focusedDate.year, focusedDate.month, mergedConfig.calendarType, mergedConfig, selectedDate, disabledDates),
+    [focusedDate, mergedConfig, selectedDate, disabledDates]
+  );
+  const weekdayNames = getWeekdayShortNames(mergedConfig.locale);
+
+  // ── Month picker ─────────────────────────────────────────────────────────
+  const months: MonthPickerItem[] = React.useMemo(
+    () => getMonthGrid(focusedDate.year, mergedConfig.calendarType, mergedConfig.locale, focusedDate.month),
+    [focusedDate.year, focusedDate.month, mergedConfig]
+  );
+
+  const handleMonthSelect = (m: MonthPickerItem) => {
+    if (m.disabled) return;
+    setFocusedDate({ ...focusedDate, month: m.month, day: 1 });
+    setViewMode("day");
+  };
+
+  // ── Year picker ──────────────────────────────────────────────────────────
+  const years: YearPickerItem[] = React.useMemo(
+    () => getYearGrid(focusedDate.year, mergedConfig.calendarType, 12),
+    [focusedDate.year, mergedConfig.calendarType]
+  );
+
+  const handleYearSelect = (y: YearPickerItem) => {
+    if (y.disabled) return;
+    setFocusedDate({ ...focusedDate, year: y.year, day: 1 });
+    setViewMode("month");
   };
 
   return (
-    <div className={cn("p-3", className)}>
-      <div className="flex items-center justify-between mb-4">
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-7 w-7"
-          onClick={prevMonth}
+    <div className={cn("trc-calendar p-3 select-none inline-block", className)}>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3">
+        <button
+          type="button"
+          onClick={handlePrev}
+          className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-input bg-background text-base hover:bg-accent hover:text-accent-foreground"
+          aria-label="Previous"
         >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <div className="font-medium text-sm">{title}</div>
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-7 w-7"
-          onClick={nextMonth}
+          ‹
+        </button>
+
+        <button
+          type="button"
+          onClick={cycleView}
+          className="flex-1 mx-2 text-sm font-medium text-center hover:bg-accent hover:text-accent-foreground rounded-md px-2 py-1 transition-colors"
+          aria-live="polite"
         >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+          {titleText}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleNext}
+          className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-input bg-background text-base hover:bg-accent hover:text-accent-foreground"
+          aria-label="Next"
+        >
+          ›
+        </button>
       </div>
 
-      <table className="w-full border-collapse">
-        <thead>
-          <tr>
-            {weekdayNames.map((day, i) => (
-              <th
-                key={i}
-                className="text-muted-foreground font-medium text-xs pb-2 w-9 text-center"
-              >
-                {day}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {weeks.map((week, weekIndex) => (
-            <tr key={weekIndex}>
-              {week.map((day, dayIndex) => (
-                <td key={dayIndex} className="p-0 text-center">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className={cn(
-                      "h-9 w-9 p-0 font-normal",
-                      day.isToday && "border border-primary",
-                      day.isSelected && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
-                      day.isOutsideMonth && "text-muted-foreground opacity-50",
-                      day.isDisabled && "opacity-30 pointer-events-none"
-                    )}
-                    disabled={day.isDisabled}
-                    onClick={() => handleSelect(day.date)}
-                  >
-                    {day.date.day}
-                  </Button>
-                </td>
+      {/* Day grid */}
+      {viewMode === "day" && (
+        <table className="w-full border-collapse">
+          <thead>
+            <tr>
+              {weekdayNames.map((day, i) => (
+                <th key={i} className="text-muted-foreground font-medium text-xs pb-2 w-9 text-center">
+                  {day}
+                </th>
               ))}
             </tr>
+          </thead>
+          <tbody>
+            {weeks.map((week, wi) => (
+              <tr key={wi}>
+                {week.map((day, di) => (
+                  <td key={di} className="p-0 text-center">
+                    <button
+                      type="button"
+                      className={cn(
+                        "h-9 w-9 p-0 font-normal text-sm rounded-md inline-flex items-center justify-center",
+                        "hover:bg-accent hover:text-accent-foreground",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        day.isToday && "border border-primary font-semibold",
+                        day.isSelected && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
+                        day.isOutsideMonth && "text-muted-foreground opacity-50",
+                        day.isDisabled && "opacity-30 pointer-events-none cursor-not-allowed"
+                      )}
+                      disabled={day.isDisabled}
+                      onClick={() => handleSelect(day.date)}
+                      aria-selected={day.isSelected}
+                      aria-disabled={day.isDisabled}
+                    >
+                      {day.date.day}
+                    </button>
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {/* Month picker */}
+      {viewMode === "month" && (
+        <div className="grid grid-cols-3 gap-2 mt-1">
+          {months.map((m) => (
+            <button
+              key={m.month}
+              type="button"
+              onClick={() => handleMonthSelect(m)}
+              disabled={m.disabled}
+              className={cn(
+                "rounded-md py-2 text-sm font-normal",
+                "hover:bg-accent hover:text-accent-foreground",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                m.isCurrentMonth && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
+                m.disabled && "opacity-30 pointer-events-none cursor-not-allowed"
+              )}
+              aria-selected={m.isCurrentMonth}
+            >
+              {m.shortName}
+            </button>
           ))}
-        </tbody>
-      </table>
+        </div>
+      )}
+
+      {/* Year picker */}
+      {viewMode === "year" && (
+        <div className="grid grid-cols-3 gap-2 mt-1">
+          {years.map((y) => (
+            <button
+              key={y.year}
+              type="button"
+              onClick={() => handleYearSelect(y)}
+              disabled={y.disabled}
+              className={cn(
+                "rounded-md py-2 text-sm font-normal",
+                "hover:bg-accent hover:text-accent-foreground",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                y.isCurrentYear && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
+                y.disabled && "opacity-30 pointer-events-none cursor-not-allowed"
+              )}
+              aria-selected={y.isCurrentYear}
+            >
+              {y.year}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -214,9 +321,9 @@ export function Calendar({
     type: 'registry:ui',
     title: 'Date Picker',
     description: 'A date picker with input field and calendar dropdown.',
-    dependencies: ['@thaparoyal/calendar-core'],
+    dependencies: ['@thaparoyal/calendar-core', 'lucide-react'],
     devDependencies: [],
-    registryDependencies: ['calendar', 'popover', 'button', 'input'],
+    registryDependencies: ['calendar', 'utils'],
     files: [
       {
         path: 'ui/date-picker.tsx',
@@ -224,18 +331,11 @@ export function Calendar({
         content: `"use client";
 
 import * as React from "react";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { CalendarIcon, X } from "lucide-react";
 import type { CalendarDate, CalendarConfig } from "@thaparoyal/calendar-core";
-import { formatDate, parseDate } from "@thaparoyal/calendar-core";
+import { formatDate } from "@thaparoyal/calendar-core";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 export interface DatePickerProps {
   config?: Partial<CalendarConfig>;
@@ -255,6 +355,7 @@ export function DatePicker({
   className,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
+  const ref = React.useRef<HTMLDivElement>(null);
 
   const handleSelect = (date: CalendarDate) => {
     onValueChange?.(date);
@@ -265,30 +366,57 @@ export function DatePicker({
     ? formatDate(value, "YYYY-MM-DD", config.locale ?? "en")
     : null;
 
+  React.useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(
-            "w-[280px] justify-start text-left font-normal",
-            !value && "text-muted-foreground",
-            className
-          )}
-          disabled={disabled}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {displayValue ?? <span>{placeholder}</span>}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          config={config}
-          value={value}
-          onValueChange={handleSelect}
-        />
-      </PopoverContent>
-    </Popover>
+    <div ref={ref} className={cn("relative inline-block", className)}>
+      <button
+        type="button"
+        onClick={() => !disabled && setOpen((o) => !o)}
+        disabled={disabled}
+        className={cn(
+          "flex h-10 w-[280px] items-center justify-start gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm",
+          "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          !value && "text-muted-foreground"
+        )}
+        aria-haspopup="true"
+        aria-expanded={open}
+      >
+        <CalendarIcon className="h-4 w-4 shrink-0" />
+        <span className="flex-1 text-left truncate">
+          {displayValue ?? placeholder}
+        </span>
+        {value && (
+          <X
+            className="h-4 w-4 shrink-0 opacity-50 hover:opacity-100 cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              onValueChange?.(null);
+            }}
+            aria-label="Clear date"
+          />
+        )}
+      </button>
+
+      {open && (
+        <div className="absolute z-50 mt-1 rounded-md border bg-background shadow-lg">
+          <Calendar
+            config={config}
+            value={value}
+            onValueChange={handleSelect}
+          />
+        </div>
+      )}
+    </div>
   );
 }
 `,

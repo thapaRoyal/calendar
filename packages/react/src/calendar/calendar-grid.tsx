@@ -18,10 +18,18 @@ export interface CalendarGridProps {
 
 /**
  * Calendar grid container (table)
+ * Automatically hides itself when viewMode is 'month' or 'year',
+ * so that Calendar.MonthPicker / YearPicker can take its place.
  */
 export const CalendarGrid = React.forwardRef<HTMLTableElement, CalendarGridProps>(
   ({ className, children }, ref) => {
     const { classNames } = useCalendarCustomization();
+    const { viewMode } = useCalendarContext();
+
+    if (viewMode !== 'day') {
+      return null;
+    }
+
     return (
       <table
         ref={ref}
