@@ -5,7 +5,7 @@ A comprehensive, multi-calendar UI library supporting AD (Gregorian) and BS (Bik
 ## Features
 
 - **Multi-Calendar Support** — AD (Gregorian) and BS (Bikram Sambat) calendars with accurate conversion
-- **Framework Support** — React, Vue 3, Svelte 4/5, and Vanilla JS
+- **Framework Support** — React, Vue 3, Svelte 4/5, Angular 14+, and Vanilla JS
 - **shadcn/ui Style** — Copy-paste components via CLI; you own the code
 - **TypeScript First** — Complete type safety across all packages
 - **Locale Support** — English and Nepali (Devanagari script with Nepali numerals)
@@ -22,6 +22,7 @@ A comprehensive, multi-calendar UI library supporting AD (Gregorian) and BS (Bik
 | [`@thaparoyal/calendar-react`](./packages/react) | React components and hooks |
 | [`@thaparoyal/calendar-vue`](./packages/vue) | Vue 3 composables |
 | [`@thaparoyal/calendar-svelte`](./packages/svelte) | Svelte stores |
+| [`@thaparoyal/calendar-angular`](./packages/angular) | Angular injectable services (RxJS) |
 | [`@thaparoyal/calendar-vanilla`](./packages/vanilla) | Vanilla JS calendar class |
 | [`@thaparoyal/calendar-cli`](./packages/cli) | CLI for component installation |
 
@@ -53,6 +54,7 @@ npm install @thaparoyal/calendar-core
 npm install @thaparoyal/calendar-react    # React
 npm install @thaparoyal/calendar-vue      # Vue 3
 npm install @thaparoyal/calendar-svelte   # Svelte 4/5
+npm install @thaparoyal/calendar-angular  # Angular 14+ (+ rxjs peer dep)
 npm install @thaparoyal/calendar-vanilla  # Vanilla JS
 ```
 
@@ -153,6 +155,44 @@ const { state, actions, weeks, title, weekdayNames } = useCalendar({
 </div>
 ```
 
+### Angular
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { CalendarService } from '@thaparoyal/calendar-angular';
+// In angular.json styles: node_modules/@thaparoyal/calendar-core/themes/themes.css
+
+@Component({
+  selector: 'app-calendar',
+  providers: [CalendarService],
+  template: `
+    <div data-theme="default">
+      <div>
+        <button (click)="cal.prevMonth()">‹</button>
+        <span>{{ cal.title$ | async }}</span>
+        <button (click)="cal.nextMonth()">›</button>
+      </div>
+      <div *ngFor="let week of cal.weeks$ | async">
+        <button
+          *ngFor="let day of week"
+          (click)="cal.selectDate(day.date)"
+          [class.selected]="day.isSelected"
+          [class.today]="day.isToday"
+          [disabled]="day.isDisabled"
+        >{{ day.date.day }}</button>
+      </div>
+    </div>
+  `,
+})
+export class CalendarComponent implements OnInit {
+  constructor(public cal: CalendarService) {}
+
+  ngOnInit() {
+    this.cal.initialize({ config: { calendarType: 'BS', locale: 'en' } });
+  }
+}
+```
+
 ### Vanilla JS
 
 ```js
@@ -213,7 +253,7 @@ import {
   toNepaliNumeral,
   fromNepaliNumeral,
 } from '@thaparoyal/calendar-core';
-// Also available from @thaparoyal/calendar-react, -vue, -svelte, -vanilla
+// Also available from @thaparoyal/calendar-react, -vue, -svelte, -angular, -vanilla
 
 toNepaliNumeral(2081);        // "२०८१"
 fromNepaliNumeral('२०८१');    // 2081
@@ -282,7 +322,7 @@ Custom theme via CSS variables:
 
 | Field | Options | Default | Description |
 |-------|---------|---------|-------------|
-| `framework` | `react`, `vue`, `svelte`, `vanilla` | `react` | Target framework |
+| `framework` | `react`, `vue`, `svelte`, `angular`, `vanilla` | `react` | Target framework |
 | `typescript` | `true`, `false` | `true` | TypeScript support |
 | `tailwind` | `true`, `false` | `true` | Tailwind CSS |
 | `defaultCalendar` | `BS`, `AD` | `BS` | Default calendar system |
