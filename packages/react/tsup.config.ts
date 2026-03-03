@@ -1,4 +1,6 @@
 import { defineConfig } from 'tsup';
+import { copyFile } from 'fs/promises';
+import { existsSync } from 'fs';
 
 const isWatch = process.argv.includes('--watch');
 
@@ -16,5 +18,11 @@ export default defineConfig({
     options.banner = {
       js: '"use client";',
     };
+  },
+  async onSuccess() {
+    // Copy styles.css to dist so the package.json export resolves correctly
+    if (existsSync('src/styles.css')) {
+      await copyFile('src/styles.css', 'dist/styles.css');
+    }
   },
 });
