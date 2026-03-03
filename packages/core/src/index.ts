@@ -88,6 +88,7 @@ export {
   parseDate,
   formatMonthYear,
   formatDateRange,
+  formatDateInput,
   getMonthName,
   getMonthShortName,
   getMonthNames,

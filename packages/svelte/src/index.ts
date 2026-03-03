@@ -104,4 +104,5 @@ export {
   setHolidayCache,
   clearHolidayCache,
   formatRelative,
+  formatDateInput,
 } from '@thaparoyal/calendar-core';

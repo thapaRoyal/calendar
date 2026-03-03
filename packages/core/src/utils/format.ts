@@ -274,3 +274,45 @@ export function formatDateRange(
 ): string {
   return `${formatDate(start, format, locale)} - ${formatDate(end, format, locale)}`;
 }
+
+/**
+ * Format a raw keystroke string into a `YYYY-MM-DD` date mask.
+ *
+ * - Strips all non-digit characters (handles copy-paste with slashes, dots, etc.)
+ * - Normalises Nepali numerals (०-९) to ASCII digits
+ * - Auto-inserts `-` separators after the 4th digit (year) and 6th digit (month)
+ * - Caps the result at 10 characters (`YYYY-MM-DD`)
+ *
+ * Designed to be called on every `onChange` keystroke so the input field always
+ * shows a progressively formatted value.
+ *
+ * @example
+ * ```ts
+ * formatDateInput('2082')      // '2082-'   ← dash appended automatically
+ * formatDateInput('208203')    // '2082-03-'
+ * formatDateInput('20820315')  // '2082-03-15'
+ * formatDateInput('2082/03/15') // '2082-03-15'
+ * formatDateInput('२०८२-०३-१५') // '2082-03-15'
+ * ```
+ */
+export function formatDateInput(raw: string): string {
+  // 1. Normalise Nepali numerals → ASCII digits
+  const NEPALI = ['०','१','२','३','४','५','६','७','८','९'];
+  let ascii = '';
+  for (const ch of raw) {
+    const ni = NEPALI.indexOf(ch);
+    ascii += ni >= 0 ? String(ni) : ch;
+  }
+
+  // 2. Keep only digits
+  const digits = ascii.replace(/\D/g, '').slice(0, 8); // max 8 digits (YYYYMMDD)
+
+  // 3. Insert dashes at correct positions
+  let result = '';
+  for (let i = 0; i < digits.length; i++) {
+    result += digits[i];
+    if (i === 3 || i === 5) result += '-'; // after YYYY and MM
+  }
+
+  return result;
+}

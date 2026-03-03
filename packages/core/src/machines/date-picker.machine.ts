@@ -14,7 +14,7 @@ import {
   calendarReducer,
   createInitialState as createCalendarInitialState,
 } from './calendar.machine';
-import { formatDate, parseDate } from '../utils/format';
+import { formatDate, parseDate, formatDateInput } from '../utils/format';
 import { isDateInRange, getToday } from '../utils/calendar-utils';
 
 /**
@@ -60,9 +60,10 @@ export function datePickerReducer(state: DatePickerState, event: DatePickerEvent
     }
 
     case 'INPUT_CHANGE': {
+      // Apply live date masking: auto-inserts dashes, normalises Nepali numerals
       return {
         ...state,
-        inputValue: event.value,
+        inputValue: formatDateInput(event.value),
       };
     }
 
