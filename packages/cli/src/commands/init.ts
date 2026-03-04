@@ -4,12 +4,7 @@ import ora from 'ora';
 import path from 'path';
 import fs from 'fs-extra';
 import { execa } from 'execa';
-import {
-  getProjectInfo,
-  writeConfig,
-  configExists,
-  type Config,
-} from '../utils/config.js';
+import { getProjectInfo, writeConfig, configExists, type Config } from '../utils/config.js';
 
 /**
  * Initialize calendar configuration in a project
@@ -39,7 +34,9 @@ export async function init(cwd: string) {
     spinner.stop();
 
     if (!projectInfo.hasPackageJson) {
-      console.log(chalk.red('No package.json found. Please run this command in a Node.js project.'));
+      console.log(
+        chalk.red('No package.json found. Please run this command in a Node.js project.')
+      );
       process.exit(1);
     }
 
@@ -111,6 +108,12 @@ export async function init(cwd: string) {
         message: 'Utils alias (e.g., @/lib/utils):',
         initial: '@/lib/utils',
       },
+      {
+        type: 'confirm',
+        name: 'useSrcDir',
+        message: 'Are you using a src/ directory?',
+        initial: projectInfo.hasSrcDir,
+      },
     ]);
 
     if (!response.framework) {
@@ -123,6 +126,7 @@ export async function init(cwd: string) {
       framework: response.framework,
       typescript: response.typescript,
       tailwind: response.tailwind,
+      baseDir: response.useSrcDir ? 'src' : '',
       defaultCalendar: response.defaultCalendar,
       locale: response.locale,
       aliases: {
@@ -168,7 +172,9 @@ export async function init(cwd: string) {
         spinner.succeed('Dependencies installed');
       } catch (error) {
         spinner.warn('Failed to install dependencies. Please install manually:');
-        console.log(chalk.cyan(`  ${packageManager} ${installCmd} @thaparoyal/calendar-core ${frameworkPkg}`));
+        console.log(
+          chalk.cyan(`  ${packageManager} ${installCmd} @thaparoyal/calendar-core ${frameworkPkg}`)
+        );
       }
     }
 
@@ -179,7 +185,6 @@ export async function init(cwd: string) {
     console.log(chalk.cyan('  1. Run `npx trc add calendar` to add the calendar component'));
     console.log(chalk.cyan('  2. Import and use the component in your app'));
     console.log();
-
   } catch (error) {
     spinner.fail('Initialization failed');
     console.error(error);

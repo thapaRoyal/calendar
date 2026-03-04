@@ -3,22 +3,22 @@ import { cosmiconfig } from 'cosmiconfig';
 import path from 'path';
 import fs from 'fs-extra';
 
-/**
- * Configuration schema
- */
 export const configSchema = z.object({
   $schema: z.string().optional(),
   framework: z.enum(['react', 'vue', 'svelte', 'angular', 'vanilla']).default('react'),
   typescript: z.boolean().default(true),
   tailwind: z.boolean().default(true),
-  aliases: z.object({
-    components: z.string().default('@/components'),
-    utils: z.string().default('@/lib/utils'),
-    hooks: z.string().optional(),
-  }).default({
-    components: '@/components',
-    utils: '@/lib/utils',
-  }),
+  baseDir: z.string().default('src'),
+  aliases: z
+    .object({
+      components: z.string().default('@/components'),
+      utils: z.string().default('@/lib/utils'),
+      hooks: z.string().optional(),
+    })
+    .default({
+      components: '@/components',
+      utils: '@/lib/utils',
+    }),
   defaultCalendar: z.enum(['AD', 'BS']).default('BS'),
   locale: z.enum(['en', 'ne']).default('en'),
 });
@@ -84,16 +84,20 @@ export async function getProjectInfo(cwd: string): Promise<{
   hasPackageJson: boolean;
   hasTailwind: boolean;
   hasTypeScript: boolean;
+  hasSrcDir: boolean;
   framework: 'react' | 'vue' | 'svelte' | 'angular' | 'vanilla' | null;
 }> {
   const packageJsonPath = path.join(cwd, 'package.json');
   const tailwindConfigPath = path.join(cwd, 'tailwind.config.js');
   const tailwindConfigTsPath = path.join(cwd, 'tailwind.config.ts');
   const tsconfigPath = path.join(cwd, 'tsconfig.json');
+  const srcDirPath = path.join(cwd, 'src');
 
   const hasPackageJson = await fs.pathExists(packageJsonPath);
-  const hasTailwind = (await fs.pathExists(tailwindConfigPath)) || (await fs.pathExists(tailwindConfigTsPath));
+  const hasTailwind =
+    (await fs.pathExists(tailwindConfigPath)) || (await fs.pathExists(tailwindConfigTsPath));
   const hasTypeScript = await fs.pathExists(tsconfigPath);
+  const hasSrcDir = await fs.pathExists(srcDirPath);
 
   let framework: 'react' | 'vue' | 'svelte' | 'angular' | 'vanilla' | null = null;
 
@@ -117,6 +121,7 @@ export async function getProjectInfo(cwd: string): Promise<{
     hasPackageJson,
     hasTailwind,
     hasTypeScript,
+    hasSrcDir,
     framework,
   };
 }

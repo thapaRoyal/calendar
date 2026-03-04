@@ -202,11 +202,14 @@ export async function add(components: string[], cwd: string, options: { yes?: bo
       const item = getRegistryItem(componentName)!;
       if (item.type === 'registry:ui') {
         const componentPath = config.aliases.components.replace('@/', '');
-        console.log(chalk.cyan(`  import { ${capitalize(componentName)} } from "${config.aliases.components}/ui/${componentName}";`));
+        console.log(
+          chalk.cyan(
+            `  import { ${capitalize(componentName)} } from "${config.aliases.components}/ui/${componentName}";`
+          )
+        );
       }
     }
     console.log();
-
   } catch (error) {
     spinner.fail('Installation failed');
     console.error(error);
@@ -218,24 +221,27 @@ export async function add(components: string[], cwd: string, options: { yes?: bo
  * Resolve file path based on config
  */
 function resolveFilePath(filePath: string, config: Config): string {
+  const basePrefix = config.baseDir ? `${config.baseDir}/` : '';
+
   // Replace path prefixes
   if (filePath.startsWith('ui/')) {
-    const componentsPath = config.aliases.components.replace(/^@\//, 'src/');
+    const componentsPath = config.aliases.components.replace(/^@\//, basePrefix);
     return filePath.replace('ui/', `${componentsPath}/ui/`);
   }
 
   if (filePath.startsWith('lib/')) {
-    const utilsPath = config.aliases.utils.replace(/^@\//, 'src/');
+    const utilsPath = config.aliases.utils.replace(/^@\//, basePrefix);
     const utilsDir = path.dirname(utilsPath);
     return filePath.replace('lib/', `${utilsDir}/`);
   }
 
   if (filePath.startsWith('hooks/')) {
-    const hooksPath = config.aliases.hooks?.replace(/^@\//, 'src/') || 'src/hooks';
+    const defaultHooksPath = config.baseDir ? `${config.baseDir}/hooks` : 'hooks';
+    const hooksPath = config.aliases.hooks?.replace(/^@\//, basePrefix) || defaultHooksPath;
     return filePath.replace('hooks/', `${hooksPath}/`);
   }
 
-  return `src/${filePath}`;
+  return config.baseDir ? `${config.baseDir}/${filePath}` : filePath;
 }
 
 /**

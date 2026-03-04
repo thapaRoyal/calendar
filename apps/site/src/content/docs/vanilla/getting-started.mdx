@@ -26,7 +26,10 @@ yarn add @thaparoyal/calendar-vanilla @thaparoyal/calendar-core
 ### CDN (no build step)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-core/themes/themes.css" />
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-core/themes/themes.css"
+/>
 <script src="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-vanilla/dist/cdn/index.global.js"></script>
 ```
 
@@ -54,6 +57,44 @@ const cal2 = render('#another-calendar', {
   selectionMode: 'single',
 });
 ```
+
+## Complete HTML Example (CDN)
+
+If you aren't using a bundler (npm/yarn) and just want to write plain HTML, CSS, and JavaScript, you can use the CDN bundle. It exposes a global `TRCalendar` object.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plain JS Calendar</title>
+
+    <!-- 1. Include the CSS Theme -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-core/themes/themes.css"
+    />
+    <!-- 2. Include the Vanilla JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@thaparoyal/calendar-vanilla/dist/cdn/index.global.js"></script>
+  </head>
+  <body>
+    <!-- 3. Create a container -->
+    <div id="calendar"></div>
+
+    <!-- 4. Initialize it -->
+    <script>
+      TRCalendar.render('#calendar', {
+        config: { calendarType: 'BS', locale: 'en' },
+        theme: 'default', // Make sure to include the CSS link above!
+        selectionMode: 'single',
+      });
+    </script>
+  </body>
+</html>
+```
+
+For more advanced CDN features like reading events, check the [CDN Usage](/vanilla/cdn/) guide.
 
 ## Calendar Types
 
@@ -146,30 +187,30 @@ interface CalendarOptions {
 }
 ```
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `element` | `HTMLElement \| string` | -- | Target element or CSS selector |
-| `config.calendarType` | `'AD' \| 'BS'` | `'BS'` | Calendar system |
-| `config.locale` | `'en' \| 'ne'` | `'en'` | Language and numeral system |
-| `config.weekStartsOn` | `0 \| 1` | `0` | `0` = Sunday, `1` = Monday |
-| `config.minDate` | `CalendarDate` | -- | Earliest selectable date |
-| `config.maxDate` | `CalendarDate` | -- | Latest selectable date |
-| `theme` | `string` | `'default'` | Theme name (sets `data-theme`) |
-| `selectionMode` | `'single' \| 'range' \| 'multiple'` | `'single'` | Selection behavior |
-| `value` | varies | -- | Initial selected value |
-| `onValueChange` | `function` | -- | Callback on selection change |
-| `disabledDates` | `CalendarDate[]` | -- | Non-selectable dates |
+| Option                | Type                                | Default     | Description                    |
+| --------------------- | ----------------------------------- | ----------- | ------------------------------ |
+| `element`             | `HTMLElement \| string`             | --          | Target element or CSS selector |
+| `config.calendarType` | `'AD' \| 'BS'`                      | `'BS'`      | Calendar system                |
+| `config.locale`       | `'en' \| 'ne'`                      | `'en'`      | Language and numeral system    |
+| `config.weekStartsOn` | `0 \| 1`                            | `0`         | `0` = Sunday, `1` = Monday     |
+| `config.minDate`      | `CalendarDate`                      | --          | Earliest selectable date       |
+| `config.maxDate`      | `CalendarDate`                      | --          | Latest selectable date         |
+| `theme`               | `string`                            | `'default'` | Theme name (sets `data-theme`) |
+| `selectionMode`       | `'single' \| 'range' \| 'multiple'` | `'single'`  | Selection behavior             |
+| `value`               | varies                              | --          | Initial selected value         |
+| `onValueChange`       | `function`                          | --          | Callback on selection change   |
+| `disabledDates`       | `CalendarDate[]`                    | --          | Non-selectable dates           |
 
 ## Public API
 
-| Method | Description |
-|---|---|
-| `cal.nextMonth()` | Navigate forward one month |
-| `cal.prevMonth()` | Navigate back one month |
+| Method                 | Description                              |
+| ---------------------- | ---------------------------------------- |
+| `cal.nextMonth()`      | Navigate forward one month               |
+| `cal.prevMonth()`      | Navigate back one month                  |
 | `cal.selectDate(date)` | Programmatically select a `CalendarDate` |
-| `cal.setTheme(theme)` | Change the theme at runtime |
-| `cal.getValue()` | Get the current selection value |
-| `cal.destroy()` | Remove all rendered DOM content |
+| `cal.setTheme(theme)`  | Change the theme at runtime              |
+| `cal.getValue()`       | Get the current selection value          |
+| `cal.destroy()`        | Remove all rendered DOM content          |
 
 ## Next Steps
 
