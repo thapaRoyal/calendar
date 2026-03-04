@@ -72,8 +72,8 @@ jobs:
 
 Go to your repo **Settings > Pages** and set:
 
-| Setting | Value |
-|---------|-------|
+| Setting    | Value          |
+| ---------- | -------------- |
 | **Source** | GitHub Actions |
 
 Do **not** select a branch — the workflow handles deployment via the `actions/deploy-pages` action.
@@ -108,10 +108,10 @@ export default defineConfig({
 });
 ```
 
-| Setting | Purpose |
-|---------|---------|
-| `site` | The full URL of your GitHub Pages domain |
-| `base` | The repository name — GitHub Pages serves repos at `username.github.io/repo-name` |
+| Setting | Purpose                                                                           |
+| ------- | --------------------------------------------------------------------------------- |
+| `site`  | The full URL of your GitHub Pages domain                                          |
+| `base`  | The repository name — GitHub Pages serves repos at `username.github.io/repo-name` |
 
 All links in custom pages (landing page, playground) use `import.meta.env.BASE_URL` to stay base-path-aware:
 
@@ -160,6 +160,48 @@ You can upload `apps/site/dist/` to any static hosting provider (Netlify, Vercel
 
 ## Custom Domain
 
+---
+
+## Package Resolution
+
+The docs site consumes the **published npm packages** — not the local workspace packages. This is achieved through two settings:
+
+### 1. `.npmrc` (in `apps/site/`)
+
+```ini
+link-workspace-packages=false
+prefer-workspace-packages=false
+```
+
+This tells pnpm to **not** link or prefer the local workspace versions of `@thaparoyal/calendar-*` packages.
+
+### 2. `npm:` Specifier in `package.json`
+
+```json
+{
+  "dependencies": {
+    "@thaparoyal/calendar-angular": "npm:@thaparoyal/calendar-angular@2.0.0",
+    "@thaparoyal/calendar-core": "npm:@thaparoyal/calendar-core@2.0.0",
+    "@thaparoyal/calendar-react": "npm:@thaparoyal/calendar-react@2.0.0",
+    "@thaparoyal/calendar-svelte": "npm:@thaparoyal/calendar-svelte@2.0.0",
+    "@thaparoyal/calendar-vanilla": "npm:@thaparoyal/calendar-vanilla@2.0.0",
+    "@thaparoyal/calendar-vue": "npm:@thaparoyal/calendar-vue@2.0.0"
+  }
+}
+```
+
+The `npm:` prefix is a pnpm-supported alias that explicitly resolves from the **npm registry**. This ensures:
+
+- The docs site always uses the **latest published version** (currently `2.0.0`)
+- Local changes to the workspace packages don't break the docs site
+- The docs accurately reflect what users will experience when they `npm install` the packages
+
+> **When to update:** After publishing a new version to npm, bump the version in the `npm:` specifier (e.g., `npm:@thaparoyal/calendar-core@2.1.0`).
+
+---
+
+## Custom Domain
+
 To use a custom domain instead of `thaparoyal.github.io/calendar`:
 
 1. Go to **Settings > Pages > Custom domain** and enter your domain
@@ -168,7 +210,7 @@ To use a custom domain instead of `thaparoyal.github.io/calendar`:
 ```js
 export default defineConfig({
   site: 'https://your-domain.com',
-  base: '/',  // root path with custom domain
+  base: '/', // root path with custom domain
 });
 ```
 

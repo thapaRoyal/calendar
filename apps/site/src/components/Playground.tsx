@@ -10,9 +10,26 @@ import {
 import '@thaparoyal/calendar-core/themes/themes.css';
 
 const THEMES = [
-  'default', 'dark', 'ocean', 'ocean-dark', 'forest', 'forest-dark',
-  'sunset', 'sunset-dark', 'royal', 'royal-dark', 'nepal', 'nepal-dark',
-  'lavender', 'midnight', 'rose', 'mint', 'amber', 'slate', 'coral', 'indigo',
+  'default',
+  'dark',
+  'ocean',
+  'ocean-dark',
+  'forest',
+  'forest-dark',
+  'sunset',
+  'sunset-dark',
+  'royal',
+  'royal-dark',
+  'nepal',
+  'nepal-dark',
+  'lavender',
+  'midnight',
+  'rose',
+  'mint',
+  'amber',
+  'slate',
+  'coral',
+  'indigo',
 ] as const;
 
 type Theme = (typeof THEMES)[number];
@@ -599,26 +616,56 @@ function CodeTabs({ snippets }: { snippets: Record<Framework, string> }) {
       <button
         onClick={() => setOpen(!open)}
         style={{
-          background: 'none', border: 'none', color: '#667eea', cursor: 'pointer',
-          fontSize: '0.75rem', fontWeight: 500, padding: 0, display: 'flex',
-          alignItems: 'center', gap: 4,
+          background: 'none',
+          border: 'none',
+          color: '#667eea',
+          cursor: 'pointer',
+          fontSize: '0.75rem',
+          fontWeight: 500,
+          padding: 0,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 4,
         }}
       >
-        <span style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform 0.15s', display: 'inline-block' }}>
+        <span
+          style={{
+            transform: open ? 'rotate(90deg)' : 'none',
+            transition: 'transform 0.15s',
+            display: 'inline-block',
+          }}
+        >
           ▶
         </span>
         {open ? 'Hide code' : 'Show code'}
       </button>
       {open && (
-        <div style={{ marginTop: '0.5rem', borderRadius: 8, overflow: 'hidden', border: '1px solid #1e1e2e' }}>
-          <div style={{ display: 'flex', gap: 0, background: '#0a0a0f', borderBottom: '1px solid #1e1e2e' }}>
+        <div
+          style={{
+            marginTop: '0.5rem',
+            borderRadius: 8,
+            overflow: 'hidden',
+            border: '1px solid #1e1e2e',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              gap: 0,
+              background: '#0a0a0f',
+              borderBottom: '1px solid #1e1e2e',
+            }}
+          >
             {tabs.map((t) => (
               <button
                 key={t.key}
                 onClick={() => setActive(t.key)}
                 style={{
-                  padding: '0.4rem 0.9rem', border: 'none', cursor: 'pointer',
-                  fontSize: '0.72rem', fontWeight: 600,
+                  padding: '0.4rem 0.9rem',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
                   background: active === t.key ? '#16161e' : 'transparent',
                   color: active === t.key ? t.color : '#555',
                   borderBottom: active === t.key ? `2px solid ${t.color}` : '2px solid transparent',
@@ -628,10 +675,18 @@ function CodeTabs({ snippets }: { snippets: Record<Framework, string> }) {
               </button>
             ))}
           </div>
-          <pre style={{
-            margin: 0, padding: '1rem', background: '#0d0d14', overflow: 'auto',
-            fontSize: '0.78rem', lineHeight: 1.55, color: '#ccc', maxHeight: 400,
-          }}>
+          <pre
+            style={{
+              margin: 0,
+              padding: '1rem',
+              background: '#0d0d14',
+              overflow: 'auto',
+              fontSize: '0.78rem',
+              lineHeight: 1.55,
+              color: '#ccc',
+              maxHeight: 400,
+            }}
+          >
             <code>{snippets[active]}</code>
           </pre>
         </div>
@@ -668,76 +723,173 @@ export function Playground() {
       <h2 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '0.25rem', color: '#fff' }}>
         Interactive Playground
       </h2>
-      <p style={{ color: '#888', marginBottom: '2rem', fontSize: '0.95rem' }}>
-        Live demos powered by <code style={{ background: '#1a1a2e', padding: '0.15rem 0.4rem', borderRadius: 4, color: '#818cf8' }}>Patro</code> — toggle code tabs to see React, Vue, Svelte, Angular, and Vanilla JS examples
+      <p style={{ color: '#888', marginBottom: '1.25rem', fontSize: '0.95rem' }}>
+        Live demos powered by{' '}
+        <code
+          style={{
+            background: '#1a1a2e',
+            padding: '0.15rem 0.4rem',
+            borderRadius: 4,
+            color: '#818cf8',
+          }}
+        >
+          Patro
+        </code>{' '}
+        — toggle code tabs to see React, Vue, Svelte, Angular, and Vanilla JS examples
       </p>
 
+      {/* Info Banner */}
+      <div className="playground-info-banner">
+        <span className="info-icon">ℹ</span>
+        <span>
+          Live demos below are rendered using <strong>React</strong>. Expand the{' '}
+          <em>&quot;Show code&quot;</em> section on each card to see equivalent code for{' '}
+          <strong>Vue</strong>, <strong>Svelte</strong>, <strong>Angular</strong>, and{' '}
+          <strong>Vanilla JS</strong>.
+        </span>
+      </div>
+
       {/* Settings Bar */}
-      <div style={{
-        background: '#111118', border: '1px solid #1e1e2e', borderRadius: 12,
-        padding: '1.25rem 1.5rem', marginBottom: '2rem',
-        display: 'flex', flexWrap: 'wrap', gap: '1.5rem', alignItems: 'flex-start',
-      }}>
+      <div
+        className="playground-settings"
+        style={{
+          marginBottom: '2rem',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '1.5rem',
+          alignItems: 'flex-start',
+        }}
+      >
         <div>
-          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#888', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <label
+            style={{
+              display: 'block',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              color: '#888',
+              marginBottom: 6,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
             Calendar Type
           </label>
           <div style={{ display: 'flex', gap: 4 }}>
             {(['BS', 'AD'] as const).map((t) => (
-              <button key={t} onClick={() => setCalendarType(t)} style={{
-                padding: '0.4rem 1rem', borderRadius: 6, border: '1px solid',
-                borderColor: calendarType === t ? '#667eea' : '#2a2a3a',
-                background: calendarType === t ? '#667eea' : '#16161e',
-                color: calendarType === t ? '#fff' : '#888',
-                cursor: 'pointer', fontSize: '0.8rem', fontWeight: 500,
-              }}>{t}</button>
+              <button
+                key={t}
+                onClick={() => setCalendarType(t)}
+                style={{
+                  padding: '0.4rem 1rem',
+                  borderRadius: 6,
+                  border: '1px solid',
+                  borderColor: calendarType === t ? '#667eea' : '#2a2a3a',
+                  background: calendarType === t ? '#667eea' : '#16161e',
+                  color: calendarType === t ? '#fff' : '#888',
+                  cursor: 'pointer',
+                  fontSize: '0.8rem',
+                  fontWeight: 500,
+                }}
+              >
+                {t}
+              </button>
             ))}
           </div>
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#888', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <label
+            style={{
+              display: 'block',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              color: '#888',
+              marginBottom: 6,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
             Locale
           </label>
           <div style={{ display: 'flex', gap: 4 }}>
-            {([['en', 'English'], ['ne', 'नेपाली']] as const).map(([l, label]) => (
-              <button key={l} onClick={() => setLocale(l as 'en' | 'ne')} style={{
-                padding: '0.4rem 1rem', borderRadius: 6, border: '1px solid',
-                borderColor: locale === l ? '#667eea' : '#2a2a3a',
-                background: locale === l ? '#667eea' : '#16161e',
-                color: locale === l ? '#fff' : '#888',
-                cursor: 'pointer', fontSize: '0.8rem', fontWeight: 500,
-              }}>{label}</button>
+            {(
+              [
+                ['en', 'English'],
+                ['ne', 'नेपाली'],
+              ] as const
+            ).map(([l, label]) => (
+              <button
+                key={l}
+                onClick={() => setLocale(l as 'en' | 'ne')}
+                style={{
+                  padding: '0.4rem 1rem',
+                  borderRadius: 6,
+                  border: '1px solid',
+                  borderColor: locale === l ? '#667eea' : '#2a2a3a',
+                  background: locale === l ? '#667eea' : '#16161e',
+                  color: locale === l ? '#fff' : '#888',
+                  cursor: 'pointer',
+                  fontSize: '0.8rem',
+                  fontWeight: 500,
+                }}
+              >
+                {label}
+              </button>
             ))}
           </div>
         </div>
 
         <div style={{ flex: 1, minWidth: 200 }}>
-          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#888', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <label
+            style={{
+              display: 'block',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              color: '#888',
+              marginBottom: 6,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+            }}
+          >
             Theme
           </label>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
             {THEMES.map((t) => (
-              <button key={t} onClick={() => setTheme(t)} style={{
-                padding: '0.3rem 0.65rem', borderRadius: 4, border: '1px solid',
-                borderColor: theme === t ? '#667eea' : '#2a2a3a',
-                background: theme === t ? '#667eea' : '#16161e',
-                color: theme === t ? '#fff' : '#666',
-                cursor: 'pointer', fontSize: '0.7rem', fontWeight: 500,
-              }}>{t}</button>
+              <button
+                key={t}
+                onClick={() => setTheme(t)}
+                style={{
+                  padding: '0.3rem 0.65rem',
+                  borderRadius: 4,
+                  border: '1px solid',
+                  borderColor: theme === t ? '#667eea' : '#2a2a3a',
+                  background: theme === t ? '#667eea' : '#16161e',
+                  color: theme === t ? '#fff' : '#666',
+                  cursor: 'pointer',
+                  fontSize: '0.7rem',
+                  fontWeight: 500,
+                }}
+              >
+                {t}
+              </button>
             ))}
           </div>
         </div>
       </div>
 
       {/* Calendar Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
-        gap: '1.25rem',
-      }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+          gap: '1.25rem',
+        }}
+      >
         {/* 1. Single Selection with Month/Year Pickers */}
-        <Card title="Single Selection" desc="Click title to switch between day / month / year views">
+        <Card
+          title="Single Selection"
+          desc="Click title to switch between day / month / year views"
+        >
           <div data-theme={theme}>
             <Calendar.Root
               key={`single-${configKey}`}
@@ -801,7 +953,10 @@ export function Playground() {
               </RangeCalendar.Grid>
             </RangeCalendar.Root>
           </div>
-          <ValueDisplay label="Range" value={`${fmtDate(rangeValue?.start)} → ${fmtDate(rangeValue?.end)}`} />
+          <ValueDisplay
+            label="Range"
+            value={`${fmtDate(rangeValue?.start)} → ${fmtDate(rangeValue?.end)}`}
+          />
           <CodeTabs snippets={CODE_RANGE} />
         </Card>
 
@@ -827,11 +982,15 @@ export function Playground() {
         </Card>
 
         {/* 5. Multi-Calendar Range — full width */}
-        <div style={{
-          gridColumn: '1 / -1',
-          background: '#111118', border: '1px solid #1e1e2e', borderRadius: 12,
-          padding: '1.5rem',
-        }}>
+        <div
+          style={{
+            gridColumn: '1 / -1',
+            background: '#111118',
+            border: '1px solid #1e1e2e',
+            borderRadius: 12,
+            padding: '1.5rem',
+          }}
+        >
           <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#fff', margin: 0 }}>
             Multi-Calendar Range Selection
           </h3>
@@ -857,41 +1016,85 @@ export function Playground() {
               <MultiCalendar.Calendars showMonthTitles />
             </MultiCalendar.Root>
           </div>
-          <ValueDisplay label="Range" value={`${fmtDate(multiRangeValue?.start)} → ${fmtDate(multiRangeValue?.end)}`} />
+          <ValueDisplay
+            label="Range"
+            value={`${fmtDate(multiRangeValue?.start)} → ${fmtDate(multiRangeValue?.end)}`}
+          />
           <CodeTabs snippets={CODE_MULTI} />
         </div>
       </div>
 
-      {/* Framework links */}
-      <div style={{
-        marginTop: '2.5rem', padding: '1.5rem', background: '#111118',
-        border: '1px solid #1e1e2e', borderRadius: 12,
-      }}>
-        <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#fff', margin: '0 0 0.75rem' }}>
-          Framework Documentation
+      {/* Framework Documentation Links */}
+      <div
+        style={{
+          marginTop: '2.5rem',
+          padding: '1.5rem',
+          background: 'rgba(17, 17, 24, 0.75)',
+          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(255, 255, 255, 0.06)',
+          borderRadius: 12,
+        }}
+      >
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: '0 0 0.25rem' }}>
+          📚 Framework Documentation
         </h3>
-        <p style={{ fontSize: '0.85rem', color: '#888', margin: '0 0 1rem' }}>
-          Comprehensive guides with full API references and examples for each framework:
+        <p style={{ fontSize: '0.82rem', color: '#71717a', margin: '0 0 1.25rem' }}>
+          Comprehensive guides with full API references and examples for each framework
         </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+            gap: '0.65rem',
+          }}
+        >
           {[
-            { label: 'React', href: `${BASE}/react/quick-start/`, color: '#667eea' },
-            { label: 'Vue', href: `${BASE}/vue/guide/`, color: '#42b883' },
-            { label: 'Svelte', href: `${BASE}/svelte/guide/`, color: '#ff3e00' },
-            { label: 'Angular', href: `${BASE}/angular/quick-start/`, color: '#dd0031' },
-            { label: 'Vanilla JS', href: `${BASE}/vanilla/getting-started/`, color: '#f7df1e' },
+            {
+              label: 'React',
+              desc: 'Composable hooks',
+              href: `${BASE}/react/quick-start/`,
+              color: '#61dafb',
+            },
+            { label: 'Vue', desc: 'Composition API', href: `${BASE}/vue/guide/`, color: '#42b883' },
+            {
+              label: 'Svelte',
+              desc: 'Store-based API',
+              href: `${BASE}/svelte/guide/`,
+              color: '#ff3e00',
+            },
+            {
+              label: 'Angular',
+              desc: 'RxJS services',
+              href: `${BASE}/angular/quick-start/`,
+              color: '#dd0031',
+            },
+            {
+              label: 'Vanilla JS',
+              desc: 'Zero dependencies',
+              href: `${BASE}/vanilla/getting-started/`,
+              color: '#f7df1e',
+            },
           ].map((fw) => (
             <a
               key={fw.label}
               href={fw.href}
-              style={{
-                padding: '0.6rem 1.25rem', borderRadius: 8,
-                background: '#16161e', border: `1px solid ${fw.color}40`,
-                color: fw.color, textDecoration: 'none', fontWeight: 600,
-                fontSize: '0.85rem', transition: 'all 0.15s',
-              }}
+              className="fw-doc-link"
+              style={{ borderColor: `${fw.color}20`, color: fw.color }}
             >
-              {fw.label} Guide →
+              <span className="fw-dot" style={{ background: fw.color }} />
+              <span style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+                <span>{fw.label} →</span>
+                <span
+                  style={{
+                    fontSize: '0.7rem',
+                    fontWeight: 400,
+                    color: '#666',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {fw.desc}
+                </span>
+              </span>
             </a>
           ))}
         </div>
@@ -900,12 +1103,27 @@ export function Playground() {
   );
 }
 
-function Card({ title, desc, children }: { title: string; desc: string; children: React.ReactNode }) {
+function Card({
+  title,
+  desc,
+  children,
+}: {
+  title: string;
+  desc: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div style={{
-      background: '#111118', border: '1px solid #1e1e2e', borderRadius: 12,
-      padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem',
-    }}>
+    <div
+      style={{
+        background: '#111118',
+        border: '1px solid #1e1e2e',
+        borderRadius: 12,
+        padding: '1.5rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.75rem',
+      }}
+    >
       <div>
         <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#fff', margin: 0 }}>{title}</h3>
         <p style={{ fontSize: '0.8rem', color: '#666', margin: '0.25rem 0 0' }}>{desc}</p>
@@ -917,11 +1135,17 @@ function Card({ title, desc, children }: { title: string; desc: string; children
 
 function ValueDisplay({ label, value }: { label: string; value: string }) {
   return (
-    <div style={{
-      fontSize: '0.8rem', color: '#888', background: '#0d0d14',
-      border: '1px solid #1a1a2e', borderRadius: 6, padding: '0.5rem 0.75rem',
-      fontFamily: 'monospace',
-    }}>
+    <div
+      style={{
+        fontSize: '0.8rem',
+        color: '#888',
+        background: '#0d0d14',
+        border: '1px solid #1a1a2e',
+        borderRadius: 6,
+        padding: '0.5rem 0.75rem',
+        fontFamily: 'monospace',
+      }}
+    >
       <span style={{ color: '#555' }}>{label}:</span> {value}
     </div>
   );
